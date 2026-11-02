@@ -34,10 +34,6 @@ export const COPY = {
   "chrome.menu": { en: "Menu", ar: "القائمة" },
   "chrome.sections": { en: "Sections", ar: "أقسام" },
   "chrome.advancedSearch": { en: "Search the catalogue", ar: "بحث متقدم" },
-  "chrome.copyright": {
-    en: "Copyright © Damlag S.A.E — sample replica for demo purposes",
-    ar: "جميع الحقوق محفوظة © دملاج س.أ.م — نسخة تجريبية للعرض فقط",
-  },
   "chrome.chairman": { en: "Chairman: Khaled Hesham", ar: "رئيس مجلس الإدارة: خالد هشام" },
   "chrome.editor": { en: "Editor-in-Chief: Doaa Mohamed", ar: "مدير التحرير: ضياء محمد" },
   "chrome.skipToContent": { en: "Skip to content", ar: "الانتقال إلى المحتوى" },

@@ -24,6 +24,13 @@ All notable changes to this repository are documented here. The format follows
 - Token layer extended to match the supplied theme: `--radius` anchored at `0.75rem` with a
   `rounded-4xl` step, `--font-display` (`Exo` → `Cairo`), `--color-success` / `--color-gold`
   utilities and the `--sidebar-*` mappings.
+- `elcinema/scripts/check-env.mjs`, wired into `bun run build`: a build that cannot resolve
+  `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` now fails with the variable names instead
+  of emitting a bundle that throws in the browser. `SKIP_ENV_CHECK=1` opts out (used by `Web CI`,
+  which holds no Supabase values, so its artifact is compile-verified only).
+- `elcinema/src/lib/supabase-env.ts`: `isSupabaseConfigured()` probes the same keys the generated
+  client reads, so feature code can degrade instead of crashing; covered by
+  `src/test/supabase-env.test.ts`.
 
 ### Changed
 
@@ -38,13 +45,9 @@ All notable changes to this repository are documented here. The format follows
   the heading/`pill` recipes consume the new tokens instead of one-off amber literals.
 - Global keyboard-focus styling, scroll-margin for the sticky header, and a
   `prefers-reduced-motion` reset moved into the base layer so every component inherits them.
-- `elcinema/scripts/check-env.mjs`, wired into `bun run build`: a build that cannot resolve
-  `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` now fails with the variable names instead
-  of emitting a bundle that throws in the browser. `SKIP_ENV_CHECK=1` opts out (used by `Web CI`,
-  which holds no Supabase values, so its artifact is compile-verified only).
-- `elcinema/src/lib/supabase-env.ts`: `isSupabaseConfigured()` probes the same keys the generated
-  client reads, so feature code can degrade instead of crashing; covered by
-  `src/test/supabase-env.test.ts`.
+- The footer copyright block now reads `© <year> elCinema` followed by the `footer.builtBy` line
+  only; the "Copyright © Damlag S.A.E — sample replica for demo purposes" sentence and its
+  now-unused `chrome.copyright` key were removed from both editions.
 
 ### Fixed
 

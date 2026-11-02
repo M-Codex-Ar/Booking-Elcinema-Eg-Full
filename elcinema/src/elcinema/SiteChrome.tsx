@@ -552,7 +552,6 @@ export function SiteFooter({ lang }: { lang: Lang }) {
           {/* Right – Copyright */}
           <div className="flex flex-col items-start gap-1 md:items-end md:justify-center">
             <span>© {new Date().getFullYear()} elCinema</span>
-            <span>{t("chrome.copyright")}</span>
             <span className="text-primary">{t("footer.builtBy")}</span>
           </div>
         </div>
