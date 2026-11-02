@@ -4,7 +4,7 @@
   dead, or the load fails. Colours mirror src/theme/tokens.css (.dark) as hex —
   an SVG asset cannot read CSS custom properties, so this is the one documented
   exception to the "no colour literals outside tokens.css" rule. If the palette
-  changes, regenerate these four files (see scripts/mirror-artwork.mjs --svg).
+  changes, update these four files by hand from the same oklch values.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" width="300" height="450" role="img" aria-label="No poster available">
   <defs>
