@@ -1,0 +1,23 @@
+/*
+ * Stylesheet entry point.
+ *
+ * Order matters and is the whole architecture of the CSS:
+ *   1. Tailwind + its scanner
+ *   2. tokens.css  — raw custom properties and the token -> utility map
+ *   3. utilities.css — named visual recipes built from those tokens
+ *   4. base.css    — document defaults and third-party overrides
+ *
+ * Feature code never defines a colour, radius, shadow or duration literal: it
+ * composes the utilities these files generate. Adding a theme therefore means
+ * editing tokens.css and nothing else.
+ */
+
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+/* Scan only this project's source, not node_modules type declarations. */
+@source "../src";
+
+@import "./theme/tokens.css";
+@import "./theme/utilities.css";
+@import "./theme/base.css";

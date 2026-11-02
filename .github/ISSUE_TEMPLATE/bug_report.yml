@@ -1,0 +1,71 @@
+name: Bug report
+description: Something does not work as documented
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in what you observed and what you expected. Redact tokens and session values,
+        but keep everything else literal — a reproducible report gets fixed first.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      placeholder: The TV guide rail jumps to the top of the page when a filter dropdown opens.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - elcinema public page
+        - elcinema dashboard
+        - design system / styling
+        - i18n / RTL
+        - data layer / Supabase
+        - server-api (docs)
+        - CI / scripts / docs
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Language edition
+      options: [English, Arabic, Both]
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options: [Dark, Light, Both]
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open /ar/tvguide
+        2. Change the sort dropdown
+        3. Scroll position resets
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Output of `bun --version`, `node --version`, browser + OS, and the commit SHA (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Browser console and server output. Never paste a key or token — redact first.
+      render: shell

@@ -1,0 +1,52 @@
+# ---- Node / frontend -------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vinxi/
+.tanstack/
+.nitro/
+.output/
+.wrangler/
+.dev.vars
+*.timestamp-*.mjs
+.vite/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ---- .NET / backend --------------------------------------------------------
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+artifacts/
+BenchmarkDotNet.Artifacts/
+*.db
+*.sqlite
+*.orig
+
+# ---- Secrets and local config ---------------------------------------------
+# Only .env.example is tracked. Anything already committed is public: rotate it.
+.env
+.env.*
+!.env.example
+
+# ---- Editors, OS, tooling --------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.sw?
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Local agent scratch ---------------------------------------------------
+.qoder/cache/
+.tmp/
+scratch/

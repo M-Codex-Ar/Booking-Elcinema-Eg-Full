@@ -1,0 +1,4743 @@
+{
+ "from": 420,
+ "to": 840,
+ "times": [
+  420,
+  450,
+  480,
+  510,
+  540,
+  570,
+  600,
+  630,
+  660,
+  690,
+  720,
+  750,
+  780,
+  810
+ ],
+ "lines": [
+  {
+   "channel": {
+    "id": "1145",
+    "name": {
+     "en": "Mehwar",
+     "ar": "المحور"
+    },
+    "category": "general",
+    "img": "ch-119.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج اسال مجرب",
+      "ar": "برنامج اسال مجرب"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Harb",
+      "ar": "حرب"
+     },
+     "href": "/en/work/2078374/",
+     "meta": "Series - Normal (2023)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج شريان رئيسي",
+      "ar": "برنامج شريان رئيسي"
+     },
+     "href": null,
+     "meta": "11:00 AM - 11:30 AM",
+     "start": 660,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1269",
+    "name": {
+     "en": "AlSharqiya",
+     "ar": "الشرقية"
+    },
+    "category": "documentary",
+    "img": "ch-120.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Sabah Al Sharqiya",
+      "ar": "صباح الشرقية"
+     },
+     "href": "/en/work/2052866/",
+     "meta": "Program - Normal (2016)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Kamamat Watan",
+      "ar": "كمامات وطن"
+     },
+     "href": "/en/work/2063969/",
+     "meta": "Series - Normal (2020)",
+     "start": 610,
+     "end": 670
+    },
+    {
+     "title": {
+      "en": "برنامج موضع تساؤل",
+      "ar": "برنامج موضع تساؤل"
+     },
+     "href": null,
+     "meta": "11:15 AM - 11:45 AM",
+     "start": 675,
+     "end": 705
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1128",
+    "name": {
+     "en": "MBC 2",
+     "ar": "إم بي سي 2"
+    },
+    "category": "movies",
+    "img": "ch-121.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Harry Potter and the Philosopher's Stone",
+      "ar": "Harry Potter and the Philosopher's Stone"
+     },
+     "href": "/en/work/1388414/",
+     "meta": "Movie - Normal (2001)",
+     "start": 510,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "Harry Potter and the Chamber of Secrets",
+      "ar": "Harry Potter and the Chamber of Secrets"
+     },
+     "href": "/en/work/2001203/",
+     "meta": "Movie - Normal (2002)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1226",
+    "name": {
+     "en": "Sada El Balad",
+     "ar": "صدى البلد"
+    },
+    "category": "general",
+    "img": "ch-122.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج على مسؤليتي",
+      "ar": "برنامج على مسؤليتي"
+     },
+     "href": null,
+     "meta": "09:00 AM - 11:00 AM",
+     "start": 540,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج الماتش",
+      "ar": "برنامج الماتش"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1136",
+    "name": {
+     "en": "Abu Dhabi TV",
+     "ar": "أبو ظبي"
+    },
+    "category": "general",
+    "img": "ch-123.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "نشرة الاخبار",
+      "ar": "نشرة الاخبار"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:30 AM",
+     "start": 540,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "برنامج نسائم",
+      "ar": "برنامج نسائم"
+     },
+     "href": null,
+     "meta": "09:30 AM - 10:00 AM",
+     "start": 570,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج موجات",
+      "ar": "برنامج موجات"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج الممر",
+      "ar": "برنامج الممر"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1317",
+    "name": {
+     "en": "Oman",
+     "ar": "عمان"
+    },
+    "category": "general",
+    "img": "ch-124.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "نشرة أخبار الحادية عشر",
+      "ar": "نشرة أخبار الحادية عشر"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:35 AM",
+     "start": 540,
+     "end": 575
+    },
+    {
+     "title": {
+      "en": "Al Waqeed",
+      "ar": "الوقيد"
+     },
+     "href": "/en/work/2092627/",
+     "meta": "Series - Normal (2025)",
+     "start": 575,
+     "end": 635
+    },
+    {
+     "title": {
+      "en": "برنامج مــن عمان",
+      "ar": "برنامج مــن عمان"
+     },
+     "href": null,
+     "meta": "10:17 AM - 11:15 AM",
+     "start": 617,
+     "end": 675
+    },
+    {
+     "title": {
+      "en": "برنامج من كل بلد حكاية",
+      "ar": "برنامج من كل بلد حكاية"
+     },
+     "href": null,
+     "meta": "11:15 AM - 11:40 AM",
+     "start": 675,
+     "end": 700
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1366",
+    "name": {
+     "en": "Thikrayat Tv",
+     "ar": "ذكريات"
+    },
+    "category": "series",
+    "img": "ch-125.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Abu Ubaidah Bin Al Jarrah",
+      "ar": "أبو عبيدة بن الجراح"
+     },
+     "href": "/en/work/2066775/",
+     "meta": "Series - Normal (1988)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "مدينة الحظوظ",
+      "ar": "مدينة الحظوظ"
+     },
+     "href": "/en/work/2102673/",
+     "meta": "Series - Normal",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج ليالي السمر",
+      "ar": "برنامج ليالي السمر"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1373",
+    "name": {
+     "en": "Mix ONE",
+     "ar": "ميكس وان"
+    },
+    "category": "series",
+    "img": "ch-126.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Heartbeat",
+      "ar": "Heartbeat"
+     },
+     "href": "/en/work/2045572/",
+     "meta": "Series - Normal (2017)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Saraswatichandra",
+      "ar": "Saraswatichandra"
+     },
+     "href": "/en/work/2030017/",
+     "meta": "Series - Normal (2013)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Sen Anlat Karadeniz",
+      "ar": "البحر الأسود"
+     },
+     "href": "/en/work/2061768/",
+     "meta": "Series - Normal (2018)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1193",
+    "name": {
+     "en": "Al Nahar TV",
+     "ar": "النهار"
+    },
+    "category": "general",
+    "img": "ch-127.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج حكاية عقار",
+      "ar": "برنامج حكاية عقار"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج ما بين السطور",
+      "ar": "برنامج ما بين السطور"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:30 AM",
+     "start": 600,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج ديكور بلان",
+      "ar": "برنامج ديكور بلان"
+     },
+     "href": null,
+     "meta": "10:30 AM - 11:00 AM",
+     "start": 630,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Falling in Sabe' Well",
+      "ar": "السقوط في بئر سبع"
+     },
+     "href": "/en/work/1010970/",
+     "meta": "Series - Normal (1994)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1204",
+    "name": {
+     "en": "iFILM TV",
+     "ar": "آي فيلم"
+    },
+    "category": "series",
+    "img": "ch-128.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Rain",
+      "ar": "وارش"
+     },
+     "href": "/en/work/2071746/",
+     "meta": "Series - Normal (2018)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Privacy Policy",
+      "ar": "Privacy Policy"
+     },
+     "href": "/en/work/2071543/",
+     "meta": "Series - Normal (2010)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Sound of Rain",
+      "ar": "نغمة باران"
+     },
+     "href": "/en/work/2074593/",
+     "meta": "Series - Normal (2013)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1301",
+    "name": {
+     "en": "Alsumaria",
+     "ar": "السومرية"
+    },
+    "category": "general",
+    "img": "ch-129.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج ناس وناس",
+      "ar": "برنامج ناس وناس"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج live talk",
+      "ar": "برنامج live talk"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:30 AM",
+     "start": 600,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1169",
+    "name": {
+     "en": "Dubai TV",
+     "ar": "دبي"
+    },
+    "category": "series",
+    "img": "ch-130.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج دروب",
+      "ar": "برنامج دروب"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Awlad Al-Rai",
+      "ar": "أولاد الراعي"
+     },
+     "href": "/en/work/2097293/",
+     "meta": "Series - Normal (2026)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Karma",
+      "ar": "كارما"
+     },
+     "href": "/en/work/2098057/",
+     "meta": "Series - Normal (2026)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1252",
+    "name": {
+     "en": "Al Kahera Wal N...",
+     "ar": "القاهرة والناس 2"
+    },
+    "category": "series",
+    "img": "ch-131.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Al Nas Al Hulwa",
+      "ar": "الناس الحلوة"
+     },
+     "href": "/en/work/2051644/",
+     "meta": "Program - Normal (2017)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "Zell",
+      "ar": "ظل"
+     },
+     "href": "/en/work/2073216/",
+     "meta": "Series - Normal (2022)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Bayt El Shedda",
+      "ar": "بيت الشدة"
+     },
+     "href": "/en/work/2073124/",
+     "meta": "Series - Normal (2022)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1322",
+    "name": {
+     "en": "BEIN MOVIES PRE...",
+     "ar": "بي إن موفيز بريمير"
+    },
+    "category": "movies",
+    "img": "ch-132.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "La Cocina",
+      "ar": "La Cocina"
+     },
+     "href": "/en/work/2089198/",
+     "meta": "Movie - Normal (2024)",
+     "start": 464,
+     "end": 524
+    },
+    {
+     "title": {
+      "en": "Boy Kills World",
+      "ar": "Boy Kills World"
+     },
+     "href": "/en/work/2084499/",
+     "meta": "Movie - Normal (2023)",
+     "start": 599,
+     "end": 659
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1328",
+    "name": {
+     "en": "beIN Series HD 2",
+     "ar": "بي إن سيريس إتش..."
+    },
+    "category": "series",
+    "img": "ch-133.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "The Agency: Central Intelligence",
+      "ar": "The Agency: Central Intelligence"
+     },
+     "href": "/en/work/2092351/",
+     "meta": "Series - Normal (2024)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "The Real CSI: Miami",
+      "ar": "The Real CSI: Miami"
+     },
+     "href": "/en/work/2095445/",
+     "meta": "Series - Normal (2024)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Mayor of Kingstown",
+      "ar": "Mayor of Kingstown"
+     },
+     "href": "/en/work/2087031/",
+     "meta": "Series - Normal (2021)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1289",
+    "name": {
+     "en": "Rotana Cinema",
+     "ar": "روتانا سينما"
+    },
+    "category": "movies",
+    "img": "ch-134.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Alhabu al'awal",
+      "ar": "الحب الأول"
+     },
+     "href": "/en/work/1472598/",
+     "meta": "Movie - Normal (2000)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "El Irhab Wel Kabab",
+      "ar": "الإرهاب والكباب"
+     },
+     "href": "/en/work/1010305/",
+     "meta": "Movie - Normal (1992)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1129",
+    "name": {
+     "en": "MBC 4",
+     "ar": "إم بي سي 4"
+    },
+    "category": "series",
+    "img": "ch-135.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Wlad Badee'a",
+      "ar": "ولاد بديعة"
+     },
+     "href": "/en/work/2083882/",
+     "meta": "Series - Normal (2024)",
+     "start": 490,
+     "end": 550
+    },
+    {
+     "title": {
+      "en": "Telt El Talata",
+      "ar": "تلت التلاتة"
+     },
+     "href": "/en/work/2077836/",
+     "meta": "Series - Normal (2023)",
+     "start": 545,
+     "end": 605
+    },
+    {
+     "title": {
+      "en": "Uzak Sehir",
+      "ar": "Uzak Sehir"
+     },
+     "href": "/en/work/2091404/",
+     "meta": "Series - Normal (2024)",
+     "start": 595,
+     "end": 655
+    },
+    {
+     "title": {
+      "en": "Mojamma' 75",
+      "ar": "مجمع 75"
+     },
+     "href": "/en/work/2083503/",
+     "meta": "Series - Normal (2024)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1313",
+    "name": {
+     "en": "LTV",
+     "ar": "ال تي في"
+    },
+    "category": "series",
+    "img": "ch-136.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Aetr Al-Sham 2",
+      "ar": "عطر الشام ج2"
+     },
+     "href": "/en/work/1336472/",
+     "meta": "Series - Normal (2017)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "أخبار",
+      "ar": "أخبار"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Nesaaa Men Hatha Al-Zaman",
+      "ar": "نساء من هذا الزمن"
+     },
+     "href": "/en/work/2025627/",
+     "meta": "Series - Normal (2013)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1367",
+    "name": {
+     "en": "Utv",
+     "ar": "يو تي في"
+    },
+    "category": "general",
+    "img": "ch-137.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج الحق يقال",
+      "ar": "برنامج الحق يقال"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "ببرنامج مع طلال",
+      "ar": "ببرنامج مع طلال"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج هاتريك",
+      "ar": "برنامج هاتريك"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1119",
+    "name": {
+     "en": "Egyptian TV",
+     "ar": "المصرية"
+    },
+    "category": "series",
+    "img": "ch-138.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Al Kabir Awy 1",
+      "ar": "الكبير أوي ج1"
+     },
+     "href": "/en/work/1096845/",
+     "meta": "Series - Normal (2010)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Harb Al-Jawasis",
+      "ar": "حرب الجواسيس"
+     },
+     "href": "/en/work/1462808/",
+     "meta": "Series - Normal (2009)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج من ماسبيرو",
+      "ar": "برنامج من ماسبيرو"
+     },
+     "href": null,
+     "meta": "11:00 AM - 01:15 PM",
+     "start": 660,
+     "end": 795
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1194",
+    "name": {
+     "en": "MBC Drama",
+     "ar": "إم بي سي دراما"
+    },
+    "category": "series",
+    "img": "ch-139.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "The Pit S4",
+      "ar": "The Pit S4"
+     },
+     "href": "/en/work/2067766/",
+     "meta": "Series - Normal (2020)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Leabet Newton",
+      "ar": "لعبة نيوتن"
+     },
+     "href": "/en/work/2061422/",
+     "meta": "Series - Normal (2021)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Three Kingdoms",
+      "ar": "Three Kingdoms"
+     },
+     "href": "/en/work/2043224/",
+     "meta": "Series - Normal (2010)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1232",
+    "name": {
+     "en": "OSN TV Kids",
+     "ar": "أو إس إن كيدز"
+    },
+    "category": "series",
+    "img": "ch-140.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Matt Hatter Chronicles S3",
+      "ar": "Matt Hatter Chronicles S3"
+     },
+     "href": "/en/work/2095911/",
+     "meta": "Series - Normal (2014)",
+     "start": 525,
+     "end": 585
+    },
+    {
+     "title": {
+      "en": "Old Enough! Canada",
+      "ar": "Old Enough! Canada"
+     },
+     "href": "/en/work/2096239/",
+     "meta": "Program - Normal (2024)",
+     "start": 545,
+     "end": 605
+    },
+    {
+     "title": {
+      "en": "Ninjago: Masters of Spinjitzu S11",
+      "ar": "Ninjago: Masters of Spinjitzu S11"
+     },
+     "href": "/en/work/2064468/",
+     "meta": "Series - Normal (2019)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Dino Pops",
+      "ar": "Dino Pops"
+     },
+     "href": "/en/work/2093095/",
+     "meta": "Series - Normal (2023)",
+     "start": 585,
+     "end": 645
+    },
+    {
+     "title": {
+      "en": "Barbie and Barbie on Set",
+      "ar": "Barbie and Barbie on Set"
+     },
+     "href": "/en/work/2097204/",
+     "meta": "Series - Normal (2023)",
+     "start": 602,
+     "end": 662
+    },
+    {
+     "title": {
+      "en": "Bing",
+      "ar": "Bing"
+     },
+     "href": "/en/work/2096162/",
+     "meta": "Series - Cartoon (2014)",
+     "start": 605,
+     "end": 665
+    },
+    {
+     "title": {
+      "en": "Dragons: The Nine Realms S2",
+      "ar": "Dragons: The Nine Realms S2"
+     },
+     "href": "/en/work/2084103/",
+     "meta": "Series - Normal (2022)",
+     "start": 615,
+     "end": 675
+    },
+    {
+     "title": {
+      "en": "Bing S4",
+      "ar": "Bing S4"
+     },
+     "href": "/en/work/2096687/",
+     "meta": "Series - Cartoon (2019)",
+     "start": 635,
+     "end": 695
+    },
+    {
+     "title": {
+      "en": "Enchantimals: Tales from Everwilde",
+      "ar": "Enchantimals: Tales from Everwilde"
+     },
+     "href": "/en/work/2097465/",
+     "meta": "Series - Cartoon (2018)",
+     "start": 645,
+     "end": 705
+    },
+    {
+     "title": {
+      "en": "Old Enough! Canada",
+      "ar": "Old Enough! Canada"
+     },
+     "href": "/en/work/2096239/",
+     "meta": "Program - Normal (2024)",
+     "start": 655,
+     "end": 715
+    },
+    {
+     "title": {
+      "en": "Matchbox Adventures",
+      "ar": "Matchbox Adventures"
+     },
+     "href": "/en/work/2097670/",
+     "meta": "Series - Normal (2021)",
+     "start": 680,
+     "end": 740
+    },
+    {
+     "title": {
+      "en": "The Croods: Family Tree",
+      "ar": "The Croods: Family Tree"
+     },
+     "href": "/en/work/2092605/",
+     "meta": "Series - Normal (2021)",
+     "start": 685,
+     "end": 745
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1239",
+    "name": {
+     "en": "MBC Egypt",
+     "ar": "إم بي سي مصر"
+    },
+    "category": "documentary",
+    "img": "ch-141.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Alhikaya mae Amr Adib",
+      "ar": "الحكاية مع عمرو أديب"
+     },
+     "href": "/en/work/2002232/",
+     "meta": "Program - Normal (2018)",
+     "start": 450,
+     "end": 510
+    },
+    {
+     "title": {
+      "en": "Kalam Al Nas",
+      "ar": "كلام الناس"
+     },
+     "href": "/en/work/2076446/",
+     "meta": "Program - Normal (2021)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Cobra",
+      "ar": "كوبرا"
+     },
+     "href": "/en/work/2083662/",
+     "meta": "Series - Normal (2024)",
+     "start": 670,
+     "end": 730
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1312",
+    "name": {
+     "en": "Al Aoula Morocco",
+     "ar": "الأولى المغربية"
+    },
+    "category": "general",
+    "img": "ch-142.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج عبق التراث",
+      "ar": "برنامج عبق التراث"
+     },
+     "href": null,
+     "meta": "08:10 AM - 09:05 AM",
+     "start": 490,
+     "end": 545
+    },
+    {
+     "title": {
+      "en": "برنامج مواقع و وقائع",
+      "ar": "برنامج مواقع و وقائع"
+     },
+     "href": null,
+     "meta": "09:05 AM - 10:00 AM",
+     "start": 545,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Qoloob Taeha",
+      "ar": "قلوب تائهة"
+     },
+     "href": "/en/work/2050672/",
+     "meta": "Series - Normal (2018)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج اسرتي",
+      "ar": "برنامج اسرتي"
+     },
+     "href": null,
+     "meta": "10:55 AM - 11:55 AM",
+     "start": 655,
+     "end": 715
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1261",
+    "name": {
+     "en": "Zee alwan",
+     "ar": "زي ألوان"
+    },
+    "category": "series",
+    "img": "ch-143.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Etnen Gherna",
+      "ar": "اتنين غيرنا"
+     },
+     "href": "/en/work/2096453/",
+     "meta": "Series - Normal (2026)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Jamai No. 1",
+      "ar": "Jamai No. 1"
+     },
+     "href": "/en/work/2101146/",
+     "meta": "Series - Normal (2024)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Kundali Bhagya",
+      "ar": "Kundali Bhagya"
+     },
+     "href": "/en/work/2061760/",
+     "meta": "Series - Normal (2017)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1314",
+    "name": {
+     "en": "Jordan TV",
+     "ar": "الأردن"
+    },
+    "category": "general",
+    "img": "ch-144.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج الان",
+      "ar": "برنامج الان"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج المطبخ",
+      "ar": "برنامج المطبخ"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج مسارات",
+      "ar": "برنامج مسارات"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1149",
+    "name": {
+     "en": "Rotana Khalejia",
+     "ar": "روتانا خليجية"
+    },
+    "category": "series",
+    "img": "ch-145.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Maamour Al Thalaga",
+      "ar": "مأمور الثلاجة"
+     },
+     "href": "/en/work/2096716/",
+     "meta": "Series - Short (2026)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Elet Al Malek",
+      "ar": "عيلة الملك"
+     },
+     "href": "/en/work/2097145/",
+     "meta": "Series - Normal (2026)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج في الصورة ج7",
+      "ar": "برنامج في الصورة ج7"
+     },
+     "href": null,
+     "meta": "11:00 AM - 01:00 PM",
+     "start": 660,
+     "end": 780
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1148",
+    "name": {
+     "en": "Rotana Cinema Masr",
+     "ar": "روتانا سينما مصر"
+    },
+    "category": "movies",
+    "img": "ch-146.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Nour Einy",
+      "ar": "نور عيني"
+     },
+     "href": "/en/work/1992899/",
+     "meta": "Movie - Normal (2010)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "Mohamed Hussein",
+      "ar": "محمد حسين"
+     },
+     "href": "/en/work/2052720/",
+     "meta": "Movie - Normal (2019)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1278",
+    "name": {
+     "en": "MBC MASR 2",
+     "ar": "إم بي سي مصر 2"
+    },
+    "category": "documentary",
+    "img": "ch-147.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Sabahak Masry",
+      "ar": "صباحك مصري"
+     },
+     "href": "/en/work/2034283/",
+     "meta": "Program - Normal (2014)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Bade Achhe Lagte Hain 4",
+      "ar": "Bade Achhe Lagte Hain 4"
+     },
+     "href": "/en/work/2099253/",
+     "meta": "Series - Normal (2025)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1401",
+    "name": {
+     "en": "Masah",
+     "ar": "ماسة"
+    },
+    "category": "general",
+    "img": "ch-148.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج",
+      "ar": "برنامج"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:30 AM",
+     "start": 540,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "برنامج محامي صلح",
+      "ar": "برنامج محامي صلح"
+     },
+     "href": null,
+     "meta": "09:30 AM - 10:15 AM",
+     "start": 570,
+     "end": 615
+    },
+    {
+     "title": {
+      "en": "برنامج شي في الخاطر",
+      "ar": "برنامج شي في الخاطر"
+     },
+     "href": null,
+     "meta": "10:15 AM - 11:00 AM",
+     "start": 615,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج",
+      "ar": "برنامج"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1391",
+    "name": {
+     "en": "OSN TV Movies H...",
+     "ar": "أو إس إن موفيز ..."
+    },
+    "category": "movies",
+    "img": "ch-149.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Aloha",
+      "ar": "Aloha"
+     },
+     "href": "/en/work/2036220/",
+     "meta": "Movie - Normal (2015)",
+     "start": 510,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "San Andreas",
+      "ar": "San Andreas"
+     },
+     "href": "/en/work/2035161/",
+     "meta": "Movie - Normal (2015)",
+     "start": 615,
+     "end": 675
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1199",
+    "name": {
+     "en": "CBC Drama",
+     "ar": "سي بي سي دراما"
+    },
+    "category": "series",
+    "img": "ch-150.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Hakim Basha",
+      "ar": "حكيم باشا"
+     },
+     "href": "/en/work/2088311/",
+     "meta": "Series - Normal (2025)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Leabet Newton",
+      "ar": "لعبة نيوتن"
+     },
+     "href": "/en/work/2061422/",
+     "meta": "Series - Normal (2021)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Awlad Al-Rai",
+      "ar": "أولاد الراعي"
+     },
+     "href": "/en/work/2097293/",
+     "meta": "Series - Normal (2026)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1383",
+    "name": {
+     "en": "WTV",
+     "ar": "الوسط"
+    },
+    "category": "general",
+    "img": "ch-151.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج وثائقي",
+      "ar": "برنامج وثائقي"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "فيلم",
+      "ar": "فيلم"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:30 AM",
+     "start": 600,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1177",
+    "name": {
+     "en": "Sama Dubai",
+     "ar": "سما دبي"
+    },
+    "category": "general",
+    "img": "ch-152.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج نكهة البيت",
+      "ar": "برنامج نكهة البيت"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج ذاكرة الاعلام",
+      "ar": "برنامج ذاكرة الاعلام"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Altamaeun",
+      "ar": "الطماعون"
+     },
+     "href": "/en/work/1337420/",
+     "meta": "Series - Normal (1989)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1213",
+    "name": {
+     "en": "OSN TV Movies P...",
+     "ar": "أو إس إن موفيز ..."
+    },
+    "category": "movies",
+    "img": "ch-153.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Priscilla",
+      "ar": "Priscilla"
+     },
+     "href": "/en/work/2080537/",
+     "meta": "Movie - Normal (2023)",
+     "start": 470,
+     "end": 530
+    },
+    {
+     "title": {
+      "en": "Listen",
+      "ar": "Listen"
+     },
+     "href": "/en/work/2068674/",
+     "meta": "Movie - Normal (2020)",
+     "start": 580,
+     "end": 640
+    },
+    {
+     "title": {
+      "en": "Superman",
+      "ar": "Superman"
+     },
+     "href": "/en/work/2089208/",
+     "meta": "Movie - Normal (2025)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1134",
+    "name": {
+     "en": "ON Drama",
+     "ar": "أون دراما"
+    },
+    "category": "series",
+    "img": "ch-154.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Lams Aktaf",
+      "ar": "لمس أكتاف"
+     },
+     "href": "/en/work/2054313/",
+     "meta": "Series - Normal (2019)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "El Kebeer Awy 8",
+      "ar": "الكبير أوي ج8"
+     },
+     "href": "/en/work/2083125/",
+     "meta": "Series - Normal (2024)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Abu El Aroussa 3",
+      "ar": "أبو العروسة ج3"
+     },
+     "href": "/en/work/2072011/",
+     "meta": "Series - Normal (2022)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1323",
+    "name": {
+     "en": "BEIN MOVIES ACTION",
+     "ar": "بي إن موفيز أكشن"
+    },
+    "category": "movies",
+    "img": "ch-155.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Ghostbusters",
+      "ar": "Ghostbusters"
+     },
+     "href": "/en/work/2041588/",
+     "meta": "Movie - Normal (2016)",
+     "start": 435,
+     "end": 495
+    },
+    {
+     "title": {
+      "en": "Pain & Gain",
+      "ar": "Pain & Gain"
+     },
+     "href": "/en/work/2019390/",
+     "meta": "Movie - Normal (2013)",
+     "start": 555,
+     "end": 615
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1137",
+    "name": {
+     "en": "Alhayat TV",
+     "ar": "الحياة"
+    },
+    "category": "general",
+    "img": "ch-156.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج كورة كل يوم",
+      "ar": "برنامج كورة كل يوم"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:45 AM",
+     "start": 540,
+     "end": 585
+    },
+    {
+     "title": {
+      "en": "Ein Sehreya",
+      "ar": "عين سحرية"
+     },
+     "href": "/en/work/2096591/",
+     "meta": "Series - Normal (2026)",
+     "start": 585,
+     "end": 645
+    },
+    {
+     "title": {
+      "en": "برنامج مطبخ الحياة",
+      "ar": "برنامج مطبخ الحياة"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1358",
+    "name": {
+     "en": "Rotana Comedy",
+     "ar": "روتانا كوميدي"
+    },
+    "category": "movies",
+    "img": "ch-157.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Al Baa'd Yazhab lel Maa'zoun Marratayn",
+      "ar": "البعض يذهب للمأذون مرتين"
+     },
+     "href": "/en/work/1429313/",
+     "meta": "Movie - Normal (1978)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "Assal Eswed",
+      "ar": "عسل إسود"
+     },
+     "href": "/en/work/1313173/",
+     "meta": "Movie - Normal (2010)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1374",
+    "name": {
+     "en": "Hadhramaut TV",
+     "ar": "تلفزيون حضرموت"
+    },
+    "category": "general",
+    "img": "ch-158.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج ديوان الشباب",
+      "ar": "برنامج ديوان الشباب"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج واحة الإيمان",
+      "ar": "برنامج واحة الإيمان"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:30 AM",
+     "start": 600,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج وثائقي",
+      "ar": "برنامج وثائقي"
+     },
+     "href": null,
+     "meta": "10:30 AM - 11:30 AM",
+     "start": 630,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1264",
+    "name": {
+     "en": "Al Dafrah",
+     "ar": "الظفرة"
+    },
+    "category": "general",
+    "img": "ch-159.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج عرب فوود",
+      "ar": "برنامج عرب فوود"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:30 AM",
+     "start": 540,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "كليبات وطنية",
+      "ar": "كليبات وطنية"
+     },
+     "href": null,
+     "meta": "09:30 AM - 10:00 AM",
+     "start": 570,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Khotuwat Saghira",
+      "ar": "خطوات صغيرة"
+     },
+     "href": "/en/work/2096901/",
+     "meta": "Series - Normal (2026)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Elet Al Malek",
+      "ar": "عيلة الملك"
+     },
+     "href": "/en/work/2097145/",
+     "meta": "Series - Normal (2026)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1309",
+    "name": {
+     "en": "beIN Drama",
+     "ar": "بي إن دراما"
+    },
+    "category": "series",
+    "img": "ch-160.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Ab Wa Laken",
+      "ar": "أب ولكن"
+     },
+     "href": "/en/work/2097471/",
+     "meta": "Series - Normal (2026)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Afkar Oumy",
+      "ar": "أفكار أمي"
+     },
+     "href": "/en/work/2088176/",
+     "meta": "Series - Normal (2025)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Hayah La Toshbihni",
+      "ar": "حياة لا تشبهني"
+     },
+     "href": "/en/work/2076703/",
+     "meta": "Series - Normal (2024)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1216",
+    "name": {
+     "en": "Al Jadeed TV",
+     "ar": "الجديد"
+    },
+    "category": "general",
+    "img": "ch-161.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح اليوم",
+      "ar": "برنامج صباح اليوم"
+     },
+     "href": null,
+     "meta": "07:30 AM - 09:30 AM",
+     "start": 450,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "موجزالأخبار",
+      "ar": "موجزالأخبار"
+     },
+     "href": null,
+     "meta": "09:30 AM - 09:40 AM",
+     "start": 570,
+     "end": 580
+    },
+    {
+     "title": {
+      "en": "برنامج الحدث",
+      "ar": "برنامج الحدث"
+     },
+     "href": null,
+     "meta": "09:40 AM - 11:15 AM",
+     "start": 580,
+     "end": 675
+    },
+    {
+     "title": {
+      "en": "برنامج صحتك بين يديك",
+      "ar": "برنامج صحتك بين يديك"
+     },
+     "href": null,
+     "meta": "11:15 AM - 11:45 AM",
+     "start": 675,
+     "end": 705
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1279",
+    "name": {
+     "en": "Sada El Balad 2",
+     "ar": "صدى البلد 2"
+    },
+    "category": "general",
+    "img": "ch-162.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج على مسؤليتي",
+      "ar": "برنامج على مسؤليتي"
+     },
+     "href": null,
+     "meta": "08:00 AM - 10:00 AM",
+     "start": 480,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Sabah Albalad",
+      "ar": "صباح البلد"
+     },
+     "href": "/en/work/2025291/",
+     "meta": "Program - Normal (2012)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج ربي زدني علمًا",
+      "ar": "برنامج ربي زدني علمًا"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1324",
+    "name": {
+     "en": "BEIN MOVIES DRAMA",
+     "ar": "بي إن موفيز دراما"
+    },
+    "category": "movies",
+    "img": "ch-163.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "12 Mighty Orphans",
+      "ar": "12 Mighty Orphans"
+     },
+     "href": "/en/work/2069182/",
+     "meta": "Movie - Normal (2021)",
+     "start": 525,
+     "end": 585
+    },
+    {
+     "title": {
+      "en": "Fantasy Life",
+      "ar": "Fantasy Life"
+     },
+     "href": "/en/work/2098948/",
+     "meta": "Movie - Normal (2025)",
+     "start": 644,
+     "end": 704
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1325",
+    "name": {
+     "en": "BEIN MOVIES FAMILY",
+     "ar": "بي إن موفيز فاميلي"
+    },
+    "category": "movies",
+    "img": "ch-164.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Playing with Fire",
+      "ar": "Playing with Fire"
+     },
+     "href": "/en/work/2057189/",
+     "meta": "Movie - Normal (2019)",
+     "start": 495,
+     "end": 555
+    },
+    {
+     "title": {
+      "en": "Jumanji",
+      "ar": "Jumanji"
+     },
+     "href": "/en/work/2001215/",
+     "meta": "Movie - Normal (1995)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1399",
+    "name": {
+     "en": "MBC Masr Drama",
+     "ar": "إم بي سي مصر دراما"
+    },
+    "category": "series",
+    "img": "ch-165.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "My Name Is Farah",
+      "ar": "My Name Is Farah"
+     },
+     "href": "/en/work/2078980/",
+     "meta": "Series - Normal (2023)",
+     "start": 515,
+     "end": 575
+    },
+    {
+     "title": {
+      "en": "Haqq Arab",
+      "ar": "حق عرب"
+     },
+     "href": "/en/work/2082468/",
+     "meta": "Series - Normal (2024)",
+     "start": 565,
+     "end": 625
+    },
+    {
+     "title": {
+      "en": "Sittat Bayt Al Maadi",
+      "ar": "ستات بيت المعادي"
+     },
+     "href": "/en/work/2072145/",
+     "meta": "Series - Normal (2021)",
+     "start": 620,
+     "end": 680
+    },
+    {
+     "title": {
+      "en": "Awlad Abed",
+      "ar": "أولاد عابد"
+     },
+     "href": "/en/work/2077277/",
+     "meta": "Series - Normal (2023)",
+     "start": 670,
+     "end": 730
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1394",
+    "name": {
+     "en": "OSN TV Showcase",
+     "ar": "أو إس إن شو كايس"
+    },
+    "category": "series",
+    "img": "ch-166.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Irma Vep",
+      "ar": "Irma Vep"
+     },
+     "href": "/en/work/2074581/",
+     "meta": "Series - Normal (2022)",
+     "start": 520,
+     "end": 580
+    },
+    {
+     "title": {
+      "en": "The Newsroom",
+      "ar": "The Newsroom"
+     },
+     "href": "/en/work/2025439/",
+     "meta": "Series - Normal (2012)",
+     "start": 580,
+     "end": 640
+    },
+    {
+     "title": {
+      "en": "Curb Your Enthusiasm S7",
+      "ar": "Curb Your Enthusiasm S7"
+     },
+     "href": "/en/work/2012190/",
+     "meta": "Series - Normal (2009)",
+     "start": 635,
+     "end": 695
+    },
+    {
+     "title": {
+      "en": "Curb Your Enthusiasm S7",
+      "ar": "Curb Your Enthusiasm S7"
+     },
+     "href": "/en/work/2012190/",
+     "meta": "Series - Normal (2009)",
+     "start": 670,
+     "end": 730
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1341",
+    "name": {
+     "en": "LBC",
+     "ar": "إل بي سي"
+    },
+    "category": "series",
+    "img": "ch-167.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Maa Waqf Al Tanfeez",
+      "ar": "مع وقف التنفيذ"
+     },
+     "href": "/en/work/2073215/",
+     "meta": "Series - Normal (2022)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Maa Waqf Al Tanfeez",
+      "ar": "مع وقف التنفيذ"
+     },
+     "href": "/en/work/2073215/",
+     "meta": "Series - Normal (2022)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج عادي",
+      "ar": "برنامج عادي"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1246",
+    "name": {
+     "en": "LDC",
+     "ar": "ال دي سي"
+    },
+    "category": "documentary",
+    "img": "ch-168.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Naharukum Saeid",
+      "ar": "نهاركم سعيد"
+     },
+     "href": "/en/work/2029131/",
+     "meta": "Program - Normal (1996)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج صباحي morning talk",
+      "ar": "برنامج صباحي morning talk"
+     },
+     "href": null,
+     "meta": "10:30 AM - 01:00 PM",
+     "start": 630,
+     "end": 780
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1382",
+    "name": {
+     "en": "Alaraby TV 2",
+     "ar": "التلفزيون العربي 2"
+    },
+    "category": "general",
+    "img": "ch-169.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج عشرون",
+      "ar": "برنامج عشرون"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج مذكرات",
+      "ar": "برنامج مذكرات"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:30 AM",
+     "start": 600,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج العربي تك",
+      "ar": "برنامج العربي تك"
+     },
+     "href": null,
+     "meta": "10:30 AM - 11:00 AM",
+     "start": 630,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج ضفاف",
+      "ar": "برنامج ضفاف"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1405",
+    "name": {
+     "en": "One Drama",
+     "ar": "وان دراما"
+    },
+    "category": "series",
+    "img": "ch-170.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Cherry Season",
+      "ar": "Cherry Season"
+     },
+     "href": "/en/work/2042748/",
+     "meta": "Series - Normal (2014)",
+     "start": 510,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "My Siblings",
+      "ar": "My Siblings"
+     },
+     "href": "/en/work/2070624/",
+     "meta": "Series - Normal (2021)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Mother",
+      "ar": "Mother"
+     },
+     "href": "/en/work/2082824/",
+     "meta": "Series - Normal (2016)",
+     "start": 630,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1231",
+    "name": {
+     "en": "OSN TV Movies C...",
+     "ar": "أو إس إن موفيز ..."
+    },
+    "category": "movies",
+    "img": "ch-171.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Dinner with Friends",
+      "ar": "Dinner with Friends"
+     },
+     "href": "/en/work/2001080/",
+     "meta": "Movie - Normal (2001)",
+     "start": 535,
+     "end": 595
+    },
+    {
+     "title": {
+      "en": "A Dog Year",
+      "ar": "A Dog Year"
+     },
+     "href": "/en/work/2010939/",
+     "meta": "Movie - Normal (2009)",
+     "start": 630,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1392",
+    "name": {
+     "en": "OSN TV Movies F...",
+     "ar": "أو إس إن فاميلي..."
+    },
+    "category": "movies",
+    "img": "ch-172.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Journey 2: The Mysterious Island",
+      "ar": "Journey 2: The Mysterious Island"
+     },
+     "href": "/en/work/2008110/",
+     "meta": "Movie - Normal (2012)",
+     "start": 530,
+     "end": 590
+    },
+    {
+     "title": {
+      "en": "An American Girl: Chrissa Stands Strong",
+      "ar": "An American Girl: Chrissa Stands Strong"
+     },
+     "href": "/en/work/2005332/",
+     "meta": "Movie - Normal (2009)",
+     "start": 625,
+     "end": 685
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1315",
+    "name": {
+     "en": "Echorouk TV",
+     "ar": "الشروق الجزائرية"
+    },
+    "category": "general",
+    "img": "ch-173.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح الشروق",
+      "ar": "برنامج صباح الشروق"
+     },
+     "href": null,
+     "meta": "09:00 AM - 11:30 AM",
+     "start": 540,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1135",
+    "name": {
+     "en": "Emirates",
+     "ar": "اﻹمارات"
+    },
+    "category": "general",
+    "img": "ch-174.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح الإمارات",
+      "ar": "برنامج صباح الإمارات"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Elen Al Youm",
+      "ar": "إلين اليوم"
+     },
+     "href": "/en/work/2026386/",
+     "meta": "Series - Normal (2013)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "أخبار",
+      "ar": "أخبار"
+     },
+     "href": null,
+     "meta": "11:00 AM - 11:30 AM",
+     "start": 660,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1205",
+    "name": {
+     "en": "OSN Ya Hala",
+     "ar": "أو إس إن ياهلا"
+    },
+    "category": "series",
+    "img": "ch-175.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Ala Ad El Hob",
+      "ar": "على قد الحب"
+     },
+     "href": "/en/work/2097692/",
+     "meta": "Series - Normal (2026)",
+     "start": 515,
+     "end": 575
+    },
+    {
+     "title": {
+      "en": "Ala Ad El Hob",
+      "ar": "على قد الحب"
+     },
+     "href": "/en/work/2097692/",
+     "meta": "Series - Normal (2026)",
+     "start": 560,
+     "end": 620
+    },
+    {
+     "title": {
+      "en": "Deebo",
+      "ar": "ديبو"
+     },
+     "href": "/en/work/2088988/",
+     "meta": "Series - Normal (2024)",
+     "start": 610,
+     "end": 670
+    },
+    {
+     "title": {
+      "en": "Lunch Box",
+      "ar": "لانش بوكس"
+     },
+     "href": "/en/work/2083431/",
+     "meta": "Series - Normal (2024)",
+     "start": 650,
+     "end": 710
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1156",
+    "name": {
+     "en": "Nile Drama",
+     "ar": "نايل دراما"
+    },
+    "category": "series",
+    "img": "ch-176.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Ya ward min yashtarik",
+      "ar": "يا ورد مين يشتريك"
+     },
+     "href": "/en/work/1604236/",
+     "meta": "Series - Normal (2004)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Ya ward min yashtarik",
+      "ar": "يا ورد مين يشتريك"
+     },
+     "href": "/en/work/1604236/",
+     "meta": "Series - Normal (2004)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Awraq Al Ward",
+      "ar": "أوراق الورد"
+     },
+     "href": "/en/work/1796455/",
+     "meta": "Series - Normal (1979)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1198",
+    "name": {
+     "en": "CBC",
+     "ar": "سي بي سي"
+    },
+    "category": "general",
+    "img": "ch-177.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج نمبر وان",
+      "ar": "برنامج نمبر وان"
+     },
+     "href": null,
+     "meta": "09:00 AM - 11:00 AM",
+     "start": 540,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Azmet Theqa",
+      "ar": "أزمة ثقة"
+     },
+     "href": "/en/work/2096027/",
+     "meta": "Series - Normal (2025)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1395",
+    "name": {
+     "en": "OSN TV Crime",
+     "ar": "أو إس إن كرايم"
+    },
+    "category": "series",
+    "img": "ch-178.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Blindspot S3",
+      "ar": "Blindspot S3"
+     },
+     "href": "/en/work/2056880/",
+     "meta": "Series - Normal (2017)",
+     "start": 505,
+     "end": 565
+    },
+    {
+     "title": {
+      "en": "Snapped: Killer Couples S16",
+      "ar": "Snapped: Killer Couples S16"
+     },
+     "href": "/en/work/2096992/",
+     "meta": "Series - Normal (2022)",
+     "start": 545,
+     "end": 605
+    },
+    {
+     "title": {
+      "en": "Major Crimes S4",
+      "ar": "Major Crimes S4"
+     },
+     "href": "/en/work/2083540/",
+     "meta": "Series - Normal (2015)",
+     "start": 590,
+     "end": 650
+    },
+    {
+     "title": {
+      "en": "The Mentalist S2",
+      "ar": "The Mentalist S2"
+     },
+     "href": "/en/work/2061940/",
+     "meta": "Series - Normal (2009)",
+     "start": 635,
+     "end": 695
+    },
+    {
+     "title": {
+      "en": "Blindspot S3",
+      "ar": "Blindspot S3"
+     },
+     "href": "/en/work/2056880/",
+     "meta": "Series - Normal (2017)",
+     "start": 680,
+     "end": 740
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1349",
+    "name": {
+     "en": "Iraqia TV",
+     "ar": "العراقية"
+    },
+    "category": "general",
+    "img": "ch-179.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح الخير يا عراق",
+      "ar": "برنامج صباح الخير يا عراق"
+     },
+     "href": null,
+     "meta": "08:00 AM - 09:30 AM",
+     "start": 480,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "برنامج صحافتنا",
+      "ar": "برنامج صحافتنا"
+     },
+     "href": null,
+     "meta": "09:30 AM - 10:00 AM",
+     "start": 570,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Qaysariya",
+      "ar": "قيصرية"
+     },
+     "href": "/en/work/2098358/",
+     "meta": "Series - Normal (2026)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "فقرة غنائية",
+      "ar": "فقرة غنائية"
+     },
+     "href": null,
+     "meta": "11:00 AM - 11:30 AM",
+     "start": 660,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1174",
+    "name": {
+     "en": "Al Kahera Wal N...",
+     "ar": "القاهرة والناس"
+    },
+    "category": "general",
+    "img": "ch-180.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Bayt El Shedda",
+      "ar": "بيت الشدة"
+     },
+     "href": "/en/work/2073124/",
+     "meta": "Series - Normal (2022)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Al Kamira Al Khafia",
+      "ar": "الكاميرا الخفية"
+     },
+     "href": "/en/work/2072816/",
+     "meta": "Program - Normal (1991)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج",
+      "ar": "برنامج"
+     },
+     "href": null,
+     "meta": "10:30 AM - 11:00 AM",
+     "start": 630,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج مي شو",
+      "ar": "برنامج مي شو"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1259",
+    "name": {
+     "en": "MBC Bollywood",
+     "ar": "إم بي سي بوليوود"
+    },
+    "category": "series",
+    "img": "ch-181.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Bas Tera Saath Ho",
+      "ar": "Bas Tera Saath Ho"
+     },
+     "href": "/en/work/2102336/",
+     "meta": "Series - Normal (2026)",
+     "start": 535,
+     "end": 595
+    },
+    {
+     "title": {
+      "en": "جاناك",
+      "ar": "على صدى الخلخال"
+     },
+     "href": "/en/work/2094065/",
+     "meta": "Series - Normal (2023)",
+     "start": 590,
+     "end": 650
+    },
+    {
+     "title": {
+      "en": "Yeh Rishta Kya Kehlata Hai",
+      "ar": "Yeh Rishta Kya Kehlata Hai"
+     },
+     "href": "/en/work/2077098/",
+     "meta": "Series - Normal (2009)",
+     "start": 640,
+     "end": 700
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1242",
+    "name": {
+     "en": "Network Arabic",
+     "ar": "نتورك بالعربية"
+    },
+    "category": "series",
+    "img": "ch-182.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "The Tom and Jerry Show S5",
+      "ar": "The Tom and Jerry Show S5"
+     },
+     "href": "/en/work/2072973/",
+     "meta": "Series - Cartoon (2021)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Ekans - Snakes Awake",
+      "ar": "Ekans - Snakes Awake"
+     },
+     "href": "/en/work/2074916/",
+     "meta": "Series - Cartoon (2021)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Teen Titans Go! S1",
+      "ar": "Teen Titans Go! S1"
+     },
+     "href": "/en/work/2052629/",
+     "meta": "Series - Normal (2013)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1299",
+    "name": {
+     "en": "Roya",
+     "ar": "رؤيا"
+    },
+    "category": "documentary",
+    "img": "ch-183.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Donya Ya Donya",
+      "ar": "دنيا يا دنيا"
+     },
+     "href": "/en/work/2051958/",
+     "meta": "Program - Normal (2019)",
+     "start": 420,
+     "end": 480
+    },
+    {
+     "title": {
+      "en": "Matbakh Roya",
+      "ar": "مطبخ رؤيا"
+     },
+     "href": "/en/work/2052587/",
+     "meta": "Program - Normal (2018)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1404",
+    "name": {
+     "en": "One Movies",
+     "ar": "وان موفيز"
+    },
+    "category": "movies",
+    "img": "ch-184.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "The Northman",
+      "ar": "The Northman"
+     },
+     "href": "/en/work/2061642/",
+     "meta": "Movie - Normal (2022)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "Ready or Not",
+      "ar": "Ready or Not"
+     },
+     "href": "/en/work/2058301/",
+     "meta": "Movie - Normal (2019)",
+     "start": 630,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1285",
+    "name": {
+     "en": "Osn Ya Hala Aflam",
+     "ar": "أو إس إن ياهلا ..."
+    },
+    "category": "movies",
+    "img": "ch-185.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "El Ens W El Nems",
+      "ar": "الإنس والنمس"
+     },
+     "href": "/en/work/2061350/",
+     "meta": "Movie - Normal (2021)",
+     "start": 535,
+     "end": 595
+    },
+    {
+     "title": {
+      "en": "Gurub Al Mamiz",
+      "ar": "جروب الماميز"
+     },
+     "href": "/en/work/2071348/",
+     "meta": "Movie - Normal (2023)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1340",
+    "name": {
+     "en": "MBC Iraq",
+     "ar": "إم بي سي العراق"
+    },
+    "category": "series",
+    "img": "ch-186.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Manna'a",
+      "ar": "مناعة"
+     },
+     "href": "/en/work/2097616/",
+     "meta": "Series - Normal (2026)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Genius",
+      "ar": "العبقري"
+     },
+     "href": "/en/work/2089665/",
+     "meta": "Series - Normal (2024)",
+     "start": 595,
+     "end": 655
+    },
+    {
+     "title": {
+      "en": "The Family S2",
+      "ar": "The Family S2"
+     },
+     "href": "/en/work/2085362/",
+     "meta": "Series - Normal (2023)",
+     "start": 630,
+     "end": 690
+    },
+    {
+     "title": {
+      "en": "Sou' Al Manakh",
+      "ar": "سوء المناخ"
+     },
+     "href": "/en/work/2081250/",
+     "meta": "Series - Short (2023)",
+     "start": 670,
+     "end": 730
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1132",
+    "name": {
+     "en": "MBC MAX",
+     "ar": "إم بي سي ماكس"
+    },
+    "category": "movies",
+    "img": "ch-187.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Searching",
+      "ar": "Searching"
+     },
+     "href": "/en/work/2051920/",
+     "meta": "Movie - Normal (2018)",
+     "start": 450,
+     "end": 510
+    },
+    {
+     "title": {
+      "en": "All I See Is You",
+      "ar": "All I See Is You"
+     },
+     "href": "/en/work/2043144/",
+     "meta": "Movie - Normal (2016)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Hollywood Buzz",
+      "ar": "Hollywood Buzz"
+     },
+     "href": "/en/work/2050963/",
+     "meta": "Program - Normal (1998)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1329",
+    "name": {
+     "en": "Star World",
+     "ar": "ستار ورلد"
+    },
+    "category": "series",
+    "img": "ch-188.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج The Open Road",
+      "ar": "برنامج The Open Road"
+     },
+     "href": null,
+     "meta": "08:50 AM - 09:30 AM",
+     "start": 530,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "Extreme Makeover: Home Edition",
+      "ar": "Extreme Makeover: Home Edition"
+     },
+     "href": "/en/work/2032974/",
+     "meta": "Series - Normal (2003)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Little Fires Everywhere",
+      "ar": "Little Fires Everywhere"
+     },
+     "href": "/en/work/2061133/",
+     "meta": "Series - Normal (2020)",
+     "start": 630,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1398",
+    "name": {
+     "en": "Althania",
+     "ar": "الثانية"
+    },
+    "category": "general",
+    "img": "ch-189.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح سوريا",
+      "ar": "برنامج صباح سوريا"
+     },
+     "href": null,
+     "meta": "08:00 AM - 10:00 AM",
+     "start": 480,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "أخبار",
+      "ar": "أخبار"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Baba",
+      "ar": "Baba"
+     },
+     "href": "/en/work/2077165/",
+     "meta": "Series - Normal (2022)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1396",
+    "name": {
+     "en": "OSN TV Now",
+     "ar": "أو إٍس إن ناو"
+    },
+    "category": "series",
+    "img": "ch-190.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Night Court",
+      "ar": "Night Court"
+     },
+     "href": "/en/work/2077999/",
+     "meta": "Series - Normal (2023)",
+     "start": 525,
+     "end": 585
+    },
+    {
+     "title": {
+      "en": "Night Court",
+      "ar": "Night Court"
+     },
+     "href": "/en/work/2077999/",
+     "meta": "Series - Normal (2023)",
+     "start": 550,
+     "end": 610
+    },
+    {
+     "title": {
+      "en": "Rob Warner's Wild Rides",
+      "ar": "Rob Warner's Wild Rides"
+     },
+     "href": "/en/work/2096062/",
+     "meta": "Program - Normal (2019)",
+     "start": 575,
+     "end": 635
+    },
+    {
+     "title": {
+      "en": "Hello Ladies S1",
+      "ar": "Hello Ladies S1"
+     },
+     "href": "/en/work/2027138/",
+     "meta": "Series - Normal (2013)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Hello Ladies S1",
+      "ar": "Hello Ladies S1"
+     },
+     "href": "/en/work/2027138/",
+     "meta": "Series - Normal (2013)",
+     "start": 625,
+     "end": 685
+    },
+    {
+     "title": {
+      "en": "برنامج واقعي The Final Pitch: Dubai",
+      "ar": "برنامج واقعي The Final Pitch: Dubai"
+     },
+     "href": null,
+     "meta": "11:10 AM - 11:55 AM",
+     "start": 670,
+     "end": 715
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1336",
+    "name": {
+     "en": "Maspero Zaman",
+     "ar": "ماسبيرو زمان"
+    },
+    "category": "series",
+    "img": "ch-191.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Zuhur Min Nour",
+      "ar": "زهور من نور"
+     },
+     "href": "/en/work/2021984/",
+     "meta": "Series - Normal (1986)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Mn Qesas Al-Quran Al-Kareem",
+      "ar": "من قصص القران الكريم"
+     },
+     "href": "/en/work/2020462/",
+     "meta": "Series - Normal (1984)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Baed El Azab",
+      "ar": "بعد العذاب"
+     },
+     "href": "/en/work/2017870/",
+     "meta": "Series - Normal (1969)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج التختجية",
+      "ar": "برنامج التختجية"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1130",
+    "name": {
+     "en": "MBC Action",
+     "ar": "إم بي سي أكشن"
+    },
+    "category": "series",
+    "img": "ch-192.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Rashash",
+      "ar": "رشاش"
+     },
+     "href": "/en/work/2067733/",
+     "meta": "Series - Normal (2021)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج lego masters",
+      "ar": "برنامج lego masters"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Ridiculousness",
+      "ar": "Ridiculousness"
+     },
+     "href": "/en/work/2054398/",
+     "meta": "Program - Normal (2011)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1168",
+    "name": {
+     "en": "LBCI",
+     "ar": "إل بي سي آي"
+    },
+    "category": "documentary",
+    "img": "ch-193.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Naharukum Saeid",
+      "ar": "نهاركم سعيد"
+     },
+     "href": "/en/work/2029131/",
+     "meta": "Program - Normal (1996)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج صباحي morning talk",
+      "ar": "برنامج صباحي morning talk"
+     },
+     "href": null,
+     "meta": "10:30 AM - 01:00 PM",
+     "start": 630,
+     "end": 780
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1159",
+    "name": {
+     "en": "Nile Life",
+     "ar": "نايل لايف"
+    },
+    "category": "documentary",
+    "img": "ch-194.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Naharuk Saeid",
+      "ar": "نهارك سعيد"
+     },
+     "href": "/en/work/2010355/",
+     "meta": "Program - Normal (2011)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "برنامج سبوت لايت",
+      "ar": "برنامج سبوت لايت"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Lamma Tamer Sab Shawqeya",
+      "ar": "لما تامر ساب شوقية"
+     },
+     "href": "/en/work/2036680/",
+     "meta": "Series - Normal (2015)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1371",
+    "name": {
+     "en": "Mix Bel Araby",
+     "ar": "ميكس بالعربي"
+    },
+    "category": "series",
+    "img": "ch-195.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Forbidden Apple S6",
+      "ar": "Forbidden Apple S6"
+     },
+     "href": "/en/work/2089571/",
+     "meta": "Series - Normal (2022)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Love, Reason, Get Even",
+      "ar": "Love, Reason, Get Even"
+     },
+     "href": "/en/work/2074342/",
+     "meta": "Series - Normal (2021)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Last Summer",
+      "ar": "Last Summer"
+     },
+     "href": "/en/work/2085173/",
+     "meta": "Series - Normal (2021)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1390",
+    "name": {
+     "en": "OSN TV Yahala B...",
+     "ar": "أو إس إن ياهلا ..."
+    },
+    "category": "series",
+    "img": "ch-196.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "My Siblings S4",
+      "ar": "My Siblings S4"
+     },
+     "href": "/en/work/2084013/",
+     "meta": "Series - Normal (2023)",
+     "start": 520,
+     "end": 580
+    },
+    {
+     "title": {
+      "en": "Forbidden Apple S5",
+      "ar": "Forbidden Apple S5"
+     },
+     "href": "/en/work/2079256/",
+     "meta": "Series - Normal (2021)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "Kizil Goncalar S2",
+      "ar": "Kizil Goncalar S2"
+     },
+     "href": "/en/work/2097787/",
+     "meta": "Series - Normal (2024)",
+     "start": 615,
+     "end": 675
+    },
+    {
+     "title": {
+      "en": "Cranberry Sorbet S2",
+      "ar": "Cranberry Sorbet S2"
+     },
+     "href": "/en/work/2086861/",
+     "meta": "Series - Normal (2023)",
+     "start": 665,
+     "end": 725
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1203",
+    "name": {
+     "en": "ON E",
+     "ar": "أون إي"
+    },
+    "category": "series",
+    "img": "ch-197.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Fan Al Harb",
+      "ar": "فن الحرب"
+     },
+     "href": "/en/work/2096564/",
+     "meta": "Series - Normal (2026)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج الكلاسيكو",
+      "ar": "برنامج الكلاسيكو"
+     },
+     "href": null,
+     "meta": "10:20 AM - 12:00 PM",
+     "start": 620,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1176",
+    "name": {
+     "en": "Cima",
+     "ar": "سيما"
+    },
+    "category": "movies",
+    "img": "ch-198.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Hady Bady",
+      "ar": "حادي بادي"
+     },
+     "href": "/en/work/1955706/",
+     "meta": "Movie - Normal (1984)",
+     "start": 480,
+     "end": 540
+    },
+    {
+     "title": {
+      "en": "El Rahina",
+      "ar": "الرهينة"
+     },
+     "href": "/en/work/1011588/",
+     "meta": "Movie - Normal (2006)",
+     "start": 600,
+     "end": 660
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1290",
+    "name": {
+     "en": "DMC",
+     "ar": "دي إم سي"
+    },
+    "category": "general",
+    "img": "ch-199.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Kamel El Adad +1",
+      "ar": "كامل العدد +1"
+     },
+     "href": "/en/work/2083087/",
+     "meta": "Series - Normal (2024)",
+     "start": 520,
+     "end": 580
+    },
+    {
+     "title": {
+      "en": "برنامج ست ستات",
+      "ar": "برنامج ست ستات"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "فيلم عربي",
+      "ar": "فيلم عربي"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:45 PM",
+     "start": 660,
+     "end": 765
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1147",
+    "name": {
+     "en": "Rotana Drama",
+     "ar": "روتانا دراما"
+    },
+    "category": "series",
+    "img": "ch-200.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Bayt El Shedda",
+      "ar": "بيت الشدة"
+     },
+     "href": "/en/work/2073124/",
+     "meta": "Series - Normal (2022)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Loubat Al Saaada",
+      "ar": "لعبة السعادة"
+     },
+     "href": "/en/work/2071021/",
+     "meta": "Series - Normal (2024)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Ala Ad El Hob",
+      "ar": "على قد الحب"
+     },
+     "href": "/en/work/2097692/",
+     "meta": "Series - Normal (2026)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1227",
+    "name": {
+     "en": "Sada El Balad D...",
+     "ar": "صدى البلد دراما"
+    },
+    "category": "series",
+    "img": "ch-201.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Sharea' Abdel Aziz",
+      "ar": "شارع عبدالعزيز"
+     },
+     "href": "/en/work/2005036/",
+     "meta": "Series - Normal (2011)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Baed Al Nihaya",
+      "ar": "بعد النهاية"
+     },
+     "href": "/en/work/2077527/",
+     "meta": "Series - Normal (2024)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Rayya Wi Sekinnah",
+      "ar": "ريا وسكينة"
+     },
+     "href": "/en/work/1326791/",
+     "meta": "Series - Normal (2005)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1385",
+    "name": {
+     "en": "Dijlah TV",
+     "ar": "دجلة"
+    },
+    "category": "general",
+    "img": "ch-202.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صباح دجلة",
+      "ar": "برنامج صباح دجلة"
+     },
+     "href": null,
+     "meta": "08:00 AM - 10:00 AM",
+     "start": 480,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "أخبار",
+      "ar": "أخبار"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج المؤشر",
+      "ar": "برنامج المؤشر"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1280",
+    "name": {
+     "en": "TeN TV",
+     "ar": "تن"
+    },
+    "category": "general",
+    "img": "ch-203.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج",
+      "ar": "برنامج"
+     },
+     "href": null,
+     "meta": "08:30 AM - 09:30 AM",
+     "start": 510,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "Bel Waraqa wel Qalam",
+      "ar": "بالورقة والقلم"
+     },
+     "href": "/en/work/2052674/",
+     "meta": "Program - Normal (2017)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "نشرة الأخبار",
+      "ar": "نشرة الأخبار"
+     },
+     "href": null,
+     "meta": "11:00 AM - 11:10 AM",
+     "start": 660,
+     "end": 670
+    },
+    {
+     "title": {
+      "en": "Rayya Wi Sekinnah",
+      "ar": "ريا وسكينة"
+     },
+     "href": "/en/work/1326791/",
+     "meta": "Series - Normal (2005)",
+     "start": 670,
+     "end": 730
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1217",
+    "name": {
+     "en": "Rotana Classic",
+     "ar": "روتانا كلاسيك"
+    },
+    "category": "movies",
+    "img": "ch-204.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "'Iismaeil ys fi altayaran",
+      "ar": "إسماعيل يس في الطيران"
+     },
+     "href": "/en/work/1010250/",
+     "meta": "Movie - Normal (1959)",
+     "start": 540,
+     "end": 600
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1298",
+    "name": {
+     "en": "Amman",
+     "ar": "عَمان"
+    },
+    "category": "general",
+    "img": "ch-205.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج صح صح",
+      "ar": "برنامج صح صح"
+     },
+     "href": null,
+     "meta": "08:00 AM - 10:00 AM",
+     "start": 480,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج وثائقي كليك",
+      "ar": "برنامج وثائقي كليك"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:30 AM",
+     "start": 600,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج بهار ونار",
+      "ar": "برنامج بهار ونار"
+     },
+     "href": null,
+     "meta": "10:30 AM - 12:00 PM",
+     "start": 630,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1211",
+    "name": {
+     "en": "OSN TV Movies A...",
+     "ar": "أو إس إن موفيز ..."
+    },
+    "category": "movies",
+    "img": "ch-206.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Now You See Me 2",
+      "ar": "Now You See Me 2"
+     },
+     "href": "/en/work/2034371/",
+     "meta": "Movie - Normal (2016)",
+     "start": 440,
+     "end": 500
+    },
+    {
+     "title": {
+      "en": "Justice League",
+      "ar": "Justice League"
+     },
+     "href": "/en/work/2042549/",
+     "meta": "Movie - Normal (2017)",
+     "start": 565,
+     "end": 625
+    },
+    {
+     "title": {
+      "en": "Batman",
+      "ar": "Batman"
+     },
+     "href": "/en/work/2001974/",
+     "meta": "Movie - Normal (1989)",
+     "start": 685,
+     "end": 745
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1393",
+    "name": {
+     "en": "OSN TV One",
+     "ar": "أو إس إن وان"
+    },
+    "category": "series",
+    "img": "ch-207.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Vigil S2",
+      "ar": "Vigil S2"
+     },
+     "href": "/en/work/2083427/",
+     "meta": "Series - Normal (2023)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Revolution",
+      "ar": "Revolution"
+     },
+     "href": "/en/work/2046678/",
+     "meta": "Series - Normal (2012)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Revolution",
+      "ar": "Revolution"
+     },
+     "href": "/en/work/2046678/",
+     "meta": "Series - Normal (2012)",
+     "start": 645,
+     "end": 705
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1127",
+    "name": {
+     "en": "MBC",
+     "ar": "إم بي سي"
+    },
+    "category": "documentary",
+    "img": "ch-208.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Sabah El Keer Ya Arab",
+      "ar": "صباح الخير يا عرب"
+     },
+     "href": "/en/work/2009399/",
+     "meta": "Program - Normal (2006)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Malaffat Mansiyya",
+      "ar": "ملفات منسية"
+     },
+     "href": "/en/work/2083063/",
+     "meta": "Series - Normal (2024)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1297",
+    "name": {
+     "en": "SBC",
+     "ar": "إس بي سي"
+    },
+    "category": "series",
+    "img": "ch-209.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Orchidia",
+      "ar": "أوركيديا"
+     },
+     "href": "/en/work/2037355/",
+     "meta": "Series - Normal (2017)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج مطبخ ضحي",
+      "ar": "برنامج مطبخ ضحي"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Rageen Ya Hawa",
+      "ar": "راجعين يا هوى"
+     },
+     "href": "/en/work/2072537/",
+     "meta": "Series - Normal (2022)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1304",
+    "name": {
+     "en": "Nessma",
+     "ar": "نسمة"
+    },
+    "category": "general",
+    "img": "ch-210.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج البازار",
+      "ar": "برنامج البازار"
+     },
+     "href": null,
+     "meta": "09:00 AM - 02:00 PM",
+     "start": 540,
+     "end": 840
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1241",
+    "name": {
+     "en": "MBC 3",
+     "ar": "إم بي سي 3"
+    },
+    "category": "series",
+    "img": "ch-211.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Baby Shark's Big Show!",
+      "ar": "Baby Shark's Big Show!"
+     },
+     "href": "/en/work/2077471/",
+     "meta": "Series - Cartoon (2020)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج مغامرات إلمو وتانغو الغامضة",
+      "ar": "برنامج مغامرات إلمو وتانغو الغامضة"
+     },
+     "href": null,
+     "meta": "09:30 AM - 10:00 AM",
+     "start": 570,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Blaze and the Monster Machines",
+      "ar": "Blaze and the Monster Machines"
+     },
+     "href": "/en/work/2053371/",
+     "meta": "Series - Normal (2014)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Hello Kitty: Super Style!",
+      "ar": "Hello Kitty: Super Style!"
+     },
+     "href": "/en/work/2085020/",
+     "meta": "Series - Cartoon (2022)",
+     "start": 630,
+     "end": 690
+    },
+    {
+     "title": {
+      "en": "Santiago of the Seas",
+      "ar": "Santiago of the Seas"
+     },
+     "href": "/en/work/2075684/",
+     "meta": "Series - Normal (2020)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1302",
+    "name": {
+     "en": "Fujairah",
+     "ar": "الفجيرة"
+    },
+    "category": "general",
+    "img": "ch-212.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "موجز إخباري",
+      "ar": "موجز إخباري"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:10 AM",
+     "start": 540,
+     "end": 550
+    },
+    {
+     "title": {
+      "en": "برنامج وثائقي",
+      "ar": "برنامج وثائقي"
+     },
+     "href": null,
+     "meta": "09:10 AM - 10:00 AM",
+     "start": 550,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Wasseyet Geddo",
+      "ar": "وصية جدو"
+     },
+     "href": "/en/work/2098862/",
+     "meta": "Series - Normal (2026)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Mataha",
+      "ar": "متاهة"
+     },
+     "href": "/en/work/2096848/",
+     "meta": "Series - Normal (2026)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1292",
+    "name": {
+     "en": "DMC DRAMA",
+     "ar": "دي إم سي دراما"
+    },
+    "category": "series",
+    "img": "ch-213.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Al Bashaier",
+      "ar": "البشاير"
+     },
+     "href": "/en/work/1010582/",
+     "meta": "Series - Normal (1987)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Yawmiat Wanis 1",
+      "ar": "يوميات ونيس ج1"
+     },
+     "href": "/en/work/1011316/",
+     "meta": "Series - Normal (1994)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "El Soffara",
+      "ar": "الصفارة"
+     },
+     "href": "/en/work/2077348/",
+     "meta": "Series - Normal (2023)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1352",
+    "name": {
+     "en": "Saudiya TV",
+     "ar": "السعودية"
+    },
+    "category": "documentary",
+    "img": "ch-214.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Sabah Al Saudia",
+      "ar": "صباح السعودية"
+     },
+     "href": "/en/work/2087854/",
+     "meta": "Program - Normal (2020)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Aber Sabeel",
+      "ar": "عابر سبيل"
+     },
+     "href": "/en/work/2091050/",
+     "meta": "Series - Normal (2025)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1101",
+    "name": {
+     "en": "Aloula",
+     "ar": "قناة مصر الأولى"
+    },
+    "category": "series",
+    "img": "ch-215.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Yawmiyat Zoga Mafrusa Awy 1",
+      "ar": "يوميات زوجة مفروسة أوي ج1"
+     },
+     "href": "/en/work/2018697/",
+     "meta": "Series - Normal (2015)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Al Ameel 1001",
+      "ar": "العميل ١٠٠١"
+     },
+     "href": "/en/work/1011574/",
+     "meta": "Series - Normal (2005)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "برنامج من ماسبيرو",
+      "ar": "برنامج من ماسبيرو"
+     },
+     "href": null,
+     "meta": "11:00 AM - 01:15 PM",
+     "start": 660,
+     "end": 795
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1327",
+    "name": {
+     "en": "BeIn Series HD 1",
+     "ar": "بي إن سيريس"
+    },
+    "category": "series",
+    "img": "ch-216.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "The Good Doctor S3",
+      "ar": "The Good Doctor S3"
+     },
+     "href": "/en/work/2060838/",
+     "meta": "Series - Normal (2019)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "My Hero Academia S2",
+      "ar": "My Hero Academia S2"
+     },
+     "href": "/en/work/2102394/",
+     "meta": "Series - Normal (2017)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "My Hero Academia S2",
+      "ar": "My Hero Academia S2"
+     },
+     "href": "/en/work/2102394/",
+     "meta": "Series - Normal (2017)",
+     "start": 630,
+     "end": 690
+    },
+    {
+     "title": {
+      "en": "Jujutsu Kaisen",
+      "ar": "Jujutsu Kaisen"
+     },
+     "href": "/en/work/2093030/",
+     "meta": "Series - Cartoon (2020)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1223",
+    "name": {
+     "en": "Al Nahar Drama",
+     "ar": "النهار دراما"
+    },
+    "category": "series",
+    "img": "ch-217.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Awlad El Leil",
+      "ar": "أولاد الليل"
+     },
+     "href": "/en/work/1666640/",
+     "meta": "Series - Normal (2007)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Abu Al-Aroussa 2",
+      "ar": "أبو العروسة ج2"
+     },
+     "href": "/en/work/2033856/",
+     "meta": "Series - Normal (2018)",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Eadaa Al Nahar",
+      "ar": "عدى النهار"
+     },
+     "href": "/en/work/1010707/",
+     "meta": "Series - Normal (2008)",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1354",
+    "name": {
+     "en": "MBC 5",
+     "ar": "إم بي سي 5"
+    },
+    "category": "series",
+    "img": "ch-218.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Bisaraha Ma",
+      "ar": "بصراحة مع"
+     },
+     "href": "/en/work/2078631/",
+     "meta": "Program - Normal (2021)",
+     "start": 510,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "Nasamat Ayloul",
+      "ar": "نسمات أيلول"
+     },
+     "href": "/en/work/2088944/",
+     "meta": "Series - Normal (2025)",
+     "start": 565,
+     "end": 625
+    },
+    {
+     "title": {
+      "en": "Chahadat Milad 2",
+      "ar": "شهادة ميلاد ج2"
+     },
+     "href": "/en/work/2081593/",
+     "meta": "Series - Normal (2020)",
+     "start": 650,
+     "end": 710
+    },
+    {
+     "title": {
+      "en": "Chahadat Milad 2",
+      "ar": "شهادة ميلاد ج2"
+     },
+     "href": "/en/work/2081593/",
+     "meta": "Series - Normal (2020)",
+     "start": 682,
+     "end": 742
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1355",
+    "name": {
+     "en": "Mix",
+     "ar": "ميكس"
+    },
+    "category": "movies",
+    "img": "ch-219.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Justice League",
+      "ar": "Justice League"
+     },
+     "href": "/en/work/2042549/",
+     "meta": "Movie - Normal (2017)",
+     "start": 450,
+     "end": 510
+    },
+    {
+     "title": {
+      "en": "Rise of the Planet of the Apes",
+      "ar": "Rise of the Planet of the Apes"
+     },
+     "href": "/en/work/2003936/",
+     "meta": "Movie - Normal (2011)",
+     "start": 570,
+     "end": 630
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1257",
+    "name": {
+     "en": "OSN TV Comedy",
+     "ar": "أو إس إن كوميدي"
+    },
+    "category": "series",
+    "img": "ch-220.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "St. Denis Medical S2",
+      "ar": "St. Denis Medical S2"
+     },
+     "href": "/en/work/2097087/",
+     "meta": "Series - Normal (2025)",
+     "start": 525,
+     "end": 585
+    },
+    {
+     "title": {
+      "en": "St. Denis Medical S2",
+      "ar": "St. Denis Medical S2"
+     },
+     "href": "/en/work/2097087/",
+     "meta": "Series - Normal (2025)",
+     "start": 545,
+     "end": 605
+    },
+    {
+     "title": {
+      "en": "Curb Your Enthusiasm S8",
+      "ar": "Curb Your Enthusiasm S8"
+     },
+     "href": "/en/work/2024836/",
+     "meta": "Series - Normal (2011)",
+     "start": 565,
+     "end": 625
+    },
+    {
+     "title": {
+      "en": "Curb Your Enthusiasm S8",
+      "ar": "Curb Your Enthusiasm S8"
+     },
+     "href": "/en/work/2024836/",
+     "meta": "Series - Normal (2011)",
+     "start": 595,
+     "end": 655
+    },
+    {
+     "title": {
+      "en": "Lucky Louie",
+      "ar": "Lucky Louie"
+     },
+     "href": "/en/work/2047274/",
+     "meta": "Series - Normal (2006)",
+     "start": 625,
+     "end": 685
+    },
+    {
+     "title": {
+      "en": "The Middle S3",
+      "ar": "The Middle S3"
+     },
+     "href": "/en/work/2062418/",
+     "meta": "Series - Normal (2011)",
+     "start": 650,
+     "end": 710
+    },
+    {
+     "title": {
+      "en": "The Middle S3",
+      "ar": "The Middle S3"
+     },
+     "href": "/en/work/2062418/",
+     "meta": "Series - Normal (2011)",
+     "start": 675,
+     "end": 735
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1283",
+    "name": {
+     "en": "Dubai Zaman",
+     "ar": "دبي زمان"
+    },
+    "category": "general",
+    "img": "ch-221.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج مع أسامة أطيب",
+      "ar": "برنامج مع أسامة أطيب"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:50 AM",
+     "start": 540,
+     "end": 590
+    },
+    {
+     "title": {
+      "en": "برنامج ونات",
+      "ar": "برنامج ونات"
+     },
+     "href": null,
+     "meta": "09:50 AM - 10:00 AM",
+     "start": 590,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج عذب المعاني",
+      "ar": "برنامج عذب المعاني"
+     },
+     "href": null,
+     "meta": "10:00 AM - 11:00 AM",
+     "start": 600,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "Al Khalej Kilma w Naghm",
+      "ar": "الخليج كلمة ونغم"
+     },
+     "href": "/en/work/2052891/",
+     "meta": "Program - Normal",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1188",
+    "name": {
+     "en": "Sharjah TV",
+     "ar": "الشارقة"
+    },
+    "category": "general",
+    "img": "ch-222.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج فتاوى",
+      "ar": "برنامج فتاوى"
+     },
+     "href": null,
+     "meta": "09:00 AM - 10:00 AM",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "برنامج الريح المرسلة",
+      "ar": "برنامج الريح المرسلة"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:30 AM",
+     "start": 600,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج في رحاب سورة",
+      "ar": "برنامج في رحاب سورة"
+     },
+     "href": null,
+     "meta": "10:30 AM - 11:15 AM",
+     "start": 630,
+     "end": 675
+    },
+    {
+     "title": {
+      "en": "برنامج عباد الرحمن",
+      "ar": "برنامج عباد الرحمن"
+     },
+     "href": null,
+     "meta": "11:15 AM - 11:30 AM",
+     "start": 675,
+     "end": 690
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1306",
+    "name": {
+     "en": "Alrasheed",
+     "ar": "الرشيد"
+    },
+    "category": "general",
+    "img": "ch-223.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج يوم جديد",
+      "ar": "برنامج يوم جديد"
+     },
+     "href": null,
+     "meta": "09:00 AM - 11:00 AM",
+     "start": 540,
+     "end": 660
+    },
+    {
+     "title": {
+      "en": "نشرة الأخبار",
+      "ar": "نشرة الأخبار"
+     },
+     "href": null,
+     "meta": "11:00 AM - 12:00 PM",
+     "start": 660,
+     "end": 720
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1131",
+    "name": {
+     "en": "MBC Drama +",
+     "ar": "إم بي سي دراما +"
+    },
+    "category": "series",
+    "img": "ch-224.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "Min Haqiy Ahib",
+      "ar": "من حقي أحب"
+     },
+     "href": "/en/work/2054641/",
+     "meta": "Series - Normal (2019)",
+     "start": 540,
+     "end": 600
+    },
+    {
+     "title": {
+      "en": "Mahnoor",
+      "ar": "Mahnoor"
+     },
+     "href": "/en/work/2100965/",
+     "meta": "Series - Normal (2026)",
+     "start": 585,
+     "end": 645
+    },
+    {
+     "title": {
+      "en": "Amr Ikhlaa 2",
+      "ar": "أمر إخلاء ج2"
+     },
+     "href": "/en/work/2067399/",
+     "meta": "Series - Normal (2021)",
+     "start": 630,
+     "end": 690
+    },
+    {
+     "title": {
+      "en": "Wild Bees",
+      "ar": "Wild Bees"
+     },
+     "href": "/en/work/2085365/",
+     "meta": "Series - Normal (2019)",
+     "start": 675,
+     "end": 735
+    }
+   ]
+  },
+  {
+   "channel": {
+    "id": "1339",
+    "name": {
+     "en": "AlSaeedah",
+     "ar": "السعيدة"
+    },
+    "category": "general",
+    "img": "ch-225.png"
+   },
+   "slots": [
+    {
+     "title": {
+      "en": "برنامج كلمة ورسالة",
+      "ar": "برنامج كلمة ورسالة"
+     },
+     "href": null,
+     "meta": "09:00 AM - 09:30 AM",
+     "start": 540,
+     "end": 570
+    },
+    {
+     "title": {
+      "en": "Tom Sawyer",
+      "ar": "توم سوير"
+     },
+     "href": "/en/work/1251938/",
+     "meta": "Series - Cartoon (1980)",
+     "start": 570,
+     "end": 630
+    },
+    {
+     "title": {
+      "en": "برنامج مائدتي",
+      "ar": "برنامج مائدتي"
+     },
+     "href": null,
+     "meta": "10:00 AM - 10:25 AM",
+     "start": 600,
+     "end": 625
+    },
+    {
+     "title": {
+      "en": "Oyoon wa Ramad",
+      "ar": "عيون ورماد"
+     },
+     "href": "/en/work/1011350/",
+     "meta": "Series - Normal (2007)",
+     "start": 625,
+     "end": 685
+    }
+   ]
+  }
+ ]
+}

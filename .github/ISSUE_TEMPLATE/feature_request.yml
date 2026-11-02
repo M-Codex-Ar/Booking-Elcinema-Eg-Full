@@ -1,0 +1,54 @@
+name: Feature request
+description: A new capability or a change to existing behaviour
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the outcome you want and who it is for. Implementation detail is welcome but
+        not required — the design discussion happens in the thread.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      placeholder: Operators cannot reorder the "Now in Cinemas" rail, so featured titles get buried.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Acceptance criteria — what proves this is done.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - elcinema public page
+        - elcinema dashboard
+        - design system / styling
+        - i18n / RTL
+        - data layer / Supabase
+        - server-api (backend phase)
+        - CI / scripts / docs
+    validations:
+      required: true
+  - type: dropdown
+    id: biling
+    attributes:
+      label: Bilingual impact
+      options:
+        - Needs EN and AR copy
+        - Copy unchanged (visual/logic only)
+        - Not user-facing
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: contract
+    attributes:
+      label: Data or API contract impact
+      description: New endpoint, new field, migration, or a change to docs/api-contract.md?

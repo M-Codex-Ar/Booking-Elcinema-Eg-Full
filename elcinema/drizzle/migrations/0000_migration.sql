@@ -1,0 +1,23 @@
+-- The content of this migration cannot be applied as-is: it creates public.managed_movies
+-- with the old schema. The replacement migration 'create_managed_content_tables' defines
+-- managed_movies (with richer columns) together with the other managed content tables.
+-- Original statements commented out:
+-- CREATE TABLE public.managed_movies (
+--   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+--   title_en text NOT NULL,
+--   title_ar text NOT NULL DEFAULT '',
+--   genre text NOT NULL DEFAULT '',
+--   year integer,
+--   status text NOT NULL DEFAULT 'now',
+--   rating numeric(3,1),
+--   synopsis text NOT NULL DEFAULT '',
+--   created_at timestamptz NOT NULL DEFAULT now(),
+--   updated_at timestamptz NOT NULL DEFAULT now()
+-- );
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON public.managed_movies TO anon, authenticated;
+-- GRANT ALL ON public.managed_movies TO service_role;
+-- ALTER TABLE public.managed_movies ENABLE ROW LEVEL SECURITY;
+-- CREATE POLICY "public read" ON public.managed_movies FOR SELECT TO anon, authenticated USING (true);
+-- CREATE POLICY "public insert" ON public.managed_movies FOR INSERT TO anon, authenticated WITH CHECK (length(title_en) BETWEEN 1 AND 200 AND status IN ('now','soon'));
+-- CREATE POLICY "public update" ON public.managed_movies FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (length(title_en) BETWEEN 1 AND 200 AND status IN ('now','soon'));
+-- CREATE POLICY "public delete" ON public.managed_movies FOR DELETE TO anon, authenticated USING (true);

@@ -1,0 +1,148 @@
+/*
+ * Base layer — document defaults, global chrome and the third-party overrides
+ * we cannot express as utilities. Nothing here should set component visuals;
+ * those live in ./utilities.css and the UI primitives.
+ */
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    /* Skip links and in-page anchors should not hide under the sticky header. */
+    scroll-padding-block-start: var(--header-height);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * Display face for headings. Exo has no Arabic glyphs, so the stack falls back
+   * per glyph to Cairo — one rule is correct for both editions, which is why
+   * there is no `html[dir="rtl"]` variant here. The `heading` recipe also sets
+   * `font-display`; this covers the headings that have not moved to the recipe
+   * yet, so the type decision never depends on a page being migrated first.
+   */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+
+  /*
+   * One central keyboard-focus treatment so no component has to remember it.
+   * `:where()` keeps specificity at 0, and an element that wants its own ring
+   * (the shadcn primitives) still overrides it with `focus-visible:ring-*`.
+   */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Images never overflow their card, and unsized art keeps its box. */
+  img {
+    max-width: 100%;
+  }
+
+  /* Keep Arabic numerals Latin for timeline and box-office figures. */
+  :lang(ar) {
+    font-family: var(--font-sans);
+  }
+}
+
+/*
+ * Global scrollbar: a slim bar with a rounded thumb and none of the browser's
+ * default top/bottom arrows.
+ */
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--scrollbar-size);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Theme switch: circular reveal, radius/origin supplied by the toggle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  animation: theme-reveal var(--duration-slow) var(--ease-brand) both;
+}
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0%));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0%));
+  }
+}
+/* Fallback when View Transitions are unavailable: soft colour crossfade. */
+html.theme-fade,
+html.theme-fade * {
+  transition:
+    background-color 0.45s ease,
+    color 0.45s ease,
+    border-color 0.45s ease !important;
+}
+
+/* Motion is a preference, not an assumption. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Radix Select (sort/filter dropdowns) always mounts a scroll-locker that hides
+ * the page scrollbar and resets scroll to the top. The matching
+ * `select-scroll-free` body class is toggled by the Select wrapper in
+ * components/ui/select.tsx; higher specificity here beats the injected
+ * `body[data-scroll-locked]` lock so the page keeps its scrollbar and scroll
+ * position while such a dropdown is open.
+ */
+body[data-scroll-locked].select-scroll-free {
+  overflow: auto !important;
+  position: static !important;
+  overscroll-behavior: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  --removed-body-scroll-bar-size: 0px;
+}
+
+/* The scraped logo is light-on-dark; invert it on the light theme. */
+html:not(.dark) .site-logo {
+  filter: invert(1) hue-rotate(180deg);
+  transition: filter 0.4s ease;
+}

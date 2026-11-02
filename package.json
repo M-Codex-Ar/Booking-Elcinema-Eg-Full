@@ -1,0 +1,23 @@
+{
+  "name": "unified-control-center",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bilingual elCinema-style public site with an operator dashboard; ASP.NET Core API planned.",
+  "scripts": {
+    "setup:web": "cd elcinema && (bun install || npm install)",
+    "dev:web": "npm --prefix elcinema run dev",
+    "build:web": "npm --prefix elcinema run build",
+    "preview:web": "npm --prefix elcinema run preview",
+    "lint:web": "npm --prefix elcinema run lint",
+    "format:web": "npm --prefix elcinema run format",
+    "typecheck:web": "npm --prefix elcinema run typecheck",
+    "test:web": "npm --prefix elcinema run test",
+    "check:web": "npm --prefix elcinema run check",
+    "setup:api": "cd server-api && (dotnet restore || echo '.NET 9 SDK not found - see server-api/README.md')",
+    "dev:api": "cd server-api && dotnet run --project src/UnifiedControlCenter.Api",
+    "check:api": "cd server-api && dotnet format --verify-no-changes && dotnet build --no-incremental && dotnet test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

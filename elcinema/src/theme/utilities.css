@@ -1,0 +1,108 @@
+/*
+ * Theme utilities — named, repeatable visual recipes built on the tokens in
+ * ./tokens.css. Declared with `@utility` (not `@layer components`) so they are
+ * real Tailwind utilities: variant-composable (`hover:glass-card`), tree-shaken
+ * and only emitted when used.
+ */
+
+/* Frosted panel: the standard surface for guides, hero cards and dashboards. */
+@utility glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-glass);
+}
+
+/* Brand-tinted glass, for highlighted panels (box office, featured lists). */
+@utility glass-card-brand {
+  background: color-mix(in oklab, var(--primary) 8%, var(--glass));
+  border: 1px solid color-mix(in oklab, var(--primary) 25%, var(--glass-border));
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Spotlight wash behind heroes and box-office panels. */
+@utility cinema-gradient {
+  background-image:
+    radial-gradient(ellipse at 15% 0%, var(--spotlight-brand), transparent 55%),
+    radial-gradient(ellipse at 90% 100%, var(--spotlight-gold), transparent 50%);
+}
+
+/* Card lift: the one hover treatment for every poster/tile. */
+@utility hover-lift {
+  transition:
+    transform var(--duration-medium) ease,
+    box-shadow var(--duration-medium) ease;
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* Bottom scrim that makes overlay text readable on any artwork. */
+@utility poster-shade {
+  background-image: linear-gradient(to top, var(--scrim), transparent 60%);
+}
+@utility poster-shade-deep {
+  background-image: linear-gradient(to top, var(--poster-shade), transparent 50%);
+}
+
+/*
+ * Deterministic fallback poster for items without artwork. The hue arrives as
+ * `--poster-hue` from the component, so the gradient maths stays in CSS and out
+ * of inline style strings. The default (232) is the brand blue hue, so an item
+ * with no hue of its own still reads as part of this palette.
+ */
+@utility poster-fallback {
+  background: linear-gradient(
+    160deg,
+    hsl(var(--poster-hue, 232) 55% 26%),
+    hsl(calc(var(--poster-hue, 232) + 40) 60% 12%)
+  );
+}
+@utility poster-spot {
+  background: radial-gradient(
+    circle at 70% 20%,
+    hsl(var(--poster-hue, 232) 90% 65% / 0.35),
+    transparent 55%
+  );
+}
+
+/* Theme switch: circular reveal via the View Transitions API (from --vt-x/--vt-y). */
+@utility animate-theme-icon {
+  animation: theme-icon-in var(--duration-normal) var(--ease-spring) both;
+}
+@keyframes theme-icon-in {
+  from {
+    transform: rotate(-120deg) scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Live / "on air" attention pulse. */
+@utility animate-pulse-neon {
+  animation: pulse-neon 2.4s ease-in-out infinite;
+}
+@keyframes pulse-neon {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--pulse-core);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px var(--pulse-halo);
+  }
+}
+
+/* Horizontal rails scroll without a visible bar (the arrows are the control). */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

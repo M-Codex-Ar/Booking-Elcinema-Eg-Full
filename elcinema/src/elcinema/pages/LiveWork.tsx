@@ -1,0 +1,405 @@
+/**
+ * Live movie detail — mirrors the real elcinema.com /work/<id>/ page with the
+ * app's dark cinema design system. Data is scraped server-side (live.server.ts)
+ * from the English or Arabic edition. Every internal link stays inside the
+ * app: cast/director -> person pages, videos -> video pages, booking -> the
+ * internal booking page. Only true playback/purchase actions (watch buttons,
+ * cinema ticket buttons) open the real destination in a new tab.
+ */
+import { CalendarClock, Clock, Film, Images, MonitorPlay, Star, Ticket, Tv } from "lucide-react";
+import { useState } from "react";
+import type { Lang } from "../home.shared";
+import type { LiveWork } from "../live.shared";
+import { Na } from "../ui";
+import { LiveImg, LivePoster, PersonChip, RatingPill, bookingPath, videoPath } from "../live-ui";
+
+const L = {
+  en: {
+    book: "Book tickets",
+    director: "Director:",
+    writer: "Writer:",
+    cast: "Cast:",
+    showtimes: "Playing in Egypt Cinemas",
+    runtime: "minutes",
+    language: "Language:",
+    story: "Story",
+    photos: "Photos",
+    videos: "elCinema TV",
+    watchOnline: "Watch Online",
+    watchOn: "Watch on",
+    rating: "User score",
+    released: "Released",
+    getTickets: "tickets",
+    related: "Now Playing In Egypt Cinemas",
+    notAvailable: "Movie not found",
+    playbackNote: "Opens the real play link in a new tab.",
+    ticketNote: "Opens the real ticket service in a new tab.",
+  },
+  ar: {
+    book: "احجز تذاكر",
+    director: "المخرج:",
+    writer: "الكاتب:",
+    cast: "طاقم التمثيل:",
+    showtimes: "معروض في سينمات مصر",
+    runtime: "دقيقة",
+    language: "اللغة:",
+    story: "القصة",
+    photos: "صور",
+    videos: "إل سينما TV",
+    watchOnline: "شاهد أونلاين",
+    watchOn: "شاهد على",
+    rating: "تقييم المستخدمين",
+    released: "تم العرض",
+    getTickets: "تذاكر",
+    related: "معروض الآن في سينمات مصر",
+    notAvailable: "الفيلم غير موجود",
+    playbackNote: "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",
+    ticketNote: "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
+  },
+} as const;
+
+const DAY_COUNT = 5;
+
+export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
+  const Lx = L[lang];
+  const [day, setDay] = useState(0);
+  const showtimes = data.showtimes.slice(0, DAY_COUNT);
+  const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
+  const current = showtimes[dayIndex];
+
+  return (
+    <div>
+      {/* Backdrop + poster header, elCinema style */}
+      <div className="relative h-[38vh] w-full overflow-hidden md:h-[46vh]">
+        {data.poster ? (
+          <img
+            src={data.poster}
+            alt={data.title}
+            className="h-full w-full object-cover object-center"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-secondary">
+            <Film className="h-16 w-16 text-muted-foreground" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
+        <div className="relative z-10 -mt-32 flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
+          <div className="flex items-end gap-4 md:contents">
+            <div className="w-28 shrink-0 overflow-hidden rounded-2xl border border-border shadow-2xl sm:w-36 md:w-52">
+              <div className="aspect-[2/3]">
+                <LiveImg src={data.poster} alt={data.title} className="h-full w-full" />
+              </div>
+            </div>
+            <div className="min-w-0 flex-1 pb-2">
+              <h1 className="text-3xl font-black md:text-4xl">
+                {data.title}{" "}
+                {data.year && (
+                  <span className="font-bold text-muted-foreground">({data.year})</span>
+                )}
+              </h1>
+              {data.altTitle && data.altTitle !== data.title && (
+                <p className="mt-1 text-sm text-muted-foreground">{data.altTitle}</p>
+              )}
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                {data.category && (
+                  <span className="rounded-full bg-secondary px-3 py-1 font-semibold">
+                    {data.category}
+                  </span>
+                )}
+                {data.genres.map((g) => (
+                  <span key={g} className="rounded-full bg-secondary px-3 py-1 font-semibold">
+                    {g}
+                  </span>
+                ))}
+                {data.censorship.length > 0 && (
+                  <span className="rounded-full border border-border px-3 py-1 font-bold text-muted-foreground">
+                    {data.censorship.join(" · ")}
+                  </span>
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <RatingPill rating={data.rating} votes={data.votes} />
+                {data.releaseDate && (
+                  <span className="flex items-center gap-1">
+                    <CalendarClock className="h-4 w-4 text-primary" /> {data.releaseDate}
+                  </span>
+                )}
+                {data.runtimeMinutes && (
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-primary" /> {data.runtimeMinutes} {Lx.runtime}
+                  </span>
+                )}
+                {data.country && <span>{data.country}</span>}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 pb-2">
+            <Na
+              href={bookingPath(lang, data.id)}
+              className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
+            >
+              <Ticket className="h-4 w-4" /> {Lx.book}
+            </Na>
+            {data.rating !== null && (
+              <div className="text-center text-xs text-muted-foreground">
+                {Lx.rating}
+                {data.votes !== null ? `: ${data.votes}` : ""}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-10 grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="min-w-0 lg:col-span-2">
+            {data.synopsis && (
+              <>
+                <h2 className="text-lg font-black">{Lx.story}</h2>
+                <p className="mt-2 text-base leading-relaxed text-foreground/90">{data.synopsis}</p>
+              </>
+            )}
+
+            {/* Details list, elCinema style */}
+            <dl className="glass-card mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 p-5 text-sm">
+              {data.director.length > 0 && (
+                <>
+                  <dt className="font-bold text-muted-foreground">{Lx.director}</dt>
+                  <dd className="flex flex-wrap gap-x-3 gap-y-1">
+                    {data.director.map((p) => (
+                      <Na
+                        key={p.id}
+                        href={`/${lang}/person/${p.id}`}
+                        className="font-semibold text-primary hover:underline"
+                      >
+                        {p.title}
+                      </Na>
+                    ))}
+                  </dd>
+                </>
+              )}
+              {data.writers.length > 0 && (
+                <>
+                  <dt className="font-bold text-muted-foreground">{Lx.writer}</dt>
+                  <dd className="flex flex-wrap gap-x-3 gap-y-1">
+                    {data.writers.map((p) => (
+                      <Na
+                        key={p.id}
+                        href={`/${lang}/person/${p.id}`}
+                        className="font-semibold text-primary hover:underline"
+                      >
+                        {p.title}
+                      </Na>
+                    ))}
+                  </dd>
+                </>
+              )}
+              {data.cast.length > 0 && (
+                <>
+                  <dt className="font-bold text-muted-foreground">{Lx.cast}</dt>
+                  <dd>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                      {data.cast.map((p) => (
+                        <Na
+                          key={p.id}
+                          href={`/${lang}/person/${p.id}`}
+                          className="font-semibold text-primary hover:underline"
+                        >
+                          {p.title}
+                        </Na>
+                      ))}
+                    </div>
+                  </dd>
+                </>
+              )}
+              {data.country && (
+                <>
+                  <dt className="font-bold text-muted-foreground">
+                    {lang === "en" ? "Country:" : "البلد:"}
+                  </dt>
+                  <dd>{data.country}</dd>
+                </>
+              )}
+            </dl>
+
+            {/* Cast cards */}
+            {data.cast.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-lg font-black">{Lx.cast}</h2>
+                <div className="scrollbar-hide mt-3 flex gap-4 overflow-x-auto pb-2">
+                  {data.cast.map((p) => (
+                    <PersonChip key={p.id} lang={lang} id={p.id} title={p.title} img={p.img} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Photos */}
+            {data.photos.length > 0 && (
+              <section className="mt-8">
+                <h2 className="flex items-center gap-2 text-lg font-black">
+                  <Images className="h-5 w-5 text-primary" /> {Lx.photos}
+                </h2>
+                <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto pb-2">
+                  {data.photos.map((p, i) => (
+                    <div
+                      key={i}
+                      className="w-44 shrink-0 overflow-hidden rounded-lg border border-border"
+                    >
+                      <div className="aspect-video">
+                        <LiveImg src={p.img} alt={data.title} className="h-full w-full" wide />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* Sidebar: watch-online play links (true playback actions) */}
+          {data.vod.length > 0 && (
+            <div className="space-y-6">
+              <div className="glass-card h-fit p-5">
+                <h2 className="text-lg font-black">{Lx.watchOnline}</h2>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {data.vod.map((v, i) => (
+                    <a
+                      key={i}
+                      href={v.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg border border-border bg-secondary px-3 py-1.5 text-sm font-bold hover:border-primary"
+                    >
+                      <MonitorPlay className="me-1 inline h-4 w-4 text-primary" />
+                      {Lx.watchOn} {v.label}
+                      {v.note && (
+                        <span className="ms-1 text-xs text-muted-foreground">({v.note})</span>
+                      )}
+                    </a>
+                  ))}
+                </div>
+                <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+              </div>
+              {data.imdbUrl && (
+                <div className="glass-card p-5 text-sm">
+                  <a
+                    href={data.imdbUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-primary hover:underline"
+                  >
+                    IMDB Page →
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Showtimes preview with day tabs (full booking on the booking page) */}
+        {current && (
+          <section className="mt-10">
+            <div className="flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-xl font-black">
+                <Ticket className="h-5 w-5 text-primary" /> {Lx.showtimes}
+              </h2>
+              <Na
+                href={bookingPath(lang, data.id)}
+                className="text-sm font-semibold text-primary hover:underline"
+              >
+                {Lx.book} →
+              </Na>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {showtimes.map((d, i) => (
+                <button
+                  key={i}
+                  onClick={() => setDay(i)}
+                  className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
+                    dayIndex === i
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border hover:border-primary"
+                  }`}
+                >
+                  {d.day}
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {current.cinemas.slice(0, 6).map((c) => (
+                <div key={c.id} className="glass-card p-4">
+                  <div className="font-bold">{c.name}</div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {c.times.slice(0, 8).map((tm, j) => (
+                      <span
+                        key={j}
+                        className="rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-bold"
+                      >
+                        {tm}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* elCinema TV videos */}
+        {data.videos.length > 0 && (
+          <section className="py-10">
+            <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
+              <Tv className="h-5 w-5 text-primary" /> {Lx.videos}
+            </h2>
+            <div className="grid grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
+              {data.videos.slice(0, 4).map((v) => (
+                <Na key={v.id} href={videoPath(lang, v.id)} className="group w-full">
+                  <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">
+                    <LiveImg src={v.img} alt={v.title} className="h-full w-full" wide />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                      <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
+                        Play ▶
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
+                    {v.title}
+                  </h3>
+                </Na>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Related strip */}
+        {data.related.length > 0 && (
+          <section className="pb-12">
+            <h2 className="mb-4 text-xl font-black">{Lx.related}</h2>
+            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
+              {data.related.slice(0, 12).map((r) => (
+                <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Used by the route to build the not-found panel. */
+export function LiveWorkNotFound({ lang }: { lang: Lang }) {
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
+      <Star className="mx-auto h-10 w-10 text-muted-foreground" />
+      <h1 className="mt-4 text-2xl font-black">{L[lang].notAvailable}</h1>
+      <Na
+        href={`/${lang}/now`}
+        className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
+      >
+        {lang === "en" ? "Now Playing" : "السينمات الآن"}
+      </Na>
+    </div>
+  );
+}

@@ -1,0 +1,36 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/elcinema"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pr-limit: 8
+    labels: [dependencies, javascript]
+    groups:
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      tanstack:
+        patterns: ["@tanstack/*"]
+      radix:
+        patterns: ["@radix-ui/*"]
+      tailwind:
+        patterns: ["tailwindcss", "@tailwindcss/*", "tw-animate-css"]
+
+  - package-ecosystem: nuget
+    directory: "/server-api"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pr-limit: 5
+    labels: [dependencies, dotnet]
+    # Active once server-api/ contains a solution or project file.
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pr-limit: 5
+    labels: [dependencies, ci]

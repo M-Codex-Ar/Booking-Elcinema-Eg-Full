@@ -1,0 +1,21 @@
+# Where to get help instead of opening an issue.
+#
+# The issue forms in this folder stay enabled; this file only adds the
+# "get help here" links GitHub shows above them. Replace the contact URL
+# with the team's real channel before relying on it in public.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Questions and how-to
+    url: https://github.com/darkpyramid-org/unified-control-center/discussions
+    about: Ask how something works, or share an idea before turning it into an issue.
+
+  - name: Security vulnerability
+    url: https://github.com/darkpyramid-org/unified-control-center/security/advisories/new
+    about: >
+      Report privately. Never open a public issue for a secret, token, policy
+      hole or exploit path — see SECURITY.md.
+
+  - name: Design system and copy
+    url: https://github.com/darkpyramid-org/unified-control-center/blob/main/docs/design-system.md
+    about: Read how tokens, primitives and bilingual copy are centralised before proposing styling changes.

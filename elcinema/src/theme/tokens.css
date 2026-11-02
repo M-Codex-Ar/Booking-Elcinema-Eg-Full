@@ -1,0 +1,202 @@
+/*
+ * Design tokens — the single source of truth for the elCinema theme.
+ *
+ * Layering rule: this file is the only place a literal colour, radius, shadow,
+ * type size or layout width is written. Every other stylesheet and every
+ * component consumes these tokens (directly as `var(--x)` or through the
+ * Tailwind utility they generate), so re-theming is a one-file change.
+ *
+ * Two groups live here:
+ *   1. `:root` / `.dark` — raw custom properties, swapped at runtime by the
+ *      theme toggle. Values are oklch for a wide-gamut, perceptually even
+ *      palette.
+ *   2. `@theme inline` — the map from those properties to Tailwind utilities
+ *      (`--color-primary` -> `bg-primary`, `--container-site` -> `max-w-site`).
+ *      `inline` keeps utilities pointing at the property, so a runtime swap
+ *      repaints without regenerating CSS.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Shape */
+  --radius: 0.75rem;
+
+  /* Surfaces — light "matinee" palette: the cool navy family (hue 245) at high
+     lightness, so the light theme is the same brand lit differently, not a
+     different brand. */
+  --background: oklch(0.985 0.004 245);
+  --foreground: oklch(0.22 0.02 245);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 245);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 245);
+  --secondary: oklch(0.95 0.01 245);
+  --secondary-foreground: oklch(0.28 0.02 245);
+  --muted: oklch(0.95 0.008 245);
+  --muted-foreground: oklch(0.52 0.02 245);
+  /* `accent` is a hover *surface* here (shadcn convention: 40 call sites read
+     `hover:bg-accent hover:text-accent-foreground`). In the night theme it is
+     the saturated sky blue from the brand palette; in daylight the same role is
+     a tint, because a bright blue hover would shout over a white page. */
+  --accent: oklch(0.92 0.035 245);
+  --accent-foreground: oklch(0.22 0.02 245);
+  --border: oklch(0.885 0.008 245);
+  --input: oklch(0.885 0.008 245);
+
+  /* Brand + semantic accents. `--primary` is darkened against the night theme's
+     0.695 so white CTA text keeps a 5.35:1 ratio on a light page. */
+  --brand-ink: oklch(0.98 0.004 245);
+  --primary: oklch(0.51 0.16 240);
+  --primary-foreground: var(--brand-ink);
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(0.98 0.004 245);
+  /* Both semantic colours are darker than their night counterparts because here
+     they are read as *text*: the night values (0.72 success, 0.8 gold) measure
+     2.31:1 and 1.89:1 on a white card. These measure 4.93:1 / 5.15:1 and
+     4.71:1 against the day surface. */
+  --success: oklch(0.52 0.14 155);
+  --gold: oklch(0.55 0.13 85);
+  --ring: oklch(0.51 0.16 240);
+
+  /* Derived brand effects. color-mix keeps one definition valid for both
+     palettes: they follow --primary/--gold when the theme flips. */
+  --glow: oklch(0.51 0.16 240 / 0.26);
+  --spotlight-brand: color-mix(in oklab, var(--primary) 18%, transparent);
+  --spotlight-gold: color-mix(in oklab, var(--gold) 8%, transparent);
+  --pulse-core: color-mix(in oklab, var(--primary) 55%, transparent);
+  --pulse-halo: color-mix(in oklab, var(--primary) 35%, transparent);
+
+  /* Glass + scrim recipes */
+  --glass: oklch(1 0 0 / 0.78);
+  --glass-border: oklch(0.885 0.008 245 / 0.9);
+  --glass-blur: 10px;
+  --scrim: color-mix(in oklab, var(--background) 80%, transparent);
+  --scrim-strong: color-mix(in oklab, var(--background) 95%, transparent);
+  --poster-shade: color-mix(in oklab, black 60%, transparent);
+
+  /* Motion */
+  --ease-brand: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-slow: 0.65s;
+  --duration-normal: 0.5s;
+  --duration-medium: 0.35s;
+  --duration-fast: 0.2s;
+
+  /* Chrome geometry */
+  --scrollbar-size: 6px;
+  --header-height: 4rem;
+
+  color-scheme: light;
+}
+
+/* Cinema-night palette (default): deep navy surfaces, sky-blue brand, gold accents. */
+.dark {
+  /* Ink for text that sits *on* a brand fill (--primary, --accent). The sky blue
+     of this palette is bright (0.695 ≈ #24aae0), and the specified near-white
+     foreground measured 2.50:1 on it — below AA even for large text — while this
+     navy ink measures 6.95:1 (9.42:1 on the lighter --accent). Set both
+     foregrounds back to oklch(0.98 0.003 245) if white-on-blue is the intent. */
+  --brand-ink: oklch(0.19 0.03 245);
+
+  --background: oklch(0.14 0.004 245);
+  --foreground: oklch(0.96 0.003 245);
+  --card: oklch(0.19 0.005 245);
+  --card-foreground: oklch(0.96 0.003 245);
+  --popover: oklch(0.19 0.005 245);
+  --popover-foreground: oklch(0.96 0.003 245);
+  --secondary: oklch(0.24 0.005 245);
+  --secondary-foreground: oklch(0.95 0.003 245);
+  --muted: oklch(0.24 0.005 245);
+  --muted-foreground: oklch(0.68 0.008 245);
+  --accent: oklch(0.78 0.115 232);
+  --accent-foreground: var(--brand-ink);
+  --border: oklch(0.29 0.006 245);
+  --input: oklch(0.29 0.006 245);
+
+  --primary: oklch(0.695 0.133 232);
+  --primary-foreground: var(--brand-ink);
+  --destructive: oklch(0.63 0.24 25);
+  --destructive-foreground: oklch(0.98 0.003 245);
+  --success: oklch(0.72 0.17 155);
+  --gold: oklch(0.8 0.16 85);
+  --ring: oklch(0.695 0.133 232);
+
+  --glow: oklch(0.695 0.133 232 / 0.42);
+
+  --glass: oklch(0.19 0.005 245 / 0.72);
+  --glass-border: oklch(0.29 0.006 245 / 0.7);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  /* Colour utilities */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-scrim: var(--scrim);
+
+  /* The site sidebar is the card surface, not a separate palette. */
+  --color-sidebar: var(--card);
+  --color-sidebar-foreground: var(--card-foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+
+  /* Type. `Cairo` carries body and Arabic; `Exo` is the display face for
+     headings and the wordmark — it has no Arabic glyphs, so per-glyph fallback
+     to Cairo is what makes the same stack correct in both editions. */
+  --font-sans: "Cairo", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Exo", "Cairo", ui-sans-serif, system-ui, sans-serif;
+  /* Micro labels (badges, durations) and meta lines (dates, counts). */
+  --text-micro: 0.625rem;
+  --text-micro--line-height: 0.875rem;
+  --text-meta: 0.6875rem;
+  --text-meta--line-height: 1rem;
+
+  /* Radius scale, anchored on --radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Elevation — replaces the per-component `shadow-[0_8px_24px_-8px_...]` literals. */
+  --shadow-glass: 0 1px 2px 0 rgb(0 0 0 / 0.08);
+  --shadow-card-hover: 0 18px 40px -18px var(--glow);
+  --shadow-glow-sm: 0 0 18px var(--glow);
+  --shadow-glow-md: 0 8px 24px -8px var(--glow);
+  --shadow-glow-lg: 0 10px 30px -10px var(--glow);
+  --shadow-focus: 0 0 0 3px var(--glow);
+
+  /* Layout widths — one definition for the page container and the guide grid. */
+  --container-site: 80rem;
+  --container-guide-compact: 560px;
+  --container-guide-medium: 720px;
+  --container-guide-wide: 960px;
+  --container-guide-channel: 8rem;
+}

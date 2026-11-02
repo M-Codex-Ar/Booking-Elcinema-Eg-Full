@@ -1,0 +1,21 @@
+# Code owners. Replace the team handle below with the real one before merging to main —
+# an unmatched handle makes every review request silently fall back to repo admins.
+
+# Whole repository default owner
+** @darkpyramid-org/maintainers
+
+# Frontend
+/elcinema/src/**            @darkpyramid-org/web
+/elcinema/drizzle/**        @darkpyramid-org/web @darkpyramid-org/data
+/elcinema/src/routes/**     @darkpyramid-org/web
+
+# Design system and copy (token layer, primitives, i18n)
+/elcinema/src/theme/**      @darkpyramid-org/design
+/elcinema/src/elcinema/components/** @darkpyramid-org/design
+/elcinema/src/elcinema/i18n.ts       @darkpyramid-org/design
+
+# Backend (specification until the implementation phase is approved)
+/server-api/**              @darkpyramid-org/api
+/docs/**                   @darkpyramid-org/maintainers
+/.github/**                @darkpyramid-org/maintainers
+/scripts/**                @darkpyramid-org/maintainers
