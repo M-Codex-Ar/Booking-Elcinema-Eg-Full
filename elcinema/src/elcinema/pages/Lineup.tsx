@@ -3,7 +3,7 @@
  * section scraped from elcinema.com/lineup/ (the real site's Lists section)
  * plus one list's contents. Items link to internal work/person pages.
  */
-import { ListVideo } from "lucide-react";
+import { ArrowLeft, ListVideo } from "lucide-react";
 import type { Lang } from "../home.shared";
 import type { LiveLineupDetail, LiveLineupIndex } from "../live.shared";
 import { Na } from "../ui";
@@ -127,8 +127,11 @@ export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang:
   const { page, pages, shown } = paginate(filtered, st.page, 24);
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      <Na href={lineupPath(lang)} className="text-sm font-semibold text-primary hover:underline">
-        ← {Lx.back}
+      <Na
+        href={lineupPath(lang)}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+      >
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {Lx.back}
       </Na>
       <h1 className="mt-3 text-2xl font-black md:text-3xl">{data.title}</h1>
 

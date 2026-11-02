@@ -141,7 +141,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-1.5 px-3 sm:gap-2 md:gap-3 md:px-8">
-        <Na href={`/${lang}`} className="shrink-0">
+        <Na href={`/${lang}`} className="flex h-9 shrink-0 items-center">
           <SmartImg
             src={LOGO_URL}
             alt="elCinema"
@@ -202,14 +202,14 @@ export function SiteHeader({ lang }: { lang: Lang }) {
               {admin ? (
                 <Na
                   href={`/${lang}/dashboard`}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-primary hover:text-primary"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-primary hover:text-primary"
                 >
                   <LayoutDashboard className="h-3.5 w-3.5" />
                 </Na>
               ) : (
                 <span
                   title={displayName}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground"
                 >
                   <User className="h-3.5 w-3.5 text-primary" />
                 </span>
@@ -219,7 +219,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
                 onClick={signOut}
                 aria-label={c.signOut}
                 title={c.signOut}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
@@ -233,7 +233,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
                     type="button"
                     aria-label={c.login}
                     title={c.login}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
                   >
                     <LogIn className="h-3.5 w-3.5" />
                   </button>
@@ -241,21 +241,34 @@ export function SiteHeader({ lang }: { lang: Lang }) {
               />
             </div>
           )}
+          {/*
+            Phone widths cannot fit a text field next to the login, theme, menu
+            and language targets — the row overflowed and pushed the language
+            switch off-screen in RTL. Below `sm` search is therefore a full-size
+            icon button into the same results page the form submits to.
+          */}
+          <Na
+            href={`/${lang}/search`}
+            label={c.search}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:hidden"
+          >
+            <Search className="h-4 w-4" />
+          </Na>
           <form
             onSubmit={submit}
-            className="flex items-center overflow-hidden rounded-lg border border-input bg-secondary"
+            className="hidden h-9 items-center overflow-hidden rounded-lg border border-input bg-secondary sm:flex"
           >
             <input
               type="text"
               placeholder={c.search}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-14 bg-transparent px-2 py-1.5 text-xs outline-none transition-all placeholder:text-muted-foreground focus:w-24 sm:w-24 sm:text-sm md:w-48 md:px-3"
+              className="h-full w-24 bg-transparent px-2 text-xs outline-none placeholder:text-muted-foreground sm:text-sm md:w-48 md:px-3"
             />
             <button
               type="submit"
               aria-label={c.search}
-              className="bg-primary px-2 py-2 text-primary-foreground hover:bg-primary/90 md:px-3"
+              className="flex h-full min-w-10 items-center justify-center bg-primary px-2.5 text-primary-foreground hover:bg-primary/90 md:px-3"
             >
               <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </button>
@@ -282,7 +295,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           <SiteMenu lang={lang} />
           <Na
             href={otherPath}
-            className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold hover:text-primary sm:text-sm"
+            className="flex h-9 min-w-10 shrink-0 items-center justify-center gap-1 rounded-md px-2 whitespace-nowrap text-xs font-semibold hover:text-primary sm:text-sm"
           >
             {c.switchTo}
           </Na>

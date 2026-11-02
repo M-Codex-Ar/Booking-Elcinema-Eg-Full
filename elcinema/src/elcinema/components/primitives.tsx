@@ -39,7 +39,9 @@ import {
 /**
  * Page wrapper: fills the shell's `<main>` so the footer stays at the bottom on
  * short pages (`min-h-screen` here would overshoot the header + footer and push
- * the footer below the fold).
+ * the footer below the fold). `page-flow` keeps the centred sections inside it at
+ * the viewport width — a column flex container alone would size them to their
+ * content and overflow every phone.
  */
 export function Page({
   children,
@@ -48,7 +50,9 @@ export function Page({
   children: ReactNode;
   className?: string | undefined;
 }) {
-  return <div className={cn("flex flex-1 flex-col bg-background", className)}>{children}</div>;
+  return (
+    <div className={cn("page-flow flex flex-1 flex-col bg-background", className)}>{children}</div>
+  );
 }
 
 /** A centred block of content at the site width. */

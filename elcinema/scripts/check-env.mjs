@@ -10,6 +10,14 @@
  * Usage:  node scripts/check-env.mjs        (also runs as part of `bun run build`)
  * Escape hatch for env-free builds (docs, previews): SKIP_ENV_CHECK=1
  *
+ * Strictness by environment: a Vercel *preview* build usually has no secrets —
+ * project environment variables are not shared with forked pull requests — and
+ * a preview is exactly where a missing value should be reported, not where it
+ * should stop the build. The bundle no longer blanks without Supabase (the
+ * client is lazy and every auth form says `auth.notEnabled`), so a preview is
+ * still reviewable. Production, local and any unknown builder stay strict.
+ * Override with CHECK_ENV=strict|warn|off.
+ *
  * Never prints values — only names, so the log is safe to paste into an issue.
  */
 import fs from "fs";
@@ -41,25 +49,50 @@ const fileEnv = loadEnvFile();
 // Real environment wins over the file, exactly like Vite's loader.
 const merged = { ...fileEnv, ...process.env };
 
-if (merged.SKIP_ENV_CHECK === "1") {
-  console.warn("[check-env] SKIP_ENV_CHECK=1 — building without verifying Supabase config.");
+if (merged.SKIP_ENV_CHECK === "1" || merged.CHECK_ENV === "off") {
+  console.warn(
+    `[check-env] ${merged.SKIP_ENV_CHECK === "1" ? "SKIP_ENV_CHECK=1" : "CHECK_ENV=off"} — building without verifying Supabase config.`,
+  );
   process.exit(0);
 }
 
 const present = (name) => Boolean(merged[name] && String(merged[name]).trim());
 
+// Where this build is going decides how loud the check is allowed to be.
+const mode =
+  merged.CHECK_ENV ||
+  (merged.VERCEL_ENV && merged.VERCEL_ENV !== "production"
+    ? "warn"
+    : merged.VERCEL_ENV === "production"
+      ? "strict"
+      : "strict");
+
 const missing = REQUIRED.filter((name) => !present(name));
 const missingRuntime = RUNTIME.filter((name) => !present(name));
 
 if (missing.length > 0) {
-  console.error(`[check-env] Build would ship a broken bundle. Missing: ${missing.join(", ")}`);
-  console.error(
-    fileEnv["__found"] === undefined && !fs.existsSync(envPath)
-      ? "[check-env] No elcinema/.env found — copy elcinema/.env.example to elcinema/.env and fill in the publishable values from Lovable Cloud (Settings → Connect Supabase)."
-      : "[check-env] elcinema/.env exists but does not define the variables above.",
+  const where = merged.VERCEL_ENV ? `VERCEL_ENV=${merged.VERCEL_ENV}` : "no host env detected";
+  if (mode === "strict") {
+    console.error(
+      `[check-env] Build would ship without Supabase config (${where}). Missing: ${missing.join(", ")}`,
+    );
+    console.error(
+      !fs.existsSync(envPath)
+        ? "[check-env] No elcinema/.env found — copy elcinema/.env.example to elcinema/.env and fill in the publishable values from Lovable Cloud (Settings → Connect Supabase)."
+        : "[check-env] elcinema/.env exists but does not define the variables above.",
+    );
+    console.error(
+      "[check-env] On a host, set them in the project's environment variables (Vercel: Settings → Environment Variables, scope Production *and* Preview).",
+    );
+    console.error("[check-env] Docs: docs/operations.md#environment-variables");
+    process.exit(1);
+  }
+  console.warn(
+    `[check-env] Building without ${missing.join(", ")} (${where}): public pages still render, but sign-in and the dashboard will report "not enabled".`,
   );
-  console.error("[check-env] Docs: docs/operations.md#environment-variables");
-  process.exit(1);
+  console.warn(
+    "[check-env] To get a fully working preview, add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to the Preview scope (both are publishable-key values, safe in a browser bundle).",
+  );
 }
 
 if (missingRuntime.length > 0) {

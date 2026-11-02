@@ -4,7 +4,7 @@
  * plus the movies currently offered to watch online (from the homepage
  * scrape), each linking to its internal work detail page.
  */
-import { MonitorPlay } from "lucide-react";
+import { ArrowLeft, MonitorPlay } from "lucide-react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ImgWithFallback, LogoImage } from "../components/primitives";
 import { getElcinemaHomeFn } from "../home.functions";
@@ -82,7 +82,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
                 sub={w.meta}
                 badge={
                   w.vod && (
-                    <span className="rounded-md bg-background/80 px-2 py-1 text-[10px] font-bold backdrop-blur-sm">
+                    <span className="rounded-md bg-background/80 px-2 py-1 text-micro font-bold backdrop-blur-sm">
                       <LogoImage
                         src={w.vod.img}
                         text={w.vod.label}
@@ -138,7 +138,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
                     {p.cats.slice(0, 6).map((c) => (
                       <span
                         key={c.label}
-                        className="rounded-md bg-secondary px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
+                        className="rounded-md bg-secondary px-2 py-0.5 text-meta font-semibold text-muted-foreground"
                       >
                         {c.label}
                       </span>
@@ -153,8 +153,12 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
       </section>
 
       <div className="py-8">
-        <Na href={`/${lang}/now`} className="text-sm font-semibold text-primary hover:underline">
-          ← {lang === "ar" ? "السينمات الآن" : "Now Playing"}
+        <Na
+          href={`/${lang}/now`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />{" "}
+          {lang === "ar" ? "السينمات الآن" : "Now Playing"}
         </Na>
       </div>
     </div>

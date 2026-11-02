@@ -3,7 +3,7 @@
  * internal link, real poster artwork with a generated gradient fallback,
  * the scrolling poster row and bilingual helpers.
  */
-import { ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useRef, type CSSProperties, type ReactNode } from "react";
 import { Artwork } from "./components/primitives";
@@ -23,15 +23,25 @@ export function Na({
   className,
   style,
   search,
+  label,
 }: {
   href: string;
   children: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
   search?: Record<string, string | undefined>;
+  /** Accessible name for icon-only links, which have no text to read. */
+  label?: string | undefined;
 }) {
   return (
-    <Link to={href as never} search={search as never} className={className} style={style}>
+    <Link
+      to={href as never}
+      search={search as never}
+      className={className}
+      style={style}
+      aria-label={label}
+      title={label}
+    >
       {children}
     </Link>
   );
@@ -117,7 +127,7 @@ export function Row({
           {more && (
             <Na
               href={more}
-              className="shrink-0 rounded-full bg-secondary/80 px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+              className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
             >
               {t("home.seeAll")}
             </Na>
@@ -128,7 +138,7 @@ export function Row({
             type="button"
             aria-label={t("home.previous")}
             onClick={() => scroll(-1)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
             {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
@@ -136,7 +146,7 @@ export function Row({
             type="button"
             aria-label={t("home.next")}
             onClick={() => scroll(1)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
             {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
@@ -174,8 +184,8 @@ export function Poster({
           <PosterArt hue={hue} title={title} img={img} />
           {badge && <div className="absolute end-2 top-2">{badge}</div>}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              More info →
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+              More info <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </span>
           </div>
         </div>

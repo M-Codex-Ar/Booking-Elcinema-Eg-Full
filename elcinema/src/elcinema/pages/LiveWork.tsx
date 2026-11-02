@@ -6,7 +6,17 @@
  * internal booking page. Only true playback/purchase actions (watch buttons,
  * cinema ticket buttons) open the real destination in a new tab.
  */
-import { CalendarClock, Clock, Film, Images, MonitorPlay, Star, Ticket, Tv } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarClock,
+  Clock,
+  Film,
+  Images,
+  MonitorPlay,
+  Star,
+  Ticket,
+  Tv,
+} from "lucide-react";
 import { useState } from "react";
 import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
@@ -279,7 +289,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                     </a>
                   ))}
                 </div>
-                <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+                <p className="mt-3 text-meta text-muted-foreground">{Lx.playbackNote}</p>
               </div>
               {data.imdbUrl && (
                 <div className="glass-card p-5 text-sm">
@@ -287,9 +297,9 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                     href={data.imdbUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                   >
-                    IMDB Page →
+                    IMDB Page <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                   </a>
                 </div>
               )}
@@ -306,9 +316,9 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               </h2>
               <Na
                 href={bookingPath(lang, data.id)}
-                className="text-sm font-semibold text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
               >
-                {Lx.book} →
+                {Lx.book} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Na>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">

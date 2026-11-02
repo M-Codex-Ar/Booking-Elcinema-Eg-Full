@@ -116,7 +116,18 @@ export const COPY = {
   },
   "common.notFoundMovie": { en: "Movie not found", ar: "الفيلم غير موجود" },
   "common.notFoundPerson": { en: "Person not found", ar: "الشخص غير موجود" },
+  "common.notFoundList": { en: "List not found", ar: "القائمة غير موجودة" },
+  "common.notFoundVideo": { en: "Video not found", ar: "الفيديو غير موجود" },
+  "common.notFoundPage": { en: "Page not found", ar: "الصفحة غير موجودة" },
+  "common.notFoundHint": {
+    en: "The page you're looking for doesn't exist or has been moved.",
+    ar: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+  },
   "common.goHome": { en: "Go home", ar: "الصفحة الرئيسية" },
+  "common.backHome": { en: "Back home", ar: "العودة للرئيسية" },
+  "common.moviePage": { en: "Movie page", ar: "صفحة الفيلم" },
+  "common.videoGallery": { en: "Video Gallery", ar: "معرض الفيديو" },
+  "common.nowPlaying": { en: "Now Playing", ar: "السينمات الآن" },
   "common.couldntLoad": { en: "Couldn't load this page", ar: "تعذّر التحميل" },
   "common.noPoster": { en: "No poster", ar: "لا بوستر" },
   "common.releaseDateColon": { en: "Release Date:", ar: "تاريخ العرض:" },
@@ -283,6 +294,10 @@ export const COPY = {
     en: "Account",
     ar: "الحساب",
   },
+  "auth.backToSite": {
+    en: "Back to the site",
+    ar: "العودة للموقع",
+  },
   "auth.loginOrRegister": {
     en: "Login / Register",
     ar: "تسجيل الدخول / إنشاء حساب",
@@ -378,3 +393,27 @@ export function makeT(lang: Lang) {
 export const isRtl = (lang: Lang): boolean => lang === "ar";
 export const dir = (lang: Lang): "rtl" | "ltr" => (lang === "ar" ? "rtl" : "ltr");
 export const otherLang = (lang: Lang): Lang => (lang === "ar" ? "en" : "ar");
+
+/** `localeCompare` collator for this edition's language. */
+export const locale = (lang: Lang): string => (lang === "ar" ? "ar" : "en");
+
+/**
+ * Route params arrive as `string`. The edition is the first path segment, so
+ * anything that is not `ar` is the English edition — the same rule every route
+ * used to re-type by hand.
+ */
+export const asLang = (value: string | undefined): Lang => (value === "ar" ? "ar" : "en");
+
+/** Language of the current path (`/ar/now` → `ar`), for components with no prop. */
+export const langFromPath = (pathname: string): Lang =>
+  asLang(pathname.split("/").filter(Boolean)[0]);
+
+/**
+ * Managed rows keep `title_en` / `title_ar` columns rather than a `Bi`, because
+ * an operator may fill in one language first. Always fall back to English so a
+ * half-translated row never renders as an empty chip.
+ */
+export const rowTitle = (
+  row: { title_en?: string | null; title_ar?: string | null },
+  lang: Lang,
+): string => (lang === "ar" ? row.title_ar || row.title_en || "" : row.title_en || "");

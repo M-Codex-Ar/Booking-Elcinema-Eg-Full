@@ -118,7 +118,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
                 </a>
               ))}
             </div>
-            <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+            <p className="mt-3 text-meta text-muted-foreground">{Lx.playbackNote}</p>
           </section>
         )}
 

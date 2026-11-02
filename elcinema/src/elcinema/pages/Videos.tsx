@@ -4,7 +4,7 @@
  * Video cards link internally; the player itself is the site's own YouTube
  * embed.
  */
-import { Play } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import { useState } from "react";
@@ -59,7 +59,7 @@ function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boole
           </span>
         </div>
         {v.duration && (
-          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
             {v.duration}
           </span>
         )}
@@ -178,7 +178,7 @@ export function VideoGalleryPage({
                     }
                   />
                   {v.duration && (
-                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
                       {v.duration}
                     </span>
                   )}
@@ -246,8 +246,12 @@ export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang })
       )}
 
       <div className="pb-10">
-        <Na href={`/${lang}/video`} className="text-sm font-semibold text-primary hover:underline">
-          ← {lang === "ar" ? "معرض الفيديو" : "Video Gallery"}
+        <Na
+          href={`/${lang}/video`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />{" "}
+          {lang === "ar" ? "معرض الفيديو" : "Video Gallery"}
         </Na>
       </div>
     </div>

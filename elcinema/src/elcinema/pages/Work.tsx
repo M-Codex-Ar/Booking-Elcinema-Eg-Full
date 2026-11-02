@@ -315,7 +315,7 @@ function SimilarCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
         {movie.title[lang]}
       </h3>
-      <div className="text-[11px] text-muted-foreground">{fmtDate(movie.release, lang)}</div>
+      <div className="text-meta text-muted-foreground">{fmtDate(movie.release, lang)}</div>
     </Na>
   );
 }

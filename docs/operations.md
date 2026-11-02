@@ -25,8 +25,11 @@ cd elcinema && bun run build            # .output/
 Release checklist, in order:
 
 1. `check.sh` green, including the route-tree freshness step.
-2. Both editions and both themes eyeballed on `/en`, `/ar`, a narrow viewport, and
-   the dashboard ([testing.md](testing.md#how-to-verify-honestly)).
+2. Both editions and both themes checked on `/en`, `/ar`, a narrow viewport, and
+   the dashboard ([testing.md](testing.md#how-to-verify-honestly)). For layout
+   work, run the scripted pass instead of eyeballing it:
+   `node scripts/responsive-audit.mjs`
+   ([testing.md](testing.md#responsive-and-rtl-audit)) — it must exit 0.
 3. [`/CHANGELOG.md`](../CHANGELOG.md) updated under `[Unreleased]`.
 4. Merge to `main` (squash the branch; do not rewrite what is already pushed).
 5. After the deploy: load a public page with the database unreachable to confirm

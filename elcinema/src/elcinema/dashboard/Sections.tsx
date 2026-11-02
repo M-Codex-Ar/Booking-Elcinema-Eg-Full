@@ -5,9 +5,8 @@ import { fmtAirtime, fmtRevenue, personId, posterUrl, photoUrl, workId } from ".
 import { ImgWithFallback } from "../components/primitives";
 import { Na, personPath, workPath } from "../ui";
 import type { Lang, Movie } from "../home.shared";
+import { pair as L } from "../i18n";
 import { DataTable, type Col } from "./DataTable";
-
-const L = (lang: Lang, en: string, ar: string) => (lang === "ar" ? ar : en);
 
 /**
  * Tiny artwork cell for dashboard tables: a dead or missing reference shows the

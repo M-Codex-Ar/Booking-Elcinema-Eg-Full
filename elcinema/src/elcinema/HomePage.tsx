@@ -10,6 +10,7 @@
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
+  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Play,
@@ -80,7 +81,9 @@ function Hero({ promos, lang }: { promos: EcPromo[]; lang: Lang }) {
         />
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
+      {/* The scrim is heavier on the side the title sits, so it mirrors with the
+          reading direction — that direction swap is what `scrim-start` owns. */}
+      <div className="scrim-start absolute inset-0" />
       <div className="absolute inset-x-0 bottom-0 z-10 mx-auto max-w-7xl p-6 md:p-12">
         <h1 className="max-w-2xl text-3xl font-black md:text-5xl">{p.title}</h1>
         <CardA
@@ -91,14 +94,31 @@ function Hero({ promos, lang }: { promos: EcPromo[]; lang: Lang }) {
         >
           <Play className="h-4 w-4 fill-current" /> {p.button || t("home.moreInfo")}
         </CardA>
-        <div className="mt-6 flex gap-2">
+        {/*
+          Ten 40px targets cannot share one line on a 360px phone, and the hero
+          clips what it cannot show, so the last slides used to be unreachable.
+          Wrapping keeps every slide one tap away; from `sm` the strip is wide
+          enough to sit on one line again.
+        */}
+        <div className="mt-6 -m-2 flex flex-wrap justify-center gap-1 p-2 sm:justify-start">
           {promos.map((_, idx) => (
             <button
               key={idx}
+              type="button"
               aria-label={t("home.slide", { n: idx + 1 })}
+              aria-current={idx === i}
               onClick={() => setI(idx)}
-              className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-primary" : "w-4 bg-muted-foreground/40"}`}
-            />
+              className="flex h-9 min-w-10 items-center justify-center rounded-full"
+            >
+              {/* The pill is the picture; the button around it is the target, so
+                  a thumb has 32px to hit instead of a 6px-tall dash. */}
+              <span
+                aria-hidden
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === i ? "w-6 bg-primary" : "w-3 bg-muted-foreground/40"
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>
@@ -139,7 +159,7 @@ function Row({
             <CardA
               href={more}
               lang={lang}
-              className="shrink-0 rounded-full bg-secondary/80 px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+              className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
             >
               {t("home.seeAll")}
             </CardA>
@@ -150,7 +170,7 @@ function Row({
             type="button"
             aria-label={t("home.previous")}
             onClick={() => scroll(-1)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
             {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
@@ -158,7 +178,7 @@ function Row({
             type="button"
             aria-label={t("home.next")}
             onClick={() => scroll(1)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
             {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
@@ -209,8 +229,8 @@ function Poster({
           />
           {badge && <div className="absolute end-2 top-2">{badge}</div>}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {t("home.moreInfo")} →
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+              {t("home.moreInfo")} <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </span>
           </div>
         </div>
@@ -248,7 +268,7 @@ function layoutSlots(slots: EcTvSlot[]): { s: EcTvSlot; left: number; width: num
 function VodBadge({ vod }: { vod: EcVod | null }) {
   if (!vod) return null;
   return (
-    <span className="rounded-md bg-background/80 px-2 py-1 text-[10px] font-bold backdrop-blur-sm">
+    <span className="rounded-md bg-background/80 px-2 py-1 text-micro font-bold backdrop-blur-sm">
       {vod.img ? (
         <LogoImage
           src={vod.img}
@@ -295,7 +315,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
     });
   };
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="page-flow flex flex-1 flex-col">
       <Hero promos={data.promos} lang={lang} />
 
       {data.movies.length > 0 && (
@@ -392,7 +412,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               <CardA
                 href={`/${lang}/tvguide/`}
                 lang={lang}
-                className="shrink-0 rounded-full bg-secondary/80 px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+                className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
               >
                 {t("home.seeAll")}
               </CardA>
@@ -402,7 +422,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
                 type="button"
                 aria-label={t("home.previous")}
                 onClick={() => scrollGuide(-1)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
               >
                 {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </button>
@@ -410,7 +430,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
                 type="button"
                 aria-label={t("home.next")}
                 onClick={() => scrollGuide(1)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
               >
                 {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
@@ -501,7 +521,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               lang={lang}
               badge={
                 v.duration && (
-                  <span className="rounded-md bg-background/80 px-2 py-1 text-[10px] font-bold">
+                  <span className="rounded-md bg-background/80 px-2 py-1 text-micro font-bold">
                     {v.duration}
                   </span>
                 )
@@ -550,7 +570,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               <CardA
                 href={`/${lang}/boxoffice/`}
                 lang={lang}
-                className="shrink-0 rounded-full bg-secondary/80 px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+                className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
               >
                 {t("home.seeAll")}
               </CardA>
@@ -590,7 +610,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               <CardA
                 href={`/${lang}/lineup/`}
                 lang={lang}
-                className="shrink-0 rounded-full bg-secondary/80 px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+                className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
               >
                 {t("home.seeAll")}
               </CardA>

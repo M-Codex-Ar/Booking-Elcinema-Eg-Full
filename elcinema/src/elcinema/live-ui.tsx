@@ -4,7 +4,7 @@
  * design-system tokens in styles.css; links to other elcinema ids are built
  * as internal app routes.
  */
-import { Clapperboard, Star, UserRound } from "lucide-react";
+import { ArrowRight, Clapperboard, Star, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { artworkSrc, useArtwork } from "./components/primitives";
 import type { Lang } from "./home.shared";
@@ -120,8 +120,8 @@ export function LivePoster({
           <LiveImg src={img} alt={title} className="h-full w-full" wide />
           {badge && <div className="absolute top-2 end-2 max-w-[85%]">{badge}</div>}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              More info →
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+              More info <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </span>
           </div>
         </div>

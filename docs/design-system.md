@@ -93,8 +93,24 @@ system, so `hover:glass-card` and `dark:glass-card` compose, and unused ones are
 dropped from the build.
 
 `glass-card`, `glass-card-brand`, `cinema-gradient`, `hover-lift`, `poster-shade`,
-`poster-shade-deep`, `poster-fallback`, `poster-spot`, `animate-theme-icon`,
-`animate-pulse-neon`, `scrollbar-hide`.
+`poster-shade-deep`, `scrim-start`, `poster-fallback`, `poster-spot`, `animate-theme-icon`,
+`animate-pulse-neon`, `scrollbar-hide`, `page-flow`, `dialog-scroll`.
+
+Three of them exist because of a measured breakage, not a preference:
+
+- `page-flow` pins every direct child of the page shell to `max-inline-size: 100%`.
+  `$lang.tsx` stacks pages inside a *column* flex container, and a flex item in a column
+  has an indefinite cross size, so a centred `mx-auto max-w-*` section resolves to
+  `max-content` instead of the viewport. At 360px that turned every section into a
+  desktop-width page whose tail was clipped by `overflow-x-clip`, and in Arabic the whole
+  section landed off-screen. With the pin, rails scroll inside their own box again.
+- `dialog-scroll` caps a dialog at `85vh` and scrolls its body. A phone in landscape, and
+  the register form with its confirm fields, were taller than the viewport; the dialog
+  layer is fixed and the page behind it cannot scroll, so the submit button was
+  unreachable. Used by `AuthDialog` and the dashboard row dialog.
+- `scrim-start` is the horizontal sibling of `poster-shade`. A directional gradient has no
+  logical axis, so the reading-direction flip lives in CSS instead of as a
+  `bg-gradient-to-r rtl:bg-gradient-to-l` pair in a component.
 
 `poster-fallback`/`poster-spot` read a `--poster-hue` custom property instead of
 computing a colour inline, so a placeholder poster is tinted by setting one
@@ -183,6 +199,15 @@ Forbidden for layout: `ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`,
 `text-left`, `bg-gradient-to-r`. Use their logical or `rtl:` equivalents.
 Scroll helpers must respect direction too — `scrollBy({ left: … })` moves the wrong
 way in RTL unless the sign comes from the computed direction.
+
+A literal `←` or `→` in copy is not direction-aware either: it stays pointing west in
+an Arabic paragraph. Directional affordances are lucide `ArrowLeft`/`ArrowRight` with
+`rtl:rotate-180`, and a directional gradient is the `scrim-start` utility rather than a
+`bg-gradient-to-r rtl:bg-gradient-to-l` pair.
+
+Hit areas follow the same centralisation rule: `iconAction` sizes an icon-only control
+to 40×40 on touch widths and 36 from `sm` up, so a new `IconButton` does not need a
+bespoke class string to be thumb-sized.
 
 ## Adding something new
 

@@ -1,7 +1,10 @@
 /** Light/dark switch with a circular View Transition reveal from the button. */
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState, type MouseEvent } from "react";
+import { cn } from "@/lib/utils";
 import type { Lang } from "./home.shared";
+import { makeT } from "./i18n";
+import { iconAction } from "./components/variants";
 
 type Theme = "dark" | "light";
 
@@ -47,14 +50,10 @@ export function ThemeToggle({ lang, className = "" }: { lang: Lang; className?: 
     }
   };
 
-  const label =
-    theme === "dark"
-      ? lang === "ar"
-        ? "الوضع الفاتح"
-        : "Switch to light mode"
-      : lang === "ar"
-        ? "الوضع الداكن"
-        : "Switch to dark mode";
+  // The two labels are chrome, so they come from `i18n.ts` like every other
+  // string; spelling them here is how a third language gets missed.
+  const t = makeT(lang);
+  const label = theme === "dark" ? t("theme.toLight") : t("theme.toDark");
 
   return (
     <button
@@ -62,7 +61,13 @@ export function ThemeToggle({ lang, className = "" }: { lang: Lang; className?: 
       onClick={toggle}
       aria-label={label}
       title={label}
-      className={`relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-border bg-secondary text-foreground transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary hover:shadow-[0_0_18px_var(--glow)] active:scale-95 ${className}`}
+      className={cn(
+        iconAction(),
+        // `bg-secondary` + a solid foreground: this control shows state, so it
+        // needs more weight than a quiet rail arrow.
+        "overflow-hidden bg-secondary text-foreground transition-all duration-300 hover:scale-110 hover:shadow-glow-sm active:scale-95",
+        className,
+      )}
     >
       {theme === "dark" ? (
         <Sun key="sun" className="animate-theme-icon h-4 w-4" />

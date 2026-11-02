@@ -31,6 +31,10 @@ All notable changes to this repository are documented here. The format follows
 - `elcinema/src/lib/supabase-env.ts`: `isSupabaseConfigured()` probes the same keys the generated
   client reads, so feature code can degrade instead of crashing; covered by
   `src/test/supabase-env.test.ts`.
+- `elcinema/scripts/responsive-audit.mjs`: dependency-free Chrome-DevTools audit that measures
+  every route × viewport × theme for sideways scroll, off-screen content and tap targets under
+  40×32 px, writes screenshots and a JSON report, and exits non-zero on overflow. Driven by
+  `bun run dev:web` plus a Chrome started with `--remote-debugging-port=9333`.
 
 ### Changed
 
@@ -73,6 +77,32 @@ All notable changes to this repository are documented here. The format follows
   catalogue pages render in both languages and both themes; only authentication is unavailable.
 - `docs/operations.md` named `SUPABASE_SECRET_KEY`, which no code reads; the service-role
   variable is `SUPABASE_SERVICE_ROLE_KEY` (`scripts/seed-admin.mjs`, `client.server.ts`).
+- Phone-width pages no longer run off the screen. The bilingual shell stacks pages inside a
+  *column* flex container, where a centred `mx-auto max-w-*` section has an indefinite cross
+  size and resolves to `max-content`: at 360px every section became a desktop-width page,
+  `overflow-x-clip` hid the tail, rails never scrolled inside their own box, and in Arabic the
+  page landed mostly off-screen (measured on `/ar` at 390px: a section spanning −920..360). The
+  new `page-flow` utility in `src/theme/utilities.css`, applied to the `$lang.tsx` shell and the
+  `Page` primitive, pins those children to `max-inline-size: 100%`.
+- Dialogs that are taller than the viewport are now scrollable. `AuthDialog` (register mode with
+  its confirm fields, or any dialog on a phone in landscape) and both dashboard dialogs used
+  `overflow-hidden` on a fixed layer over a page that cannot scroll, so the submit button was
+  unreachable; they now use `dialog-scroll` (`max-block-size: 85vh` with `overflow-y: auto`).
+- Touch targets raised to a thumb-sized scale: hero carousel dots were 28×32, rail arrows 32×32,
+  header login/search/language/theme buttons 32–36 and the list-editor "remove movie" button was
+  a 12×12 icon. Icon controls are now 40×40 under `sm` and 36 from `sm` up, a rule carried by the
+  `iconAction` recipe so `IconButton` inherits it; the dashboard channel picker went from a fixed
+  `w-64` to full width on a phone, and its list chips truncate instead of pushing the dialog
+  sideways.
+- The site menu dropdown was two columns at `min(92vw, 26rem)` on a phone — about 150px per
+  column, which wrapped Arabic labels mid-phrase. It is one column until `sm`.
+- Direction-free arrows now mirror. `← Back`, `More info →`, `IMDB Page →` and the booking CTAs
+  were literal glyphs that keep pointing west in the Arabic edition; they are lucide
+  `ArrowLeft`/`ArrowRight` with `rtl:rotate-180` now, and the hero scrim moved from a
+  `bg-gradient-to-r rtl:bg-gradient-to-l` pair in the component to the `scrim-start` utility.
+- Sub-token text sizes replaced: `text-[10px]` / `text-[11px]` literals became the `text-micro`
+  and `text-meta` steps on home, videos, watch-online, booking and the live detail pages, and the
+  TV guide page's duplicate filter input now uses the shared `FilterInput`.
 
 ### Known issues
 

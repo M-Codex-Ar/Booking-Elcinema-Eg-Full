@@ -19,8 +19,10 @@ export const Route = createFileRoute("/$lang")({
  * The shell is a full-height flex column with the page in a growing `<main>`,
  * which is what keeps the footer pinned to the bottom of the viewport on short
  * pages (search, auth, an empty list) instead of floating under the content.
- * The dashboard keeps its own shell — it brings its header, footer and `<main>`
- * landmark, so it must not be wrapped twice.
+ * `page-flow` is what makes that safe: without it a centred `mx-auto` section
+ * inside the column sizes to its content rather than the screen, and the tail of
+ * every page runs past a phone. The dashboard keeps its own shell — it brings
+ * its header, footer and `<main>` landmark, so it must not be wrapped twice.
  */
 function LangLayout() {
   const { lang } = Route.useParams();
@@ -43,7 +45,7 @@ function LangLayout() {
       className="flex min-h-screen w-full flex-col overflow-x-clip bg-background"
     >
       <SiteHeader lang={l} />
-      <main className="flex flex-1 flex-col overflow-x-clip">
+      <main className="page-flow flex flex-1 flex-col overflow-x-clip">
         <Outlet />
       </main>
       <SiteFooter lang={l} />

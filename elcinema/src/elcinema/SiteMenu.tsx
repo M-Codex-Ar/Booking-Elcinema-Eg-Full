@@ -104,7 +104,9 @@ export function SiteMenu({ lang }: { lang: Lang }) {
           sideOffset={10}
           className="w-[min(92vw,26rem)] border-border bg-popover p-2"
         >
-          <div className="grid grid-cols-2 gap-1">
+          {/* One column on a phone: two columns at 92vw leaves ~150px per
+              column and the Arabic labels wrap mid-phrase. */}
+          <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
             {NAV_GROUPS.map((g) => (
               <div key={g.en}>
                 <DropdownMenuLabel className="text-xs uppercase tracking-wider text-muted-foreground">

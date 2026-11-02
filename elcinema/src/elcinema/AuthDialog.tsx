@@ -179,7 +179,7 @@ export function AuthDialog({
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
         dir={lang === "ar" ? "rtl" : "ltr"}
-        className="cinema-gradient overflow-hidden border-border bg-card p-0 sm:max-w-md"
+        className="dialog-scroll cinema-gradient border-border bg-card p-0 sm:max-w-md"
       >
         <div className="p-6 pb-0">
           <DialogTitle className="text-2xl font-black">
