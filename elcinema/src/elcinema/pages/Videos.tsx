@@ -5,6 +5,7 @@
  * embed.
  */
 import { Play } from "lucide-react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import { useState } from "react";
 import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "../live.shared";
@@ -166,18 +167,16 @@ export function VideoGalleryPage({
             {extra.map((v) => (
               <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="group w-full">
                 <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">
-                  {v.thumb_url ? (
-                    <img
-                      src={v.thumb_url}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <Play className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
+                  <ImgWithFallback
+                    src={v.thumb_url}
+                    alt=""
+                    className="h-full w-full"
+                    fallback={
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Play className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    }
+                  />
                   {v.duration && (
                     <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
                       {v.duration}

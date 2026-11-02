@@ -2,26 +2,27 @@
 import { ExternalLink } from "lucide-react";
 import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE, TV_GUIDE_DATA } from "../data";
 import { fmtAirtime, fmtRevenue, personId, posterUrl, photoUrl, workId } from "../build";
-import { img } from "../images";
+import { ImgWithFallback } from "../components/primitives";
 import { Na, personPath, workPath } from "../ui";
 import type { Lang, Movie } from "../home.shared";
 import { DataTable, type Col } from "./DataTable";
 
 const L = (lang: Lang, en: string, ar: string) => (lang === "ar" ? ar : en);
 
+/**
+ * Tiny artwork cell for dashboard tables: a dead or missing reference shows the
+ * empty muted box instead of a browser broken-image icon (the inline `onError`
+ * visibility hack this replaces did not survive every browser). Table cells are
+ * too small for the poster placeholder artwork, so no `kind` swap here.
+ */
 function Thumb({ src }: { src: string }) {
-  return src ? (
-    <img
+  return (
+    <ImgWithFallback
       src={src}
       alt=""
-      loading="lazy"
-      onError={(e) => {
-        e.currentTarget.style.visibility = "hidden";
-      }}
-      className="h-10 w-7 shrink-0 rounded bg-muted object-cover"
+      className="h-10 w-7 shrink-0 rounded bg-muted"
+      fallback={<div className="h-10 w-7 shrink-0 rounded bg-muted" />}
     />
-  ) : (
-    <div className="h-10 w-7 shrink-0 rounded bg-muted" />
   );
 }
 
@@ -156,16 +157,13 @@ export function ChannelsSection({ lang }: { lang: Lang }) {
           value: (c) => c.name[lang],
           render: (c) => (
             <div className="flex min-w-40 items-center gap-2">
-              {c.img ? (
-                <img
-                  src={img(c.img)}
-                  alt=""
-                  loading="lazy"
-                  className="h-8 w-8 shrink-0 rounded bg-muted object-contain"
-                />
-              ) : (
-                <div className="h-8 w-8 shrink-0 rounded bg-muted" />
-              )}
+              <ImgWithFallback
+                src={c.img}
+                alt=""
+                fit="contain"
+                className="h-8 w-8 shrink-0 rounded bg-muted"
+                fallback={<div className="h-8 w-8 shrink-0 rounded bg-muted" />}
+              />
               <span className="font-semibold">{c.name[lang]}</span>
             </div>
           ),

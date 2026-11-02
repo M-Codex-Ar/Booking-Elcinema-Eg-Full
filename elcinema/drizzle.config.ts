@@ -5,6 +5,8 @@ export default defineConfig({
   schema: "./drizzle/schema.ts",
   out: "./drizzle/migrations",
   dbCredentials: {
-    url: process.env.LOVABLE_DB_MIGRATION_URL ?? "",
+    // LOVABLE_DB_MIGRATION_URL takes priority; falls back to the Supabase non-pooling URL
+    // which supports DDL statements (no pgBouncer).
+    url: process.env.LOVABLE_DB_MIGRATION_URL ?? process.env.POSTGRES_URL_NON_POOLING ?? "",
   },
 });

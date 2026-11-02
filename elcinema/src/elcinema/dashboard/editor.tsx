@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { GENRES } from "../data";
 import { PosterArt, fmtDate } from "../ui";
-import { Pill } from "../components/primitives";
+import { ImgWithFallback, Pill } from "../components/primitives";
 import type { Lang, Movie } from "../home.shared";
 import type { ManagedContent } from "../content.functions";
 import {
@@ -338,17 +338,10 @@ const STATUS_OPTIONS = (lang: Lang) => [
   { value: "soon", label: L(lang, "Coming soon", "قريباً") },
 ];
 
+/** Dashboard table thumbnail: a muted box stands in for missing or dead artwork. */
 function Thumb({ src, wide }: { src: string | null; wide?: boolean }) {
-  return src ? (
-    <img
-      src={src}
-      alt=""
-      loading="lazy"
-      className={`shrink-0 rounded bg-muted object-cover ${wide ? "h-9 w-16" : "h-10 w-7"}`}
-    />
-  ) : (
-    <div className={`shrink-0 rounded bg-muted ${wide ? "h-9 w-16" : "h-10 w-7"}`} />
-  );
+  const box = `shrink-0 rounded bg-muted ${wide ? "h-9 w-16" : "h-10 w-7"}`;
+  return <ImgWithFallback src={src} alt="" className={box} fallback={<div className={box} />} />;
 }
 
 export function MoviesManager({ lang, data }: { lang: Lang; data: ManagedContent }) {

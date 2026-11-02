@@ -82,7 +82,10 @@ export function BoxOfficePage({ lang, entries }: { lang: Lang; entries: Boxoffic
             </thead>
             <tbody>
               {rows.map(({ row, rank }, i) => {
-                const movie = row.slug ? movieBySlug.get(row.slug) : undefined;
+                const movie =
+                  (row.slug ? movieBySlug.get(row.slug) : undefined) ??
+                  movieBySlug.get(row.title.en) ??
+                  movieBySlug.get(row.title.ar);
                 const title = (
                   <span className="font-semibold transition-colors group-hover:text-primary">
                     {row.title[lang]}

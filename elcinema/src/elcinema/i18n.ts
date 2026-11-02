@@ -66,6 +66,8 @@ export const COPY = {
   "home.videos": { en: "Videos", ar: "فيديوهات" },
   "home.boxOffice": { en: "Box Office", ar: "بوكس أوفيس" },
   "home.lists": { en: "Lists", ar: "قوائم" },
+  "home.bornToday": { en: "Born Today", ar: "ولد في مثل هذا اليوم" },
+  "home.diedOn": { en: "Died {date}", ar: "تُوفي في {date}" },
   "home.seeAll": { en: "See all", ar: "عرض الكل" },
   "home.moreInfo": { en: "More info", ar: "المزيد" },
   "home.bookTickets": { en: "Book tickets", ar: "احجز تذاكر" },
@@ -257,6 +259,101 @@ export const COPY = {
   "auth.showPassword": { en: "Show password", ar: "إظهار كلمة المرور" },
   "auth.hidePassword": { en: "Hide password", ar: "إخفاء كلمة المرور" },
   "auth.resetPassword": { en: "Reset password", ar: "استعادة كلمة المرور" },
+  "auth.resetSent": {
+    en: "Reset link sent — check your email.",
+    ar: "تم إرسال رابط الاستعادة — تحقق من بريدك.",
+  },
+  "auth.invalidCredentials": {
+    en: "Wrong email or password.",
+    ar: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  },
+  "auth.alreadyRegistered": {
+    en: "This email is already registered. Please sign in.",
+    ar: "هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.",
+  },
+  "auth.checkEmail": {
+    en: "Account created! Please check your email to confirm registration.",
+    ar: "تم إنشاء الحساب! يرجى مراجعة بريدك الإلكتروني لتأكيد التسجيل.",
+  },
+  "auth.enterEmailFirst": {
+    en: "Please enter your email address first.",
+    ar: "يرجى إدخال بريدك الإلكتروني أولاً.",
+  },
+  "auth.loading": {
+    en: "Please wait…",
+    ar: "يرجى الانتظار…",
+  },
+  "auth.account": {
+    en: "Account",
+    ar: "الحساب",
+  },
+  "auth.loginOrRegister": {
+    en: "Login / Register",
+    ar: "تسجيل الدخول / إنشاء حساب",
+  },
+  "auth.unauthorized": {
+    en: "Admin privileges required to access the dashboard.",
+    ar: "يتطلب الوصول إلى لوحة التحكم صلاحيات المشرف.",
+  },
+  "auth.adminRole": {
+    en: "Admin",
+    ar: "مشرف",
+  },
+  "auth.userRole": {
+    en: "User",
+    ar: "مستخدم",
+  },
+
+  /* ---- Footer ---------------------------------------------------------- */
+  "footer.siteDesc": {
+    en: "Egypt's premier cinema & TV guide — movies, showtimes, TV schedules, reviews and more.",
+    ar: "دليل السينما والتلفاز المصري — أفلام، مواعيد عرض، جداول القنوات، مراجعات والمزيد.",
+  },
+  "footer.mainLinks": { en: "Browse", ar: "تصفح" },
+  "footer.helpLinks": { en: "Help", ar: "مساعدة" },
+  "footer.newsletter": { en: "Stay Updated", ar: "ابق على اطلاع" },
+  "footer.newsletterDesc": {
+    en: "Get the latest movie news and reviews in your inbox.",
+    ar: "احصل على آخر أخبار الأفلام والمراجعات في بريدك الإلكتروني.",
+  },
+  "footer.emailPlaceholder": { en: "Your email address", ar: "بريدك الإلكتروني" },
+  "footer.subscribe": { en: "Subscribe", ar: "اشترك" },
+  "footer.subscribeOk": {
+    en: "You're subscribed! Thanks.",
+    ar: "تم الاشتراك! شكرًا.",
+  },
+  "footer.about": { en: "About Us", ar: "عن الموقع" },
+  "footer.contact": { en: "Contact Us", ar: "تواصل معنا" },
+  "footer.advertise": { en: "Advertise", ar: "إعلن معنا" },
+  "footer.privacy": { en: "Privacy Policy", ar: "سياسة الخصوصية" },
+  "footer.terms": { en: "Terms of Use", ar: "شروط الاستخدام" },
+  "footer.builtBy": { en: "Built with ❤️ by M.Said", ar: "صُنع بـ ❤️ بواسطة M.Said" },
+  "footer.paymentTitle": { en: "Payment methods", ar: "وسائل الدفع" },
+  "footer.aboutPage.title": { en: "About elCinema", ar: "عن إل سينما" },
+  "footer.aboutPage.body": {
+    en: "elCinema is Egypt's leading cinema and TV guide, covering movies in theatres, coming soon, TV schedules, box office charts, and streaming options.",
+    ar: "إل سينما هو الدليل المصري الرائد للسينما والتلفاز، يغطي الأفلام في السينمات والقادمة قريبًا وجداول القنوات وإيرادات السينما وخيارات البث.",
+  },
+  "footer.contactPage.title": { en: "Contact Us", ar: "تواصل معنا" },
+  "footer.contactPage.body": {
+    en: "For press enquiries, partnership requests, or general feedback, please reach out via our social channels or send us an email.",
+    ar: "للاستفسارات الصحفية وطلبات الشراكة أو الملاحظات العامة، يرجى التواصل عبر قنواتنا الاجتماعية أو مراسلتنا بالبريد الإلكتروني.",
+  },
+  "footer.advertisePage.title": { en: "Advertise with Us", ar: "إعلن معنا" },
+  "footer.advertisePage.body": {
+    en: "Reach Egypt's most engaged movie audience. elCinema offers display advertising, sponsored content, and premiere partnerships. Contact our commercial team to learn more.",
+    ar: "تواصل مع أكبر جمهور سينمائي في مصر. تقدم إل سينما إعلانات عرض ومحتوى مدعومًا وشراكات عروض أولى. تواصل مع فريقنا التجاري لمزيد من المعلومات.",
+  },
+  "footer.privacyPage.title": { en: "Privacy Policy", ar: "سياسة الخصوصية" },
+  "footer.privacyPage.body": {
+    en: "We respect your privacy. elCinema collects only the data needed to deliver your personalised cinema experience and never sells your information to third parties.",
+    ar: "نحترم خصوصيتك. تجمع إل سينما فقط البيانات اللازمة لتقديم تجربة سينمائية مخصصة ولا تبيع معلوماتك لأطراف ثالثة.",
+  },
+  "footer.termsPage.title": { en: "Terms of Use", ar: "شروط الاستخدام" },
+  "footer.termsPage.body": {
+    en: "By using elCinema you agree to use the service for lawful personal purposes only. All content is © Damlag S.A.E. Unauthorised reproduction is prohibited.",
+    ar: "باستخدام إل سينما توافق على استخدام الخدمة للأغراض الشخصية المشروعة فقط. جميع المحتويات © دملاج ش.م.م. يُحظر التوزيع غير المصرح به.",
+  },
 
   /* ---- Theme ----------------------------------------------------------- */
   "theme.toLight": { en: "Switch to light mode", ar: "الوضع الفاتح" },

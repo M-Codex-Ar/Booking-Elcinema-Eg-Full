@@ -8,9 +8,10 @@
  */
 import { CalendarClock, Clock, Film, Images, MonitorPlay, Star, Ticket, Tv } from "lucide-react";
 import { useState } from "react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import type { LiveWork } from "../live.shared";
-import { Na } from "../ui";
+import { Na, Row } from "../ui";
 import { LiveImg, LivePoster, PersonChip, RatingPill, bookingPath, videoPath } from "../live-ui";
 
 const L = {
@@ -71,17 +72,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
     <div>
       {/* Backdrop + poster header, elCinema style */}
       <div className="relative h-[38vh] w-full overflow-hidden md:h-[46vh]">
-        {data.poster ? (
-          <img
-            src={data.poster}
-            alt={data.title}
-            className="h-full w-full object-cover object-center"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-secondary">
-            <Film className="h-16 w-16 text-muted-foreground" />
-          </div>
-        )}
+        <ImgWithFallback
+          src={data.poster}
+          alt={data.title}
+          className="h-full w-full object-center"
+          fallback={
+            <div className="flex h-full items-center justify-center bg-secondary">
+              <Film className="h-16 w-16 text-muted-foreground" />
+            </div>
+          }
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </div>
 
@@ -374,14 +374,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
 
         {/* Related strip */}
         {data.related.length > 0 && (
-          <section className="pb-12">
-            <h2 className="mb-4 text-xl font-black">{Lx.related}</h2>
-            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-              {data.related.slice(0, 12).map((r) => (
-                <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
-              ))}
-            </div>
-          </section>
+          <Row
+            title={Lx.related}
+            icon={<Film className="h-5 w-5" />}
+            more={`/${lang}/now`}
+            lang={lang}
+          >
+            {data.related.slice(0, 12).map((r) => (
+              <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
+            ))}
+          </Row>
         )}
       </div>
     </div>

@@ -6,6 +6,7 @@
  */
 import { Clapperboard, Star, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { artworkSrc, useArtwork } from "./components/primitives";
 import type { Lang } from "./home.shared";
 import { Na } from "./ui";
 
@@ -20,7 +21,11 @@ export const lineupPath = (lang: Lang, id?: string) => `/${lang}/lineup${id ? `/
 /** Internal path to a booking page. */
 export const bookingPath = (lang: Lang, id?: string) => `/${lang}/booking${id ? `/${id}` : ""}`;
 
-/** Poster/photo image with a clapperboard fallback for missing artwork. */
+/**
+ * Poster/photo image with a clapperboard placeholder for missing artwork.
+ * A URL that is present but dead (a moved CDN asset, a blocked hotlink) takes
+ * the same path, so no card can ever show a broken-image icon.
+ */
 export function LiveImg({
   src,
   alt,
@@ -32,14 +37,25 @@ export function LiveImg({
   className?: string;
   wide?: boolean;
 }) {
-  if (!src) {
+  const art = useArtwork(artworkSrc(src));
+  if (!art.src || art.failed) {
     return (
       <div className={`flex items-center justify-center bg-secondary ${className}`}>
         <Clapperboard className={`${wide ? "h-10 w-10" : "h-8 w-8"} text-muted-foreground`} />
       </div>
     );
   }
-  return <img src={src} alt={alt} loading="lazy" className={`${className} object-cover`} />;
+  return (
+    <img
+      src={art.src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={art.onError}
+      className={`${className} object-cover`}
+    />
+  );
 }
 
 /** Person card with round portrait, used in cast and crew strips. */

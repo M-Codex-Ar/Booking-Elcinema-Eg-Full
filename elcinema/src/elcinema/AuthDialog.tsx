@@ -1,6 +1,6 @@
 /** Login / Register modal with an animated tab switch between both forms. */
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Eye, EyeOff, Lock, LogIn, Mail, User, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, LogIn, Mail, User, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -10,45 +10,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Lang } from "./home.shared";
+import { makeT } from "./i18n";
+import { supabase } from "@/integrations/supabase/client";
+import { isAdmin } from "./auth";
 
-type Mode = "login" | "register";
-
-const T = {
-  en: {
-    login: "Login",
-    register: "Register",
-    welcome: "Welcome back",
-    join: "Join elCinema",
-    sub: "Rate movies, build watchlists and follow your favourite stars.",
-    name: "Full name",
-    email: "Email",
-    password: "Password",
-    confirm: "Confirm password",
-    forgot: "Forgot password?",
-    noAcc: "No account yet?",
-    haveAcc: "Already a member?",
-    mismatch: "Passwords don't match.",
-    short: "Password must be at least 8 characters.",
-    soon: "Accounts aren't switched on yet — your details were not saved.",
-  },
-  ar: {
-    login: "دخول",
-    register: "تسجيل",
-    welcome: "مرحبًا بعودتك",
-    join: "انضم إلى إل سينما",
-    sub: "قيّم الأفلام وأنشئ قوائم المشاهدة وتابع نجومك المفضلين.",
-    name: "الاسم بالكامل",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    confirm: "تأكيد كلمة المرور",
-    forgot: "نسيت كلمة المرور؟",
-    noAcc: "ليس لديك حساب؟",
-    haveAcc: "لديك حساب بالفعل؟",
-    mismatch: "كلمتا المرور غير متطابقتين.",
-    short: "كلمة المرور 8 أحرف على الأقل.",
-    soon: "الحسابات غير مفعّلة بعد — لم يتم حفظ بياناتك.",
-  },
-} as const;
+export type AuthMode = "login" | "register";
 
 function Field({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
@@ -58,28 +24,133 @@ function Field({ icon, children }: { icon: ReactNode; children: ReactNode }) {
     </label>
   );
 }
+
 const inputCls =
   "w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground";
 
-export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }) {
-  const x = T[lang];
-  const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<Mode>("login");
-  const [show, setShow] = useState(false);
-  const [error, setError] = useState("");
+export function AuthDialog({
+  lang,
+  trigger,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  defaultMode = "login",
+}: {
+  lang: Lang;
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  defaultMode?: AuthMode;
+}) {
+  const t = makeT(lang);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const pw = String(f.get("password") ?? "");
-    if (pw.length < 8) return setError(x.short);
-    if (mode === "register" && pw !== String(f.get("confirm") ?? "")) return setError(x.mismatch);
-    setError("");
-    toast(x.soon);
-    setOpen(false);
+  const setOpen = (val: boolean) => {
+    if (isControlled) {
+      controlledOnOpenChange?.(val);
+    } else {
+      setInternalOpen(val);
+    }
   };
 
-  const switchTo = (m: Mode) => {
+  const [mode, setMode] = useState<AuthMode>(defaultMode);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (busy) return;
+    setError("");
+
+    const f = new FormData(e.currentTarget);
+    const email = String(f.get("email") ?? "").trim();
+    const password = String(f.get("password") ?? "");
+
+    if (password.length < 8) {
+      return setError(t("auth.short"));
+    }
+
+    if (mode === "register") {
+      const confirm = String(f.get("confirm") ?? "");
+      if (password !== confirm) {
+        return setError(t("auth.mismatch"));
+      }
+      const name = String(f.get("name") ?? "").trim();
+
+      setBusy(true);
+      const { data, error: err } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            role: "user",
+          },
+        },
+      });
+      setBusy(false);
+
+      if (err) {
+        const msg = err.message.toLowerCase();
+        if (msg.includes("already registered") || msg.includes("already in use")) {
+          return setError(t("auth.alreadyRegistered"));
+        }
+        return setError(err.message);
+      }
+
+      if (data.session) {
+        toast.success(t("auth.welcome"));
+        setOpen(false);
+      } else {
+        toast.info(t("auth.checkEmail"));
+        setOpen(false);
+      }
+    } else {
+      // Login mode
+      setBusy(true);
+      const { data, error: err } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      setBusy(false);
+
+      if (err) {
+        const msg = err.message.toLowerCase();
+        if (msg.includes("invalid login credentials")) {
+          return setError(t("auth.invalidCredentials"));
+        }
+        return setError(err.message);
+      }
+
+      const admin = isAdmin(data.user);
+      toast.success(admin ? `${t("auth.welcome")} (${t("auth.adminRole")})` : t("auth.welcome"));
+      setOpen(false);
+    }
+  };
+
+  const handleForgot = async () => {
+    if (!emailInput.trim()) {
+      return setError(t("auth.enterEmailFirst"));
+    }
+    setBusy(true);
+    setError("");
+    const { error: err } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+
+    if (err) {
+      setError(err.message);
+    } else {
+      toast.success(t("auth.resetSent"));
+    }
+  };
+
+  const switchTo = (m: AuthMode) => {
     setMode(m);
     setError("");
   };
@@ -89,20 +160,24 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
       open={open}
       onOpenChange={(o) => {
         setOpen(o);
-        if (!o) setError("");
+        if (!o) {
+          setError("");
+          setShowPassword(false);
+          setShowConfirm(false);
+        }
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
         dir={lang === "ar" ? "rtl" : "ltr"}
         className="cinema-gradient overflow-hidden border-border bg-card p-0 sm:max-w-md"
       >
         <div className="p-6 pb-0">
           <DialogTitle className="text-2xl font-black">
-            {mode === "login" ? x.welcome : x.join}
+            {mode === "login" ? t("auth.welcome") : t("auth.join")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-sm text-muted-foreground">
-            {x.sub}
+            {t("auth.sub")}
           </DialogDescription>
 
           {/* Segmented toggle with a sliding pill */}
@@ -113,7 +188,7 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
                 mode === "login" ? "start-1" : "start-[calc(50%+3px)]"
               }`}
             />
-            {(["login", "register"] as Mode[]).map((m) => (
+            {(["login", "register"] as AuthMode[]).map((m) => (
               <button
                 key={m}
                 type="button"
@@ -126,7 +201,7 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
                 }`}
               >
                 {m === "login" ? <LogIn className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-                {m === "login" ? x.login : x.register}
+                {m === "login" ? t("auth.login") : t("auth.register")}
               </button>
             ))}
           </div>
@@ -142,9 +217,10 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
               <input
                 name="name"
                 required
-                placeholder={x.name}
+                placeholder={t("auth.name")}
                 autoComplete="name"
                 className={inputCls}
+                disabled={busy}
               />
             </Field>
           )}
@@ -153,47 +229,62 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
               name="email"
               type="email"
               required
-              placeholder={x.email}
+              placeholder={t("auth.email")}
               autoComplete="email"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
               className={inputCls}
+              disabled={busy}
             />
           </Field>
           <Field icon={<Lock className="h-4 w-4" />}>
             <input
               name="password"
-              type={show ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               required
-              placeholder={x.password}
+              placeholder={t("auth.password")}
               autoComplete={mode === "login" ? "current-password" : "new-password"}
               className={inputCls}
+              disabled={busy}
             />
             <button
               type="button"
-              onClick={() => setShow((s) => !s)}
-              aria-label={x.password}
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
               className="text-muted-foreground hover:text-primary"
             >
-              {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </Field>
           {mode === "register" && (
             <Field icon={<Lock className="h-4 w-4" />}>
               <input
                 name="confirm"
-                type={show ? "text" : "password"}
+                type={showConfirm ? "text" : "password"}
                 required
-                placeholder={x.confirm}
+                placeholder={t("auth.confirm")}
                 autoComplete="new-password"
                 className={inputCls}
+                disabled={busy}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirm((s) => !s)}
+                aria-label={showConfirm ? t("auth.hidePassword") : t("auth.showPassword")}
+                className="text-muted-foreground hover:text-primary"
+              >
+                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </Field>
           )}
           {mode === "login" && (
             <button
               type="button"
-              className="justify-self-end text-xs font-semibold text-primary hover:underline"
+              onClick={handleForgot}
+              disabled={busy}
+              className="justify-self-end text-xs font-semibold text-primary hover:underline disabled:opacity-50"
             >
-              {x.forgot}
+              {t("auth.forgot")}
             </button>
           )}
           {error && (
@@ -203,18 +294,21 @@ export function AuthDialog({ lang, trigger }: { lang: Lang; trigger: ReactNode }
           )}
           <button
             type="submit"
-            className="mt-1 rounded-xl bg-primary py-3 text-sm font-black text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_10px_30px_-10px_var(--glow)] active:scale-[0.98]"
+            disabled={busy}
+            className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-black text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_10px_30px_-10px_var(--glow)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
           >
-            {mode === "login" ? x.login : x.register}
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+            {busy ? t("auth.loading") : mode === "login" ? t("auth.login") : t("auth.register")}
           </button>
           <p className="text-center text-sm text-muted-foreground">
-            {mode === "login" ? x.noAcc : x.haveAcc}{" "}
+            {mode === "login" ? t("auth.noAcc") : t("auth.haveAcc")}{" "}
             <button
               type="button"
               onClick={() => switchTo(mode === "login" ? "register" : "login")}
               className="font-bold text-primary hover:underline"
+              disabled={busy}
             >
-              {mode === "login" ? x.register : x.login}
+              {mode === "login" ? t("auth.register") : t("auth.login")}
             </button>
           </p>
         </form>
