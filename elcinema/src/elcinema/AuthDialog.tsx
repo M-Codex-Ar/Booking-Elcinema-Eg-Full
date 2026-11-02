@@ -12,6 +12,7 @@ import {
 import type { Lang } from "./home.shared";
 import { makeT } from "./i18n";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin } from "./auth";
 
 export type AuthMode = "login" | "register";
@@ -65,6 +66,11 @@ export function AuthDialog({
     e.preventDefault();
     if (busy) return;
     setError("");
+
+    if (!isSupabaseConfigured()) {
+      setError(t("auth.notEnabled"));
+      return;
+    }
 
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") ?? "").trim();
@@ -133,6 +139,9 @@ export function AuthDialog({
   };
 
   const handleForgot = async () => {
+    if (!isSupabaseConfigured()) {
+      return setError(t("auth.notEnabled"));
+    }
     if (!emailInput.trim()) {
       return setError(t("auth.enterEmailFirst"));
     }

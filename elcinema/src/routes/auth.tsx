@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import type { Lang } from "@/elcinema/home.shared";
 import { makeT } from "@/elcinema/i18n";
 import { isAdmin } from "@/elcinema/auth";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/auth")({
     redirect: typeof search["redirect"] === "string" ? search["redirect"] : undefined,
   }),
   beforeLoad: async ({ search }) => {
+    if (!isSupabaseConfigured()) return;
     const { data } = await supabase.auth.getUser();
     if (data.user) throw redirect({ to: safePath(search.redirect) });
   },
@@ -71,6 +73,11 @@ function AuthPage() {
     e.preventDefault();
     if (busy) return;
     setError("");
+
+    if (!isSupabaseConfigured()) {
+      setError(t("auth.notEnabled"));
+      return;
+    }
 
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") ?? "").trim();
@@ -145,6 +152,9 @@ function AuthPage() {
   };
 
   const handleForgot = async () => {
+    if (!isSupabaseConfigured()) {
+      return setError(t("auth.notEnabled"));
+    }
     if (!emailInput.trim()) {
       return setError(t("auth.enterEmailFirst"));
     }

@@ -30,6 +30,7 @@ import type { Lang } from "./home.shared";
 import { makeT } from "./i18n";
 import { AuthDialog } from "./AuthDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin, getUserDisplayName } from "./auth";
 
 /** Header menu groups, shared by the desktop dropdown buttons and the hamburger menu. */
@@ -63,6 +64,7 @@ export function SiteMenu({ lang }: { lang: Lang }) {
   const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
     let alive = true;
     supabase.auth.getSession().then(({ data }) => {
       if (alive) setCurrentUser(data.session?.user ?? null);
@@ -81,7 +83,7 @@ export function SiteMenu({ lang }: { lang: Lang }) {
   const displayName = getUserDisplayName(currentUser);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured()) await supabase.auth.signOut();
     window.location.assign(`/${lang}`);
   };
 

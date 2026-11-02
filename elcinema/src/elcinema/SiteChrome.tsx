@@ -14,6 +14,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { SiteMenu, NAV_GROUPS } from "./SiteMenu";
 import { AuthDialog } from "./AuthDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin, getUserDisplayName } from "./auth";
 import { makeT } from "./i18n";
 import {
@@ -105,6 +106,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
     let alive = true;
     supabase.auth.getSession().then(({ data }) => {
       if (alive) setCurrentUser(data.session?.user ?? null);
@@ -123,7 +125,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const displayName = getUserDisplayName(currentUser);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured()) await supabase.auth.signOut();
     window.location.assign(`/${lang}`);
   };
 

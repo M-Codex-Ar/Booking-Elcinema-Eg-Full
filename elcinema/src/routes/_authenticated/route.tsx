@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin } from "@/elcinema/auth";
 
 /**
@@ -10,6 +11,11 @@ import { isAdmin } from "@/elcinema/auth";
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location }) => {
+    // Reading `supabase` without the build-time env throws; send the visitor to
+    // the sign-in page, which explains that accounts are not switched on.
+    if (!isSupabaseConfigured()) {
+      throw redirect({ to: "/auth", search: { redirect: location.href } });
+    }
     const { data } = await supabase.auth.getUser();
     if (!data.user) {
       throw redirect({ to: "/auth", search: { redirect: location.href } });

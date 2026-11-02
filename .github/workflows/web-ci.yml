@@ -59,7 +59,17 @@ jobs:
         run: bun run test
 
       - name: Production build
+        # CI carries no Supabase values, so the build-time env gate is opted out
+        # here. The artifact of this job is a compile check only — it is NOT a
+        # deployable bundle. Release builds happen where elcinema/.env exists
+        # (locally, or Lovable Cloud, which injects its own values).
+        env:
+          SKIP_ENV_CHECK: "1"
         run: bun run build
+
+      - name: Note on the uploaded artifact
+        run: |
+          echo "::notice::web-output was built without SUPABASE env; it is compile-verified only."
 
       - name: Upload build output
         uses: actions/upload-artifact@v4
@@ -91,3 +101,4 @@ jobs:
             || { echo "::error::src/routeTree.gen.ts is stale — commit the regenerated file."; exit 1; }
         env:
           CI: "true"
+          SKIP_ENV_CHECK: "1"

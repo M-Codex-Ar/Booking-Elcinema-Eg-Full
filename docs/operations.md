@@ -5,7 +5,7 @@
 | Piece | Runtime | Notes |
 | --- | --- | --- |
 | `elcinema/` (SSR + server functions) | Cloudflare via Nitro | `bun run build` → `.output/`; `.wrangler/` holds local deploy state |
-| Postgres + auth | Supabase, project `bpvbewzvciyekyanoxca` | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
+| Postgres + auth | Supabase, project `twuzevyzjvmvufoutbny` | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
 | Static assets | Same origin, `public/` | `favicon.ico`, `robots.txt` (all crawlers allowed) |
 | Artwork | Bundled under `src/assets/img` via the `images.ts` manifest, plus external elcinema URLs | Catalogue posters resolve locally; scraped posters point at elcinema's CDN |
 | `server-api/` | — | Not deployed: no code yet ([backend.md](backend.md)) |
@@ -34,8 +34,9 @@ Release checklist, in order:
 
 ## Environment variables
 
-Frontend server side — `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (service role; never
-in a `VITE_` variable, never in the browser bundle).
+Frontend server side — `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and
+`SUPABASE_SERVICE_ROLE_KEY` (service role; never in a `VITE_` variable, never in
+the browser bundle; `scripts/seed-admin.mjs` reads it).
 Browser — `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (publishable only).
 Platform — `LOVABLE_CRON_SECRET` (and `..._PREVIOUS` for overlap during rotation),
 consumed by `src/integrations/supabase/cron-auth.ts` for authenticated cron calls.
@@ -43,6 +44,28 @@ consumed by `src/integrations/supabase/cron-auth.ts` for authenticated cron call
 Local: copy [`.env.example`](../elcinema/.env.example) to `elcinema/.env`. `.env`
 is ignored; `.env.example` never holds a real value
 ([../SECURITY.md](../SECURITY.md#secrets-and-configuration)).
+
+### The build gate
+
+`bun run build` runs `elcinema/scripts/check-env.mjs` first and refuses to emit a
+bundle when `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` cannot be
+resolved. Vite inlines silently, so an env-free build compiles green and then
+throws in the browser on every page ("Missing Supabase environment variable(s)")
+— the generated `src/integrations/supabase/client.ts` raises on first property
+access, and `src/start.ts` routed that failure into every server function.
+
+- `SKIP_ENV_CHECK=1` builds anyway. `Web CI` sets it because CI holds no Supabase
+  values, so its `web-output` artifact is compile-verified only — **not** deployable.
+- Deployable builds happen where the real `.env` lives, or on Lovable Cloud, which
+  injects its own values.
+- On Cloudflare (Nitro `cloudflare-module`) the server-side variables must also be
+  set on the Worker (`wrangler secret put SUPABASE_SERVICE_ROLE_KEY`, plus
+  `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY`); build-time inlining covers the
+  browser alone.
+- Missing values degrade instead of crashing: the auth subscription in `__root.tsx`
+  and the header session checks skip Supabase via `src/lib/supabase-env.ts`, the
+  sign-in forms report `auth.notEnabled`, and `getManagedContent` returns empty
+  lists so the built-in catalogue still renders.
 
 Rotating a leaked or stale value: issue the new one, deploy, then revoke the old —
 `LOVABLE_CRON_SECRET_PREVIOUS` exists so cron calls keep working across the swap.
@@ -81,6 +104,7 @@ Worth adding, in order: request logging with a correlation id, an uptime check o
 | Site renders unstyled after deploy | Tailwind `@source` scan; `styles.css` import order | Restore the explicit `@source "../src"` |
 | Image 404 | `images.ts` key vs `src/assets/img` | Add the asset or the manifest entry; the fallback poster must still show |
 | Missing/broken key in a deploy | Which environment, which variable | Rotate, redeploy, record in [../SECURITY.md](../SECURITY.md) |
+| Console says "Missing Supabase environment variable(s)", pages blank | Was the bundle built where `elcinema/.env` exists? Compare the asset hash in the deployed HTML with a local `bun run build` | Rebuild with the values present and redeploy; [The build gate](#the-build-gate) now blocks the env-free bundle |
 
 ## Backup and restore
 

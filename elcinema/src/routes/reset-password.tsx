@@ -3,6 +3,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lock, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
+import { text } from "@/elcinema/i18n";
 
 export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
@@ -39,6 +41,9 @@ function ResetPasswordPage() {
       return;
     }
     setError("");
+    if (!isSupabaseConfigured()) {
+      return setError(text(ar ? "ar" : "en", "auth.notEnabled"));
+    }
     const { error: err } = await supabase.auth.updateUser({ password });
     if (err) return setError(err.message);
     setDone(true);
