@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FileText } from "lucide-react";
 import { StaticPage } from "@/pages/StaticPage";
 import { makeT, asLang } from "@/i18n";
+import { getFallbackPage } from "@/lib/fallback-content";
 import type { LiveStaticPage } from "@/types/live";
 
 export const Route = createFileRoute("/$lang/terms")({
@@ -18,9 +19,12 @@ function TermsPage() {
   const { lang } = Route.useParams();
   const l = asLang(lang);
   const t = makeT(l);
-  // The real elcinema.com has no standalone Terms page to scrape, so the
-  // generic static structure carries the edition's own terms copy.
-  const page: LiveStaticPage = {
+  
+  // Get fallback page with image
+  const fallback = getFallbackPage(`/${l}/terms/`, l);
+  
+  // If fallback exists, use it (with image). Otherwise, create basic page
+  const page: LiveStaticPage = fallback || {
     title: t("footer.termsPage.title"),
     sections: [
       {
@@ -29,5 +33,6 @@ function TermsPage() {
       },
     ],
   };
+  
   return <StaticPage icon={FileText} page={page} />;
 }
