@@ -33,7 +33,7 @@ export const enCommon = {
   "common.bookTickets": "Book tickets",
   "common.showtimes": "Playing in Egypt Cinemas",
   "common.playbackNote": "Opens the real play link in a new tab.",
-  "common.ticketNote": "Opens the real ticket service in a new tab.",
+  "common.ticketNote": "Online ticket purchase is not available in this app yet.",
   "common.notFoundMovie": "Movie not found",
   "common.notFoundPerson": "Person not found",
   "common.notFoundList": "List not found",

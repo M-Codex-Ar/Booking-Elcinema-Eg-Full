@@ -4,6 +4,7 @@ import { Megaphone } from "lucide-react";
 import { LiveError } from "@/features/live/live-ui";
 import { staticPageOptions } from "@/features/live/live.options";
 import { StaticPage } from "@/pages/StaticPage";
+import { getFallbackPage } from "@/lib/fallback-content";
 import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/advertise")({
@@ -27,8 +28,21 @@ function AdvertisePage() {
   const { lang } = Route.useParams();
   const l = asLang(lang);
   const result = useSuspenseQuery(staticPageOptions(l, `/${l}/advertise/`)).data;
-  if (result.error || !result.data) {
+
+  // Use fallback if scraping fails or returns incomplete data
+  const fallback = getFallbackPage(`/${l}/advertise/`, l);
+
+  // Use fallback if:
+  // 1. No scraped data
+  // 2. Scraped data has less than 2 sections (incomplete)
+  const page =
+    !result.data || result.data.sections?.length < 2
+      ? fallback
+      : { ...result.data, ...(fallback?.image ? { image: fallback.image } : {}) };
+
+  if (!page) {
     return <LiveError message={result.error ?? ""} lang={l} />;
   }
-  return <StaticPage icon={Megaphone} page={result.data} />;
+
+  return <StaticPage icon={Megaphone} page={page} />;
 }

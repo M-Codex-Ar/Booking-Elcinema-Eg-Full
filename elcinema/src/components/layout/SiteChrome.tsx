@@ -316,7 +316,7 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
   return (
     <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"}>
       <DropdownMenuTrigger
-        className={`group flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-bold transition-colors hover:bg-secondary data-[state=open]:bg-secondary ${
+        className={`group flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-bold transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=open]:bg-secondary ${
           active ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
         }`}
       >
@@ -335,19 +335,21 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
           <DropdownMenuItem
             key={it.seg}
             onSelect={() => go(it.seg)}
-            className={`cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary ${
+            className={`cursor-pointer gap-2 rounded-lg py-2 font-semibold ${
               i > 0 ? "mt-0.5 border-t border-border/60 pt-2" : ""
             }`}
           >
-            <it.icon className="h-4 w-4 text-primary" /> {it[lang]}
+            <it.icon className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+            {it[lang]}
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => go("search")}
-          className="cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary"
+          className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
         >
-          <Search className="h-4 w-4 text-primary" /> {t("chrome.advancedSearch")}
+          <Search className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+          {t("chrome.advancedSearch")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -407,6 +409,7 @@ const FOOTER_HELP = [
   ["advertise", "footer.advertise"],
   ["privacy", "footer.privacy"],
   ["terms", "footer.terms"],
+  ["faq", "footer.faq"],
 ] as const;
 
 export function SiteFooter({ lang }: { lang: Lang }) {

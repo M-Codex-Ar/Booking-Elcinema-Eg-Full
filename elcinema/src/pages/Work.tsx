@@ -21,6 +21,7 @@ import {
 import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
 import type { Lang, Movie } from "@/types/home";
 import { makeT } from "@/i18n";
+import { bookingPath } from "@/features/live/live-ui";
 
 const L = {
   en: {
@@ -259,21 +260,16 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
             })}
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {showtimes.map(({ cinema, times, bookingHref }) => (
+            {showtimes.map(({ cinema, times }) => (
               <div key={cinema.id} className="glass-card p-4">
-                <div className="font-bold">
-                  {bookingHref ? (
-                    <a
-                      href={bookingHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="transition-colors hover:text-primary"
-                    >
-                      {cinema.name[lang]}
-                    </a>
-                  ) : (
-                    cinema.name[lang]
-                  )}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="font-bold">{cinema.name[lang]}</div>
+                  <Na
+                    href={bookingPath(lang, String(workId(movie)))}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Ticket className="h-3.5 w-3.5" /> {copy("common.getTickets")}
+                  </Na>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {times.map((tm) => (

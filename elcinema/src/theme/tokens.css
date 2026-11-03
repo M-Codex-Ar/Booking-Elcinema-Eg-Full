@@ -67,6 +67,15 @@
   --pulse-core: color-mix(in oklab, var(--primary) 55%, transparent);
   --pulse-halo: color-mix(in oklab, var(--primary) 35%, transparent);
 
+  /* Shared page canvas: restrained cool and warm light over the app surface. */
+  --page-glow-brand: color-mix(in oklab, var(--primary) 8%, transparent);
+  --page-glow-gold: color-mix(in oklab, var(--gold) 5%, transparent);
+  --page-surface-end: color-mix(in oklab, var(--background) 98%, var(--primary));
+  --page-background-image:
+    radial-gradient(ellipse at 12% 0%, var(--page-glow-brand), transparent 44%),
+    radial-gradient(ellipse at 94% 18%, var(--page-glow-gold), transparent 38%),
+    linear-gradient(180deg, var(--background), var(--page-surface-end));
+
   /* Glass + scrim recipes */
   --glass: oklch(1 0 0 / 0.78);
   --glass-border: oklch(0.885 0.008 245 / 0.9);
@@ -123,6 +132,10 @@
   --ring: oklch(0.695 0.133 232);
 
   --glow: oklch(0.695 0.133 232 / 0.42);
+
+  --page-glow-brand: color-mix(in oklab, var(--primary) 15%, transparent);
+  --page-glow-gold: color-mix(in oklab, var(--gold) 7%, transparent);
+  --page-surface-end: color-mix(in oklab, var(--background) 96%, var(--primary));
 
   --glass: oklch(0.19 0.005 245 / 0.72);
   --glass-border: oklch(0.29 0.006 245 / 0.7);

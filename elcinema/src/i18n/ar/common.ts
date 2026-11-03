@@ -33,7 +33,7 @@ export const arCommon = {
   "common.bookTickets": "احجز تذاكر",
   "common.showtimes": "معروض في سينمات مصر",
   "common.playbackNote": "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",
-  "common.ticketNote": "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
+  "common.ticketNote": "شراء التذاكر عبر الإنترنت غير متاح داخل التطبيق حتى الآن.",
   "common.notFoundMovie": "الفيلم غير موجود",
   "common.notFoundPerson": "الشخص غير موجود",
   "common.notFoundList": "القائمة غير موجودة",

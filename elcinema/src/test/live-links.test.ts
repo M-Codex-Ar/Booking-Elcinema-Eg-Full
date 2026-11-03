@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cardLink } from "@/lib/links";
+import { bookingLink, cardLink } from "@/lib/links";
 
 /**
  * The user's routing rule: no elcinema.com click may ever leave the app.
@@ -7,6 +7,16 @@ import { cardLink } from "@/lib/links";
  * only non-elcinema hosts stay external.
  */
 describe("cardLink keeps every elcinema path inside the app", () => {
+  it("keeps ticket buttons in app even when the provider URL is external", () => {
+    expect(
+      bookingLink("ar", "https://tickets.example/show/1", "/en/work/2099119/", "Unknown film"),
+    ).toBe("/ar/booking/2099119");
+  });
+
+  it("falls back to the in-app booking index if no movie id is available", () => {
+    expect(bookingLink("en", "https://tickets.example/show/1", null)).toBe("/en/booking");
+  });
+
   it("maps work cards to internal work pages", () => {
     const link = cardLink("en", "/en/work/2099119/", "Sense and Sensibility");
     expect(link.external).toBe(false);

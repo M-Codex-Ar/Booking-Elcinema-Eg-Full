@@ -42,7 +42,7 @@ function LangLayout() {
   return (
     <div
       dir={rtl ? "rtl" : "ltr"}
-      className="flex min-h-screen w-full flex-col overflow-x-clip bg-background"
+      className="page-background flex min-h-screen w-full flex-col overflow-x-clip"
     >
       <SiteHeader lang={l} />
       <main className="page-flow flex flex-1 flex-col overflow-x-clip">
@@ -56,7 +56,7 @@ function LangLayout() {
 /** Dashboard routes render their own frame; the site chrome stays out of the way. */
 function DashboardLayout({ dirLabel }: { dirLabel: "rtl" | "ltr" }) {
   return (
-    <div dir={dirLabel} className="min-h-screen bg-background">
+    <div dir={dirLabel} className="page-background min-h-screen">
       <Outlet />
     </div>
   );

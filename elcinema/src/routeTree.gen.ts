@@ -20,6 +20,7 @@ import { Route as LangAdvertiseRouteImport } from './routes/$lang.advertise'
 import { Route as LangBookingRouteImport } from './routes/$lang.booking'
 import { Route as LangBoxofficeRouteImport } from './routes/$lang.boxoffice'
 import { Route as LangContactRouteImport } from './routes/$lang.contact'
+import { Route as LangFaqRouteImport } from './routes/$lang.faq'
 import { Route as LangLineupRouteImport } from './routes/$lang.lineup'
 import { Route as LangNowRouteImport } from './routes/$lang.now'
 import { Route as LangPrivacyRouteImport } from './routes/$lang.privacy'
@@ -91,6 +92,11 @@ const LangBoxofficeRoute = LangBoxofficeRouteImport.update({
 const LangContactRoute = LangContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangFaqRoute = LangFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => LangRoute,
 } as any)
 const LangLineupRoute = LangLineupRouteImport.update({
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/$lang/booking': typeof LangBookingRouteWithChildren
   '/$lang/boxoffice': typeof LangBoxofficeRoute
   '/$lang/contact': typeof LangContactRoute
+  '/$lang/faq': typeof LangFaqRoute
   '/$lang/lineup': typeof LangLineupRouteWithChildren
   '/$lang/now': typeof LangNowRoute
   '/$lang/privacy': typeof LangPrivacyRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/$lang/advertise': typeof LangAdvertiseRoute
   '/$lang/boxoffice': typeof LangBoxofficeRoute
   '/$lang/contact': typeof LangContactRoute
+  '/$lang/faq': typeof LangFaqRoute
   '/$lang/now': typeof LangNowRoute
   '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/search': typeof LangSearchRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/$lang/booking': typeof LangBookingRouteWithChildren
   '/$lang/boxoffice': typeof LangBoxofficeRoute
   '/$lang/contact': typeof LangContactRoute
+  '/$lang/faq': typeof LangFaqRoute
   '/$lang/lineup': typeof LangLineupRouteWithChildren
   '/$lang/now': typeof LangNowRoute
   '/$lang/privacy': typeof LangPrivacyRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/$lang/booking'
     | '/$lang/boxoffice'
     | '/$lang/contact'
+    | '/$lang/faq'
     | '/$lang/lineup'
     | '/$lang/now'
     | '/$lang/privacy'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/$lang/advertise'
     | '/$lang/boxoffice'
     | '/$lang/contact'
+    | '/$lang/faq'
     | '/$lang/now'
     | '/$lang/privacy'
     | '/$lang/search'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/$lang/booking'
     | '/$lang/boxoffice'
     | '/$lang/contact'
+    | '/$lang/faq'
     | '/$lang/lineup'
     | '/$lang/now'
     | '/$lang/privacy'
@@ -448,6 +460,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/$lang/contact'
       preLoaderRoute: typeof LangContactRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/faq': {
+      id: '/$lang/faq'
+      path: '/faq'
+      fullPath: '/$lang/faq'
+      preLoaderRoute: typeof LangFaqRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/lineup': {
@@ -638,6 +657,7 @@ interface LangRouteChildren {
   LangBookingRoute: typeof LangBookingRouteWithChildren
   LangBoxofficeRoute: typeof LangBoxofficeRoute
   LangContactRoute: typeof LangContactRoute
+  LangFaqRoute: typeof LangFaqRoute
   LangLineupRoute: typeof LangLineupRouteWithChildren
   LangNowRoute: typeof LangNowRoute
   LangPrivacyRoute: typeof LangPrivacyRoute
@@ -658,6 +678,7 @@ const LangRouteChildren: LangRouteChildren = {
   LangBookingRoute: LangBookingRouteWithChildren,
   LangBoxofficeRoute: LangBoxofficeRoute,
   LangContactRoute: LangContactRoute,
+  LangFaqRoute: LangFaqRoute,
   LangLineupRoute: LangLineupRouteWithChildren,
   LangNowRoute: LangNowRoute,
   LangPrivacyRoute: LangPrivacyRoute,

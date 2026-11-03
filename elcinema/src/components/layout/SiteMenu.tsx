@@ -94,7 +94,7 @@ export function SiteMenu({ lang }: { lang: Lang }) {
       <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"}>
         <DropdownMenuTrigger
           aria-label={t("chrome.menu")}
-          className="group flex h-9 items-center gap-2 rounded-full border border-border px-3 text-sm font-semibold transition-colors hover:border-primary hover:text-primary data-[state=open]:border-primary data-[state=open]:text-primary"
+          className="group flex h-9 items-center gap-2 rounded-full border border-border px-3 text-sm font-semibold transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=open]:border-primary data-[state=open]:text-primary"
         >
           <Menu className="h-4 w-4 transition-transform duration-300 group-data-[state=open]:rotate-90" />
           <span className="hidden sm:inline">{t("chrome.menu")}</span>
@@ -116,9 +116,10 @@ export function SiteMenu({ lang }: { lang: Lang }) {
                   <DropdownMenuItem
                     key={it.seg}
                     onSelect={() => go(it.seg)}
-                    className="cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary"
+                    className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
                   >
-                    <it.icon className="h-4 w-4 text-primary" /> {it[lang]}
+                    <it.icon className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+                    {it[lang]}
                   </DropdownMenuItem>
                 ))}
               </div>
@@ -127,9 +128,10 @@ export function SiteMenu({ lang }: { lang: Lang }) {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={() => go("search")}
-            className="cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary"
+            className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
           >
-            <Search className="h-4 w-4 text-primary" /> {t("chrome.advancedSearch")}
+            <Search className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+            {t("chrome.advancedSearch")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuLabel className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -140,9 +142,10 @@ export function SiteMenu({ lang }: { lang: Lang }) {
               {admin ? (
                 <DropdownMenuItem
                   onSelect={() => go("dashboard")}
-                  className="cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary"
+                  className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
                 >
-                  <LayoutDashboard className="h-4 w-4 text-primary" /> {t("chrome.dashboard")}
+                  <LayoutDashboard className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+                  {t("chrome.dashboard")}
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
@@ -162,9 +165,10 @@ export function SiteMenu({ lang }: { lang: Lang }) {
           ) : (
             <DropdownMenuItem
               onSelect={() => setAuthOpen(true)}
-              className="cursor-pointer gap-2 rounded-lg py-2 font-semibold text-primary focus:bg-accent focus:text-primary"
+              className="cursor-pointer gap-2 rounded-lg py-2 font-semibold text-primary"
             >
-              <LogIn className="h-4 w-4 text-primary" /> {t("auth.loginOrRegister")}
+              <LogIn className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
+              {t("auth.loginOrRegister")}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
