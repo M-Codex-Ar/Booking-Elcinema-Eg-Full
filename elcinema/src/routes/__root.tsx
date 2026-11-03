@@ -15,7 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportLovableError } from "@/lib/lovable-error-reporting";
 
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
 function NotFoundComponent() {

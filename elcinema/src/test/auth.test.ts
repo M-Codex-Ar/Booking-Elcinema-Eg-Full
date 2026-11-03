@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getUserRole, isAdmin, getUserDisplayName } from "../elcinema/auth";
+import { getUserRole, isAdmin, getUserDisplayName } from "@/elcinema/auth";
 import type { User } from "@supabase/supabase-js";
 
 function mockUser(overrides: Partial<User> = {}): User {

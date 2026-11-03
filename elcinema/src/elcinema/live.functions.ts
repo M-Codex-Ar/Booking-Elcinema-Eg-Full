@@ -29,7 +29,7 @@ function wrap<T>(error: unknown, lang: Lang): { data: T | null; error: string } 
 }
 
 export const getLiveWorkFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang; id: string }) => input)
+  .validator((input: { lang: Lang; id: string }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getWorkDetail(data.lang, data.id), error: null };
@@ -39,7 +39,7 @@ export const getLiveWorkFn = createServerFn({ method: "GET" })
   });
 
 export const getLivePersonFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang; id: string }) => input)
+  .validator((input: { lang: Lang; id: string }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getPersonDetail(data.lang, data.id), error: null };
@@ -49,7 +49,7 @@ export const getLivePersonFn = createServerFn({ method: "GET" })
   });
 
 export const getVideoGalleryFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang }) => input)
+  .validator((input: { lang: Lang }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getVideoGallery(data.lang), error: null };
@@ -59,7 +59,7 @@ export const getVideoGalleryFn = createServerFn({ method: "GET" })
   });
 
 export const getVideoDetailFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang; id: string }) => input)
+  .validator((input: { lang: Lang; id: string }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getVideoDetail(data.lang, data.id), error: null };
@@ -69,7 +69,7 @@ export const getVideoDetailFn = createServerFn({ method: "GET" })
   });
 
 export const getVodGuideFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang }) => input)
+  .validator((input: { lang: Lang }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getVodGuide(data.lang), error: null };
@@ -79,7 +79,7 @@ export const getVodGuideFn = createServerFn({ method: "GET" })
   });
 
 export const getLineupIndexFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang }) => input)
+  .validator((input: { lang: Lang }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getLineupIndex(data.lang), error: null };
@@ -89,7 +89,7 @@ export const getLineupIndexFn = createServerFn({ method: "GET" })
   });
 
 export const getLineupDetailFn = createServerFn({ method: "GET" })
-  .inputValidator((input: { lang: Lang; id: string }) => input)
+  .validator((input: { lang: Lang; id: string }) => input)
   .handler(async ({ data }) => {
     try {
       return { data: await getLineupDetail(data.lang, data.id), error: null };

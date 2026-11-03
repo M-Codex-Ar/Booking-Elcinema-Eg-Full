@@ -69,7 +69,7 @@ export type ManagedRow = Record<string, unknown> & { id?: string };
 /** Staff-only write (RLS: authenticated admin). `row.id` present => update. */
 export const saveManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { table: ManagedTable; row: ManagedRow } | null) => input)
+  .validator((input: { table: ManagedTable; row: ManagedRow } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
     const claims = context.claims as Record<string, unknown> | undefined;
@@ -96,7 +96,7 @@ export const saveManagedRow = createServerFn({ method: "POST" })
 /** Staff-only delete (RLS: authenticated admin). */
 export const deleteManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { table: ManagedTable; id: string } | null) => input)
+  .validator((input: { table: ManagedTable; id: string } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
     const claims = context.claims as Record<string, unknown> | undefined;
