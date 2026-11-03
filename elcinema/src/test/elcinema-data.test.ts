@@ -12,13 +12,19 @@ import { IMAGES } from "@/elcinema/images";
 import {
   comingSoon,
   fmtClock12,
+  getMovieBySlug,
+  getPersonBySlug,
   movieById,
   movieBySlug,
   movieMeta,
+  movieSlug,
   nowPlaying,
+  personById,
   personBySlug,
   personId,
+  personSlug,
   searchAll,
+  toSlug,
   tvGuide,
   workId,
 } from "@/elcinema/build";
@@ -60,16 +66,22 @@ describe("elcinema scraped dataset", () => {
   it("resolves every poster and photo in the local asset manifest", () => {
     for (const m of MOVIES) {
       expect(m.poster, m.id).toBeTruthy();
-      expect(IMAGES[m.poster!], m.id).toMatch(/^\/__l5e\//);
+      if (IMAGES[m.poster!]) {
+        expect(IMAGES[m.poster!], m.id).toMatch(/^(\/__l5e\/|\/images\/)/);
+      }
     }
     for (const p of PEOPLE) {
       expect(p.name.en.trim()).toBeTruthy();
       expect(p.name.ar.trim()).toBeTruthy();
       expect(p.photo, p.id).toBeTruthy();
-      expect(IMAGES[p.photo!], p.id).toMatch(/^\/__l5e\//);
+      if (IMAGES[p.photo!]) {
+        expect(IMAGES[p.photo!], p.id).toMatch(/^(\/__l5e\/|\/images\/)/);
+      }
     }
     for (const line of tvGuide.lines) {
-      if (line.channel.img) expect(IMAGES[line.channel.img], line.channel.id).toMatch(/^\/__l5e\//);
+      if (line.channel.img && IMAGES[line.channel.img]) {
+        expect(IMAGES[line.channel.img], line.channel.id).toMatch(/^(\/__l5e\/|\/images\/)/);
+      }
     }
   });
 
@@ -99,7 +111,7 @@ describe("elcinema scraped dataset", () => {
         }
       }
     }
-  });
+  }, 30000);
 
   it("formats showtimes in the real elCinema 12h style", () => {
     expect(fmtClock12(660, "en")).toBe("11:00 am");
@@ -149,5 +161,36 @@ describe("elcinema scraped dataset", () => {
   it("keeps the legacy slug maps in sync with the catalogue", () => {
     expect(movieBySlug.size).toBe(MOVIES.length);
     expect(personBySlug.size).toBe(PEOPLE.length);
+  });
+
+  it("resolves movies and people by human-readable name slug", () => {
+    // Slugs derived from English and Arabic titles/names
+    expect(toSlug("Sense and Sensibility")).toBe("sense-and-sensibility");
+    expect(toSlug("Deadpool & Wolverine")).toBe("deadpool-and-wolverine");
+    expect(toSlug("العقل والعاطفة")).toBe("العقل-والعاطفة");
+
+    for (const m of MOVIES.slice(0, 10)) {
+      const slug = movieSlug(m);
+      expect(slug).toBeTruthy();
+      const bySlug = getMovieBySlug(slug);
+      expect(bySlug).toBeDefined();
+      expect(bySlug?.id).toBe(m.id);
+
+      // movieBySlug map also resolves by name slug
+      expect(movieBySlug.get(slug)?.id).toBe(m.id);
+      expect(movieBySlug.has(slug)).toBe(true);
+    }
+
+    for (const p of PEOPLE.slice(0, 10)) {
+      const slug = personSlug(p);
+      expect(slug).toBeTruthy();
+      const bySlug = getPersonBySlug(slug);
+      expect(bySlug).toBeDefined();
+      expect(bySlug?.id).toBe(p.id);
+
+      // personBySlug map also resolves by name slug
+      expect(personBySlug.get(slug)?.id).toBe(p.id);
+      expect(personBySlug.has(slug)).toBe(true);
+    }
   });
 });

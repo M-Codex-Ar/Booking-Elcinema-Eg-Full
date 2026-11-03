@@ -6,11 +6,22 @@
  * internal booking page. Only true playback/purchase actions (watch buttons,
  * cinema ticket buttons) open the real destination in a new tab.
  */
-import { CalendarClock, Clock, Film, Images, MonitorPlay, Star, Ticket, Tv } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarClock,
+  Clock,
+  Film,
+  Images,
+  MonitorPlay,
+  Star,
+  Ticket,
+  Tv,
+} from "lucide-react";
 import { useState } from "react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import type { LiveWork } from "../live.shared";
-import { Na } from "../ui";
+import { Na, Row } from "../ui";
 import { LiveImg, LivePoster, PersonChip, RatingPill, bookingPath, videoPath } from "../live-ui";
 
 const L = {
@@ -71,17 +82,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
     <div>
       {/* Backdrop + poster header, elCinema style */}
       <div className="relative h-[38vh] w-full overflow-hidden md:h-[46vh]">
-        {data.poster ? (
-          <img
-            src={data.poster}
-            alt={data.title}
-            className="h-full w-full object-cover object-center"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-secondary">
-            <Film className="h-16 w-16 text-muted-foreground" />
-          </div>
-        )}
+        <ImgWithFallback
+          src={data.poster}
+          alt={data.title}
+          className="h-full w-full object-center"
+          fallback={
+            <div className="flex h-full items-center justify-center bg-secondary">
+              <Film className="h-16 w-16 text-muted-foreground" />
+            </div>
+          }
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </div>
 
@@ -279,7 +289,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                     </a>
                   ))}
                 </div>
-                <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+                <p className="mt-3 text-meta text-muted-foreground">{Lx.playbackNote}</p>
               </div>
               {data.imdbUrl && (
                 <div className="glass-card p-5 text-sm">
@@ -287,9 +297,9 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                     href={data.imdbUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                   >
-                    IMDB Page →
+                    IMDB Page <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                   </a>
                 </div>
               )}
@@ -306,9 +316,9 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               </h2>
               <Na
                 href={bookingPath(lang, data.id)}
-                className="text-sm font-semibold text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
               >
-                {Lx.book} →
+                {Lx.book} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Na>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -374,14 +384,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
 
         {/* Related strip */}
         {data.related.length > 0 && (
-          <section className="pb-12">
-            <h2 className="mb-4 text-xl font-black">{Lx.related}</h2>
-            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-              {data.related.slice(0, 12).map((r) => (
-                <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
-              ))}
-            </div>
-          </section>
+          <Row
+            title={Lx.related}
+            icon={<Film className="h-5 w-5" />}
+            more={`/${lang}/now`}
+            lang={lang}
+          >
+            {data.related.slice(0, 12).map((r) => (
+              <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
+            ))}
+          </Row>
         )}
       </div>
     </div>

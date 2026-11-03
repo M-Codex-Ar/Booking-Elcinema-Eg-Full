@@ -1,10 +1,14 @@
 /** Now Playing — movies currently in Egyptian cinemas, with genre filter,
  * sorting, grid/list view toggle and pagination (all URL-driven). */
 import { Ticket, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { GENRES } from "../data";
 import { movieMeta, workId } from "../build";
+import { locale } from "../i18n";
 import { fmtDate, Na, t, workPath } from "../ui";
 import { PosterArt } from "../ui";
+import { Section, SectionHeader, Subtitle } from "../components/primitives";
+import { artFrame, cardMeta, cardTitle, chip, pill, railItem } from "../components/variants";
 import type { Lang, Movie } from "../home.shared";
 import {
   ListToolbar,
@@ -23,17 +27,23 @@ const L = {
     title: "Now Playing",
     sub: "Movies in Egyptian cinemas this week",
     all: "All",
+    empty: "No movies in this genre right now.",
     sort: { featured: "Featured", rating: "Top rated", title: "A to Z", newest: "Newest" },
   },
   ar: {
     title: "السينمات الآن",
     sub: "أفلام في السينمات المصرية هذا الأسبوع",
     all: "الكل",
+    empty: "لا توجد أفلام في هذا النوع حاليًا.",
     sort: { featured: "المميز", rating: "الأعلى تقييمًا", title: "أبجديًا", newest: "الأحدث" },
   },
 } as const;
 
 type SortKey = "featured" | "rating" | "title" | "newest";
+
+/** Managed rows may carry a genre code the built-in catalogue never defined;
+ *  an unlabelled one would render as an empty chip, so it is filtered out. */
+const hasGenreLabel = (g: string): boolean => Boolean(GENRES[g]);
 
 function sortMovies(movies: Movie[], sort: SortKey, lang: Lang): Movie[] {
   const list = [...movies];
@@ -41,9 +51,7 @@ function sortMovies(movies: Movie[], sort: SortKey, lang: Lang): Movie[] {
     case "rating":
       return list.sort((a, b) => movieMeta(b).rating - movieMeta(a).rating);
     case "title":
-      return list.sort((a, b) =>
-        a.title[lang].localeCompare(b.title[lang], lang === "ar" ? "ar" : "en"),
-      );
+      return list.sort((a, b) => a.title[lang].localeCompare(b.title[lang], locale(lang)));
     case "newest":
       return list.sort((a, b) => b.release.localeCompare(a.release));
     default:
@@ -69,11 +77,14 @@ function Row({ movie, lang }: { movie: Movie; lang: Lang }) {
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span>{fmtDate(movie.release, lang)}</span>
           <span>· {movie.cert}</span>
-          {movie.genres.slice(0, 3).map((g) => (
-            <span key={g} className="rounded-md bg-secondary px-2 py-0.5">
-              {t(GENRES[g], lang)}
-            </span>
-          ))}
+          {movie.genres
+            .slice(0, 3)
+            .filter(hasGenreLabel)
+            .map((g) => (
+              <span key={g} className={pill()}>
+                {t(GENRES[g], lang)}
+              </span>
+            ))}
         </div>
       </div>
       <span className="flex shrink-0 items-center gap-1 text-sm font-bold">

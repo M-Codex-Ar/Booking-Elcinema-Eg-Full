@@ -38,6 +38,9 @@ Stated plainly so nobody reads a green suite as full assurance.
 
 - **Rendering.** No component renders to the DOM except the route-matching test. A
   layout regression, an RTL flip, or a theme-token mistake passes CI today.
+  `scripts/responsive-audit.mjs` (below) measures real rendering in a real browser, but
+  it is run out of band — it needs a Chrome with a debugging port and the dev server, so
+  it is not wired into `Web CI`.
 - **Server functions and Supabase.** No test touches a real or mocked database;
   `getManagedContent`'s error handling and `saveManagedRow`'s validation are
   untested — exactly the areas in the security backlog.
@@ -58,6 +61,7 @@ Stated plainly so nobody reads a green suite as full assurance.
 | A scraped link's destination | `live-links.test.ts` |
 | A route | `app-routing.test.tsx`, including the *other* language edition |
 | A primitive or recipe | A render test with Testing Library; assert role/name/label, not class strings |
+| A page's sizing, a shared utility or a control's hit area | `elcinema/scripts/responsive-audit.mjs` at 360/768/1440, both editions and both themes (see below) |
 | An `i18n.ts` key | The type system catches a missing key; assert both languages are non-empty in a cheap table test |
 | A server function | Unit-test validation and error mapping with an injected client; do not hit Supabase from CI |
 
@@ -75,3 +79,34 @@ A passing build proves compilation, not correctness. Before saying "done":
 
 Report failures and untested areas as they are. "Tests pass, rendering was not
 checked" is a valid and useful statement; "it works" without looking is not.
+
+## Responsive and RTL audit
+
+Eyeballing one page at one width is how an overflow bug ships.
+`elcinema/scripts/responsive-audit.mjs` drives a Chrome over the DevTools Protocol
+(Node's own `fetch`/`WebSocket`, so no dependency is added) and, for every route ×
+width × theme, measures:
+
+- document scroll width against the viewport — the sideways scroll a thumb has to fight;
+- elements outside the viewport with no scroller that reaches them (children of an
+  `overflow-x: auto|scroll` box are excluded, because those are reachable on purpose);
+- content clipped by a non-visible `overflow-x` — a bug for a heading, expected for a
+  `truncate` span or a rail, so this column is read rather than asserted;
+- interactive targets under 40×32 CSS px.
+
+```sh
+chrome --headless=new --remote-debugging-port=9333 --user-data-dir=<tmp-dir> &
+bun run dev:web             # the Nitro build cannot be previewed, so measure the dev server
+node scripts/responsive-audit.mjs --base http://localhost:4360 \
+  --widths 360,768,1440 --theme dark,light --shots
+```
+
+Screenshots and `report.json` land in `--out` (`./audit`), and the script exits `1` when
+a document scrolls sideways, when something sits off-screen, or when a page could not be
+measured at all — a gate, not a suggestion. `--settle` matters: the dev server
+occasionally re-optimises dependencies and reloads mid-run, which the script retries
+before calling a page broken.
+
+The dashboard is behind Supabase auth and the harness cannot log in, so its layout is
+reviewed statically against the same rules (hit areas, `dialog-scroll`, no fixed pixel
+widths in a wrapping row). Say that in the review instead of implying it was measured.

@@ -227,6 +227,7 @@ describe("duplicate rules", () => {
         { href: "/en/boxoffice", title: "Desert Horizon", img: null, revenue: "2.0M EGP" },
       ],
       tvGuide: { times: ["11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM"], lines: [] },
+      bornToday: { date: "", dateKey: "", href: "", people: [] },
       boxofficeDate: "",
     };
     const merged = mergedHomeData(

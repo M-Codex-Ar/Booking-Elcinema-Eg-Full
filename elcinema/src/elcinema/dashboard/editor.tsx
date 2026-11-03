@@ -22,8 +22,9 @@ import {
 } from "@/components/ui/select";
 import { GENRES } from "../data";
 import { PosterArt, fmtDate } from "../ui";
-import { Pill } from "../components/primitives";
+import { ImgWithFallback, Pill } from "../components/primitives";
 import type { Lang, Movie } from "../home.shared";
+import { pair as L } from "../i18n";
 import type { ManagedContent } from "../content.functions";
 import {
   allMovies,
@@ -42,8 +43,6 @@ import {
   type ManagedProgramRow,
   type ManagedVideoRow,
 } from "../content";
-
-const L = (lang: Lang, en: string, ar: string) => (lang === "ar" ? ar : en);
 
 /**
  * Caution next to an entry that repeats built-in content. One definition so the
@@ -118,7 +117,7 @@ function RowDialog({
     >
       <DialogContent
         dir={lang === "ar" ? "rtl" : "ltr"}
-        className="max-h-[85vh] overflow-y-auto border-border bg-card sm:max-w-lg"
+        className="dialog-scroll border-border bg-card sm:max-w-lg"
       >
         <DialogHeader>
           <DialogTitle className="text-lg font-black">{title}</DialogTitle>
@@ -338,17 +337,10 @@ const STATUS_OPTIONS = (lang: Lang) => [
   { value: "soon", label: L(lang, "Coming soon", "قريباً") },
 ];
 
+/** Dashboard table thumbnail: a muted box stands in for missing or dead artwork. */
 function Thumb({ src, wide }: { src: string | null; wide?: boolean }) {
-  return src ? (
-    <img
-      src={src}
-      alt=""
-      loading="lazy"
-      className={`shrink-0 rounded bg-muted object-cover ${wide ? "h-9 w-16" : "h-10 w-7"}`}
-    />
-  ) : (
-    <div className={`shrink-0 rounded bg-muted ${wide ? "h-9 w-16" : "h-10 w-7"}`} />
-  );
+  const box = `shrink-0 rounded bg-muted ${wide ? "h-9 w-16" : "h-10 w-7"}`;
+  return <ImgWithFallback src={src} alt="" className={box} fallback={<div className={box} />} />;
 }
 
 export function MoviesManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
@@ -667,8 +659,10 @@ export function ChannelsManager({ lang, data }: { lang: Lang; data: ManagedConte
             {L(lang, "Programs", "البرامج")}
           </h2>
           <div className="flex flex-wrap items-center gap-3">
+            {/* Full width on a phone: a fixed 16rem trigger plus the buttons
+                that follow it leaves nothing to tap on either side. */}
             <Select value={channelId || channels[0]!.id} onValueChange={setChannelId}>
-              <SelectTrigger className="w-64">
+              <SelectTrigger className="w-full sm:w-64">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -972,7 +966,7 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
       >
         <DialogContent
           dir={lang === "ar" ? "rtl" : "ltr"}
-          className="max-h-[85vh] overflow-y-auto border-border bg-card sm:max-w-lg"
+          className="dialog-scroll border-border bg-card sm:max-w-lg"
         >
           <DialogHeader>
             <DialogTitle className="text-lg font-black">
@@ -1009,14 +1003,20 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
                     key={`${it.ref}-${i}`}
                     className="flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-semibold"
                   >
-                    {it.title_en}
+                    {/* Capped: an unbounded title makes the chip wider than the
+                        dialog and the whole row scrolls sideways to reach the X. */}
+                    <span title={it.title_en} className="max-w-40 truncate">
+                      {it.title_en}
+                    </span>
                     <button
                       type="button"
-                      aria-label="remove"
+                      aria-label={L(lang, "remove", "إزالة")}
                       onClick={() =>
                         setForm((f) => ({ ...f, items: f.items.filter((_, j) => j !== i) }))
                       }
-                      className="text-muted-foreground hover:text-destructive"
+                      /* The icon is 12px; the target around it is 24px and pulls
+                         into the chip's own padding so the pill stays the size. */
+                      className="-me-2 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                     >
                       <X className="h-3 w-3" />
                     </button>

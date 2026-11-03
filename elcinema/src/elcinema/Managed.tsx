@@ -1,5 +1,6 @@
 /** Detail pages for dashboard-managed movies and people. */
 import { ArrowLeft, CalendarDays, Clapperboard, Star, UserRound, Users } from "lucide-react";
+import { ImgWithFallback } from "./components/primitives";
 import { GENRES } from "./data";
 import { fmtDate, Na, PosterArt, t } from "./ui";
 import type { Lang, Movie, Person } from "./home.shared";
@@ -116,17 +117,16 @@ export function ManagedPersonPage({
 
       <div className="cinema-gradient mt-4 flex flex-col items-center gap-6 rounded-2xl border border-border p-6 text-center sm:flex-row sm:text-start">
         <div className="h-32 w-32 shrink-0 overflow-hidden rounded-full bg-secondary">
-          {person.photo ? (
-            <img
-              src={person.photo}
-              alt={person.name[lang]}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <UserRound className="h-12 w-12 text-muted-foreground" />
-            </div>
-          )}
+          <ImgWithFallback
+            src={person.photo}
+            alt={person.name[lang]}
+            className="h-full w-full"
+            fallback={
+              <div className="flex h-full w-full items-center justify-center">
+                <UserRound className="h-12 w-12 text-muted-foreground" />
+              </div>
+            }
+          />
         </div>
         <div className="min-w-0">
           <h1 className="text-2xl font-black md:text-3xl">{person.name[lang]}</h1>

@@ -205,6 +205,44 @@ export interface EcBoxofficeRow {
   revenue: string;
 }
 
+/**
+ * One person in the homepage "Born Today" rail.
+ *
+ * The home section itself only carries photo + name; the day's listing page
+ * (`/en/index/person/birth_day/<MM-DD>`, and its Arabic twin) supplies the
+ * rest — category, nationality, birth year and, when the person has died, the
+ * death date. Every field is nullable so the rail still renders when only the
+ * homepage was reachable.
+ */
+export interface EcBornPerson {
+  /** Real elcinema person id, from the `/en/person/<id>/` link. */
+  id: string;
+  href: string;
+  name: Bi;
+  /** Remote artwork as published by the site; null when it is a blank photo. */
+  img: string | null;
+  /** First-party mirror of `img`, when the asset has been scraped locally. */
+  localImg: string | null;
+  /** e.g. "Acting" / "تمثيل", "Music Composer" / "موسيقى تصويرية". */
+  category: Bi | null;
+  nationality: Bi | null;
+  /** Four-digit birth year, or null when the source does not publish one. */
+  birthYear: string | null;
+  /** e.g. "30 June 2018" / "30 يونيو 2018" when the person has died. */
+  deathDate: Bi | null;
+}
+
+/** The "Born Today" (ولد في مثل هذا اليوم) home section. */
+export interface EcBornToday {
+  /** Day label as the English site prints it, e.g. "2 November". */
+  date: string;
+  /** `MM-DD` key of the day — locale-neutral, so the UI formats it per edition. */
+  dateKey: string;
+  /** Listing page for the day, e.g. `/en/index/person/birth_day/11-02`. */
+  href: string;
+  people: EcBornPerson[];
+}
+
 export interface EcHomeData {
   promos: EcPromo[];
   movies: EcMovie[];
@@ -212,6 +250,7 @@ export interface EcHomeData {
   tvSummary: EcTvSummaryItem[];
   tvGuide: EcTvGuide;
   videos: EcVideo[];
+  bornToday: EcBornToday;
   lists: EcListRow[];
   boxofficeDate: string;
   boxoffice: EcBoxofficeRow[];

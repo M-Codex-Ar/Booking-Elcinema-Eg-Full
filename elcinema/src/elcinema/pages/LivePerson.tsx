@@ -75,7 +75,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
               <Film className="h-5 w-5 text-primary" /> {section.section}
             </h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {section.items.map((w) => (
                 <LivePoster key={w.id} lang={lang} id={w.id} title={w.title} img={w.img} fluid />
               ))}
@@ -118,14 +118,14 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
                 </a>
               ))}
             </div>
-            <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+            <p className="mt-3 text-meta text-muted-foreground">{Lx.playbackNote}</p>
           </section>
         )}
 
         {data.crewWith.length > 0 && (
           <section className="pb-4">
             <h2 className="mb-4 text-xl font-black">{Lx.crew}</h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {data.crewWith.slice(0, 12).map((p) => (
                 <Na key={p.id} href={`/${lang}/person/${p.id}`} className="group w-full max-w-40">
                   <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">

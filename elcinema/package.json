@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "check:env": "node scripts/check-env.mjs",
+    "build": "node scripts/check-env.mjs && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -14,6 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "seed:admin": "node scripts/seed-admin.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "overrides": {

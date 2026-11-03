@@ -69,6 +69,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { managedContentOptions } from "../content";
 import {
   allMovies,
@@ -216,7 +217,7 @@ export function DashboardPage({ lang }: { lang: Lang }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured()) await supabase.auth.signOut();
     window.location.assign(`/${lang}`);
   };
 

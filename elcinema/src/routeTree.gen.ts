@@ -15,12 +15,17 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LangIndexRouteImport } from './routes/$lang.index'
+import { Route as LangAboutRouteImport } from './routes/$lang.about'
+import { Route as LangAdvertiseRouteImport } from './routes/$lang.advertise'
 import { Route as LangBookingRouteImport } from './routes/$lang.booking'
 import { Route as LangBoxofficeRouteImport } from './routes/$lang.boxoffice'
+import { Route as LangContactRouteImport } from './routes/$lang.contact'
 import { Route as LangLineupRouteImport } from './routes/$lang.lineup'
 import { Route as LangNowRouteImport } from './routes/$lang.now'
+import { Route as LangPrivacyRouteImport } from './routes/$lang.privacy'
 import { Route as LangSearchRouteImport } from './routes/$lang.search'
 import { Route as LangSoonRouteImport } from './routes/$lang.soon'
+import { Route as LangTermsRouteImport } from './routes/$lang.terms'
 import { Route as LangTvguideRouteImport } from './routes/$lang.tvguide'
 import { Route as LangVideoRouteImport } from './routes/$lang.video'
 import { Route as LangVodRouteImport } from './routes/$lang.vod'
@@ -63,6 +68,16 @@ const LangIndexRoute = LangIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LangRoute,
 } as any)
+const LangAboutRoute = LangAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangAdvertiseRoute = LangAdvertiseRouteImport.update({
+  id: '/advertise',
+  path: '/advertise',
+  getParentRoute: () => LangRoute,
+} as any)
 const LangBookingRoute = LangBookingRouteImport.update({
   id: '/booking',
   path: '/booking',
@@ -71,6 +86,11 @@ const LangBookingRoute = LangBookingRouteImport.update({
 const LangBoxofficeRoute = LangBoxofficeRouteImport.update({
   id: '/boxoffice',
   path: '/boxoffice',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangContactRoute = LangContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => LangRoute,
 } as any)
 const LangLineupRoute = LangLineupRouteImport.update({
@@ -83,6 +103,11 @@ const LangNowRoute = LangNowRouteImport.update({
   path: '/now',
   getParentRoute: () => LangRoute,
 } as any)
+const LangPrivacyRoute = LangPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => LangRoute,
+} as any)
 const LangSearchRoute = LangSearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -91,6 +116,11 @@ const LangSearchRoute = LangSearchRouteImport.update({
 const LangSoonRoute = LangSoonRouteImport.update({
   id: '/soon',
   path: '/soon',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangTermsRoute = LangTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => LangRoute,
 } as any)
 const LangTvguideRoute = LangTvguideRouteImport.update({
@@ -160,12 +190,17 @@ export interface FileRoutesByFullPath {
   '/$lang': typeof LangRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$lang/about': typeof LangAboutRoute
+  '/$lang/advertise': typeof LangAdvertiseRoute
   '/$lang/booking': typeof LangBookingRouteWithChildren
   '/$lang/boxoffice': typeof LangBoxofficeRoute
+  '/$lang/contact': typeof LangContactRoute
   '/$lang/lineup': typeof LangLineupRouteWithChildren
   '/$lang/now': typeof LangNowRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/search': typeof LangSearchRoute
   '/$lang/soon': typeof LangSoonRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/$lang/tvguide': typeof LangTvguideRoute
   '/$lang/video': typeof LangVideoRouteWithChildren
   '/$lang/vod': typeof LangVodRoute
@@ -184,10 +219,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$lang/about': typeof LangAboutRoute
+  '/$lang/advertise': typeof LangAdvertiseRoute
   '/$lang/boxoffice': typeof LangBoxofficeRoute
+  '/$lang/contact': typeof LangContactRoute
   '/$lang/now': typeof LangNowRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/search': typeof LangSearchRoute
   '/$lang/soon': typeof LangSoonRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/$lang/tvguide': typeof LangTvguideRoute
   '/$lang/vod': typeof LangVodRoute
   '/$lang': typeof LangIndexRoute
@@ -208,12 +248,17 @@ export interface FileRoutesById {
   '/$lang': typeof LangRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$lang/about': typeof LangAboutRoute
+  '/$lang/advertise': typeof LangAdvertiseRoute
   '/$lang/booking': typeof LangBookingRouteWithChildren
   '/$lang/boxoffice': typeof LangBoxofficeRoute
+  '/$lang/contact': typeof LangContactRoute
   '/$lang/lineup': typeof LangLineupRouteWithChildren
   '/$lang/now': typeof LangNowRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/search': typeof LangSearchRoute
   '/$lang/soon': typeof LangSoonRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/$lang/tvguide': typeof LangTvguideRoute
   '/$lang/video': typeof LangVideoRouteWithChildren
   '/$lang/vod': typeof LangVodRoute
@@ -235,12 +280,17 @@ export interface FileRouteTypes {
     | '/$lang'
     | '/auth'
     | '/reset-password'
+    | '/$lang/about'
+    | '/$lang/advertise'
     | '/$lang/booking'
     | '/$lang/boxoffice'
+    | '/$lang/contact'
     | '/$lang/lineup'
     | '/$lang/now'
+    | '/$lang/privacy'
     | '/$lang/search'
     | '/$lang/soon'
+    | '/$lang/terms'
     | '/$lang/tvguide'
     | '/$lang/video'
     | '/$lang/vod'
@@ -259,10 +309,15 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/$lang/about'
+    | '/$lang/advertise'
     | '/$lang/boxoffice'
+    | '/$lang/contact'
     | '/$lang/now'
+    | '/$lang/privacy'
     | '/$lang/search'
     | '/$lang/soon'
+    | '/$lang/terms'
     | '/$lang/tvguide'
     | '/$lang/vod'
     | '/$lang'
@@ -282,12 +337,17 @@ export interface FileRouteTypes {
     | '/$lang'
     | '/auth'
     | '/reset-password'
+    | '/$lang/about'
+    | '/$lang/advertise'
     | '/$lang/booking'
     | '/$lang/boxoffice'
+    | '/$lang/contact'
     | '/$lang/lineup'
     | '/$lang/now'
+    | '/$lang/privacy'
     | '/$lang/search'
     | '/$lang/soon'
+    | '/$lang/terms'
     | '/$lang/tvguide'
     | '/$lang/video'
     | '/$lang/vod'
@@ -355,6 +415,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangIndexRouteImport
       parentRoute: typeof LangRoute
     }
+    '/$lang/about': {
+      id: '/$lang/about'
+      path: '/about'
+      fullPath: '/$lang/about'
+      preLoaderRoute: typeof LangAboutRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/advertise': {
+      id: '/$lang/advertise'
+      path: '/advertise'
+      fullPath: '/$lang/advertise'
+      preLoaderRoute: typeof LangAdvertiseRouteImport
+      parentRoute: typeof LangRoute
+    }
     '/$lang/booking': {
       id: '/$lang/booking'
       path: '/booking'
@@ -367,6 +441,13 @@ declare module '@tanstack/react-router' {
       path: '/boxoffice'
       fullPath: '/$lang/boxoffice'
       preLoaderRoute: typeof LangBoxofficeRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/contact': {
+      id: '/$lang/contact'
+      path: '/contact'
+      fullPath: '/$lang/contact'
+      preLoaderRoute: typeof LangContactRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/lineup': {
@@ -383,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangNowRouteImport
       parentRoute: typeof LangRoute
     }
+    '/$lang/privacy': {
+      id: '/$lang/privacy'
+      path: '/privacy'
+      fullPath: '/$lang/privacy'
+      preLoaderRoute: typeof LangPrivacyRouteImport
+      parentRoute: typeof LangRoute
+    }
     '/$lang/search': {
       id: '/$lang/search'
       path: '/search'
@@ -395,6 +483,13 @@ declare module '@tanstack/react-router' {
       path: '/soon'
       fullPath: '/$lang/soon'
       preLoaderRoute: typeof LangSoonRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/terms': {
+      id: '/$lang/terms'
+      path: '/terms'
+      fullPath: '/$lang/terms'
+      preLoaderRoute: typeof LangTermsRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/tvguide': {
@@ -538,12 +633,17 @@ const LangVideoRouteWithChildren = LangVideoRoute._addFileChildren(
 )
 
 interface LangRouteChildren {
+  LangAboutRoute: typeof LangAboutRoute
+  LangAdvertiseRoute: typeof LangAdvertiseRoute
   LangBookingRoute: typeof LangBookingRouteWithChildren
   LangBoxofficeRoute: typeof LangBoxofficeRoute
+  LangContactRoute: typeof LangContactRoute
   LangLineupRoute: typeof LangLineupRouteWithChildren
   LangNowRoute: typeof LangNowRoute
+  LangPrivacyRoute: typeof LangPrivacyRoute
   LangSearchRoute: typeof LangSearchRoute
   LangSoonRoute: typeof LangSoonRoute
+  LangTermsRoute: typeof LangTermsRoute
   LangTvguideRoute: typeof LangTvguideRoute
   LangVideoRoute: typeof LangVideoRouteWithChildren
   LangVodRoute: typeof LangVodRoute
@@ -553,12 +653,17 @@ interface LangRouteChildren {
 }
 
 const LangRouteChildren: LangRouteChildren = {
+  LangAboutRoute: LangAboutRoute,
+  LangAdvertiseRoute: LangAdvertiseRoute,
   LangBookingRoute: LangBookingRouteWithChildren,
   LangBoxofficeRoute: LangBoxofficeRoute,
+  LangContactRoute: LangContactRoute,
   LangLineupRoute: LangLineupRouteWithChildren,
   LangNowRoute: LangNowRoute,
+  LangPrivacyRoute: LangPrivacyRoute,
   LangSearchRoute: LangSearchRoute,
   LangSoonRoute: LangSoonRoute,
+  LangTermsRoute: LangTermsRoute,
   LangTvguideRoute: LangTvguideRoute,
   LangVideoRoute: LangVideoRouteWithChildren,
   LangVodRoute: LangVodRoute,

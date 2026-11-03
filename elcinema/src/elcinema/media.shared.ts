@@ -30,7 +30,11 @@ const BLANK_ART =
   /(blank_photos|blank[-_]?(photo|image)|spacer\.gif|pixel\.(gif|png)|1x1\.|no_(image|photo))/i;
 
 /** elcinema hosts whose artwork we hotlink and mirror. */
-export const ARTWORK_HOSTS = ["cdn.elcinema.com", "media0106.elcinema.com", "elcinema.com"] as const;
+export const ARTWORK_HOSTS = [
+  "cdn.elcinema.com",
+  "media0106.elcinema.com",
+  "elcinema.com",
+] as const;
 
 /** Absolute `http(s)` URL? */
 export const isAbsoluteUrl = (value: string): boolean => /^https?:\/\//i.test(value);
@@ -40,10 +44,7 @@ export const isAbsoluteUrl = (value: string): boolean => /^https?:\/\//i.test(va
  * Returns `null` for empty values, site-root links that some carousels park in
  * `src`, preview-only asset URLs and elcinema's blank-photo placeholders.
  */
-export function toArtworkUrl(
-  src: string | null | undefined,
-  base: string,
-): string | null {
+export function toArtworkUrl(src: string | null | undefined, base: string): string | null {
   if (!src) return null;
   const value = src.trim();
   if (!value || value === "/" || value === `${base}/`) return null;

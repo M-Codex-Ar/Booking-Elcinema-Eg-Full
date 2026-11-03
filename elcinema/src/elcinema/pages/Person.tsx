@@ -4,7 +4,7 @@
  * are known for, each addressed by the elCinema-style numeric ID.
  */
 import { Film, UserRound } from "lucide-react";
-import { movieBySlug, personById, workId } from "../build";
+import { movieBySlug, personById, personBySlug, workId } from "../build";
 import { Na, PosterArt, fmtDate, workPath } from "../ui";
 import type { Lang, Movie, Person } from "../home.shared";
 
@@ -27,9 +27,14 @@ const L = {
   },
 } as const;
 
+function personBySlugOrId(id: string) {
+  if (/^\d+$/.test(id)) return personById.get(Number(id)) ?? personBySlug.get(id);
+  return personBySlug.get(id);
+}
+
 export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
   const Lx = L[lang];
-  const person = personById.get(Number(id));
+  const person = personBySlugOrId(id);
   if (!person) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
@@ -82,7 +87,7 @@ export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
           <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
             <Film className="h-5 w-5 text-primary" /> {Lx.filmography}
           </h2>
-          <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+          <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
             {knownFor.map((m) => (
               <FilmCard key={m.slug} movie={m} lang={lang} />
             ))}
@@ -102,7 +107,7 @@ function FilmCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
         {movie.title[lang]}
       </h3>
-      <div className="text-[11px] text-muted-foreground">{fmtDate(movie.release, lang)}</div>
+      <div className="text-meta text-muted-foreground">{fmtDate(movie.release, lang)}</div>
     </Na>
   );
 }

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Wordmark fallback for the header and footer logos, which normally hotlink
-  cdn.elcinema.com. Transparent background so it works on either palette.
-  Colours mirror src/theme/tokens.css; see poster-placeholder.svg.
+  cdn.elcinema.com. Uses the cinema-night foreground colour (see tokens.css) so
+  it stays legible on the dark chrome; base.css inverts it for the light theme.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" role="img" aria-label="elCinema">
-  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(8 8)">
+  <g fill="none" stroke="#f0f2f4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(8 8)">
     <rect x="0" y="14" width="22" height="18" rx="3"/>
     <path d="M1 12 5 2l16 3-2 8Z"/>
   </g>
-  <text x="42" y="32" font-family="Exo, Cairo, 'Segoe UI', sans-serif" font-size="22" font-weight="900" letter-spacing="0.4" fill="currentColor">elCinema</text>
+  <text x="42" y="32" font-family="Exo, Cairo, 'Segoe UI', sans-serif" font-size="22" font-weight="900" letter-spacing="0.4" fill="#f0f2f4">elCinema</text>
 </svg>
+

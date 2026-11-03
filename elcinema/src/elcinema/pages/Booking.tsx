@@ -7,7 +7,7 @@
  * service in a new tab — browsing stays inside the app.
  */
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { CalendarClock, Ticket } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, Ticket } from "lucide-react";
 import { useState } from "react";
 import { getElcinemaHomeFn } from "../home.functions";
 import { dayLabel, movieById } from "../build";
@@ -119,8 +119,8 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
               <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
                 <LiveImg src={m.img} alt={m.title} className="h-full w-full" />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    {Lx.getTickets} →
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+                    {Lx.getTickets} <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
                   </span>
                 </div>
               </div>
@@ -196,8 +196,11 @@ export function BookingMoviePage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
-      <Na href={`/${lang}/booking`} className="text-sm font-semibold text-primary hover:underline">
-        ← {Lx.back}
+      <Na
+        href={`/${lang}/booking`}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+      >
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {Lx.back}
       </Na>
 
       <div className="mt-4 flex items-start gap-4">
@@ -214,9 +217,10 @@ export function BookingMoviePage({
           {!sampleMovie && (
             <Na
               href={liveWorkPath(lang, id)}
-              className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
-              {lang === "ar" ? "صفحة الفيلم →" : "Movie page →"}
+              {lang === "ar" ? "صفحة الفيلم" : "Movie page"}
+              <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </Na>
           )}
         </div>
@@ -272,7 +276,7 @@ export function BookingMoviePage({
             </div>
           ))}
           {!sampleMovie && (
-            <p className="text-[11px] text-muted-foreground md:col-span-2">{Lx.ticketNote}</p>
+            <p className="text-meta text-muted-foreground md:col-span-2">{Lx.ticketNote}</p>
           )}
         </div>
       ) : (

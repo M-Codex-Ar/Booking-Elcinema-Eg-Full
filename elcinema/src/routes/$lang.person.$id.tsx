@@ -43,7 +43,12 @@ export const Route = createFileRoute("/$lang/person/$id")({
   loader: ({ context, params }) => {
     if (params.id.startsWith("m-"))
       return context.queryClient.ensureQueryData(managedContentOptions);
-    if (!/^\d+$/.test(params.id) || personById.has(Number(params.id))) return null;
+    if (
+      !/^\d+$/.test(params.id) ||
+      personById.has(Number(params.id)) ||
+      personBySlug.has(params.id)
+    )
+      return null;
     const lang: Lang = params.lang === "ar" ? "ar" : "en";
     return context.queryClient.ensureQueryData(livePersonOptions(lang, params.id));
   },
@@ -70,7 +75,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
       : undefined;
     const sample =
       !managedRow && /^\d+$/.test(params.id)
-        ? personById.get(Number(params.id))
+        ? (personById.get(Number(params.id)) ?? personBySlug.get(params.id))
         : !managedRow
           ? personBySlug.get(params.id)
           : undefined;
@@ -115,7 +120,7 @@ function PersonRoute() {
   const { lang, id } = Route.useParams();
   const l: Lang = lang === "ar" ? "ar" : "en";
   if (id.startsWith("m-")) return <ManagedPersonLoader lang={l} id={id} />;
-  if (!/^\d+$/.test(id) || personById.has(Number(id))) {
+  if (!/^\d+$/.test(id) || personById.has(Number(id)) || personBySlug.has(id)) {
     return <PersonPage lang={l} id={id} />;
   }
   return <LivePersonLoader lang={l} id={id} />;

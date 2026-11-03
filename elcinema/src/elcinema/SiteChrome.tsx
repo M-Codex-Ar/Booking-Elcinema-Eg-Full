@@ -4,13 +4,19 @@
  */
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search, Send, User } from "lucide-react";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useRouterState } from "@tanstack/react-router";
 import type { Lang } from "./home.shared";
+import { ImgWithFallback, SmartImg } from "./components/primitives";
 import { Na } from "./ui";
 import { ThemeToggle } from "./ThemeToggle";
 import { SiteMenu, NAV_GROUPS } from "./SiteMenu";
+import { AuthDialog } from "./AuthDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
+import { isAdmin, getUserDisplayName } from "./auth";
+import { makeT } from "./i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,14 +26,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const LOGO_URL =
-  "https://cdn.elcinema.com/assets/elCinema_logo-be1ed6273cf8fae2f6f2f9b250964c19ed6d3aebcf87dabf30d040347f7046eb.png";
-const FOOTER_LOGO_URL =
-  "https://cdn.elcinema.com/assets/footer/elcinema-fca17c1d54bb1b93eedc0a92818163a4c95ac5fb75bf21157e6a5b4a3f988f65.png";
+/**
+ * Wordmarks served first-party from `public/images/brand/` (mirrored by
+ * `scripts/mirror-artwork.mjs --kinds=logos`) instead of hotlinking
+ * cdn.elcinema.com, so a renamed asset hash or a referrer rule can never blank
+ * the header. `SmartImg` still draws the placeholder wordmark if the file is
+ * missing.
+ */
+const LOGO_URL = "/images/brand/logo.png";
+const FOOTER_LOGO_URL = "/images/brand/footer-logo.png";
 
 const COPY = {
   en: {
-    login: "login",
+    login: "Login",
+    dashboard: "Dashboard",
+    signOut: "Sign out",
     search: "Search",
     nav: [
       ["now", "Now Playing"],
@@ -36,24 +49,11 @@ const COPY = {
       ["boxoffice", "Box Office"],
     ] as const,
     switchTo: "عربي",
-    footer1: [
-      ["now", "Now Playing"],
-      ["tvguide", "TV Guide"],
-      ["soon", "Coming Soon"],
-      ["boxoffice", "Cinema Revenue"],
-    ] as const,
-    footer2: [
-      ["search", "Search"],
-      ["boxoffice", "Weekly Box Office"],
-      ["soon", "December Releases"],
-      ["tvguide", "Tonight on TV"],
-    ] as const,
-    copyright: "Copyright © Damlag S.A.E — sample replica for demo purposes",
-    chairman: "Chairman: Khaled Hesham",
-    editor: "Editor-in-Chief: Doaa Mohamed",
   },
   ar: {
     login: "تسجيل الدخول",
+    dashboard: "لوحة التحكم",
+    signOut: "خروج",
     search: "ابحث",
     nav: [
       ["now", "السينمات الآن"],
@@ -62,21 +62,6 @@ const COPY = {
       ["boxoffice", "بوكس أوفيس"],
     ] as const,
     switchTo: "English",
-    footer1: [
-      ["now", "السينمات الآن"],
-      ["tvguide", "جدول القنوات"],
-      ["soon", "قريباً"],
-      ["boxoffice", "إيرادات السينما"],
-    ] as const,
-    footer2: [
-      ["search", "بحث"],
-      ["boxoffice", "بوكس أوفيس الأسبوعي"],
-      ["soon", "أفلام ديسمبر"],
-      ["tvguide", "الليلة على التلفاز"],
-    ] as const,
-    copyright: "جميع الحقوق محفوظة © دملاج س.أ.م — نسخة تجريبية للعرض فقط",
-    chairman: "رئيس مجلس الإدارة: خالد هشام",
-    editor: "مدير التحرير: ضياء محمد",
   },
 };
 
@@ -118,15 +103,16 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const c = COPY[lang];
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [query, setQuery] = useState("");
-  const [signedIn, setSignedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
     let alive = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (alive) setSignedIn(!!data.session);
+      if (alive) setCurrentUser(data.session?.user ?? null);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
-      setSignedIn(!!session),
+      setCurrentUser(session?.user ?? null),
     );
     return () => {
       alive = false;
@@ -134,8 +120,12 @@ export function SiteHeader({ lang }: { lang: Lang }) {
     };
   }, []);
 
+  const signedIn = !!currentUser;
+  const admin = isAdmin(currentUser);
+  const displayName = getUserDisplayName(currentUser);
+
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured()) await supabase.auth.signOut();
     window.location.assign(`/${lang}`);
   };
 
@@ -150,9 +140,15 @@ export function SiteHeader({ lang }: { lang: Lang }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 md:px-8">
-        <Na href={`/${lang}`} className="shrink-0">
-          <img src={LOGO_URL} alt="elCinema" className="site-logo h-8" />
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-1.5 px-3 sm:gap-2 md:gap-3 md:px-8">
+        <Na href={`/${lang}`} className="flex h-9 shrink-0 items-center">
+          <SmartImg
+            src={LOGO_URL}
+            alt="elCinema"
+            kind="logo"
+            eager
+            className="site-logo h-7 max-w-[100px] object-contain sm:h-8 sm:max-w-none"
+          />
         </Na>
         <nav className="ms-2 hidden items-center gap-1 lg:flex">
           {NAV_GROUPS.map((group) => (
@@ -161,48 +157,120 @@ export function SiteHeader({ lang }: { lang: Lang }) {
         </nav>
         {signedIn ? (
           <div className="ms-2 hidden items-center gap-2 sm:flex">
-            <Na
-              href={`/${lang}/dashboard`}
-              className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90"
-            >
-              <LayoutDashboard className="h-4 w-4" /> {lang === "ar" ? "لوحة التحكم" : "Dashboard"}
-            </Na>
+            {admin ? (
+              <Na
+                href={`/${lang}/dashboard`}
+                className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90"
+              >
+                <LayoutDashboard className="h-4 w-4" /> {c.dashboard}
+              </Na>
+            ) : (
+              <span className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/60 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                <User className="h-3.5 w-3.5 text-primary" />
+                <span className="max-w-[120px] truncate">{displayName}</span>
+              </span>
+            )}
             <button
               type="button"
               onClick={signOut}
-              aria-label={lang === "ar" ? "خروج" : "Sign out"}
-              title={lang === "ar" ? "خروج" : "Sign out"}
+              aria-label={c.signOut}
+              title={c.signOut}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
             >
               <LogOut className="h-4 w-4" />
             </button>
           </div>
         ) : (
-          <Na
-            href="/auth"
-            className="ms-2 hidden items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_var(--glow)] sm:inline-flex"
-          >
-            <LogIn className="h-4 w-4" /> {c.login}
-          </Na>
+          <div className="ms-2 hidden sm:block">
+            <AuthDialog
+              lang={lang}
+              trigger={
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_var(--glow)]"
+                >
+                  <LogIn className="h-4 w-4" /> {c.login}
+                </button>
+              }
+            />
+          </div>
         )}
-        <div className="ms-auto flex items-center gap-2">
+        <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-1.5 md:gap-2">
+          {/* Mobile auth button */}
+          {signedIn ? (
+            <div className="flex shrink-0 items-center gap-1 sm:hidden">
+              {admin ? (
+                <Na
+                  href={`/${lang}/dashboard`}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                </Na>
+              ) : (
+                <span
+                  title={displayName}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground"
+                >
+                  <User className="h-3.5 w-3.5 text-primary" />
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={signOut}
+                aria-label={c.signOut}
+                title={c.signOut}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex shrink-0 sm:hidden">
+              <AuthDialog
+                lang={lang}
+                trigger={
+                  <button
+                    type="button"
+                    aria-label={c.login}
+                    title={c.login}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
+                  >
+                    <LogIn className="h-3.5 w-3.5" />
+                  </button>
+                }
+              />
+            </div>
+          )}
+          {/*
+            Phone widths cannot fit a text field next to the login, theme, menu
+            and language targets — the row overflowed and pushed the language
+            switch off-screen in RTL. Below `sm` search is therefore a full-size
+            icon button into the same results page the form submits to.
+          */}
+          <Na
+            href={`/${lang}/search`}
+            label={c.search}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:hidden"
+          >
+            <Search className="h-4 w-4" />
+          </Na>
           <form
             onSubmit={submit}
-            className="flex items-center overflow-hidden rounded-lg border border-input bg-secondary"
+            className="hidden h-9 items-center overflow-hidden rounded-lg border border-input bg-secondary sm:flex"
           >
             <input
               type="text"
               placeholder={c.search}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-24 bg-transparent px-3 py-1.5 text-sm outline-none placeholder:text-muted-foreground md:w-48"
+              className="h-full w-24 bg-transparent px-2 text-xs outline-none placeholder:text-muted-foreground sm:text-sm md:w-48 md:px-3"
             />
             <button
               type="submit"
               aria-label={c.search}
-              className="bg-primary px-3 py-2 text-primary-foreground hover:bg-primary/90"
+              className="flex h-full min-w-10 items-center justify-center bg-primary px-2.5 text-primary-foreground hover:bg-primary/90 md:px-3"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </button>
           </form>
           <a
@@ -227,7 +295,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           <SiteMenu lang={lang} />
           <Na
             href={otherPath}
-            className="flex items-center gap-1 text-sm font-semibold hover:text-primary"
+            className="flex h-9 min-w-10 shrink-0 items-center justify-center gap-1 rounded-md px-2 whitespace-nowrap text-xs font-semibold hover:text-primary sm:text-sm"
           >
             {c.switchTo}
           </Na>
@@ -286,68 +354,218 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
   );
 }
 
-function LinkList({ links, lang }: { links: readonly (readonly [string, string])[]; lang: Lang }) {
-  return (
-    <ul className="flex flex-wrap justify-center gap-x-1 gap-y-2 text-sm">
-      {links.map(([seg, label], i) => (
-        <li key={seg} className="flex items-center gap-1">
-          {i > 0 && <span className="text-border">|</span>}
-          <Na
-            href={`/${lang}/${seg}`}
-            className="px-1 text-muted-foreground transition-colors hover:text-primary"
-          >
-            {label}
-          </Na>
-        </li>
-      ))}
-    </ul>
-  );
-}
+/** Visa SVG card icon */
+const VisaIcon = () => (
+  <svg viewBox="0 0 48 16" className="h-6 w-auto" aria-label="Visa" role="img">
+    <rect width="48" height="16" rx="2" fill="#1a1f71" />
+    <text x="7" y="12" fontSize="9" fontWeight="bold" fill="#fff" fontFamily="Arial,sans-serif">
+      VISA
+    </text>
+  </svg>
+);
+/** Mastercard SVG card icon */
+const MastercardIcon = () => (
+  <svg viewBox="0 0 48 30" className="h-7 w-auto" aria-label="Mastercard" role="img">
+    <rect width="48" height="30" rx="3" fill="#252525" />
+    <circle cx="18" cy="15" r="9" fill="#eb001b" />
+    <circle cx="30" cy="15" r="9" fill="#f79e1b" />
+    <path d="M24 8.27a9 9 0 0 1 0 13.46A9 9 0 0 1 24 8.27z" fill="#ff5f00" />
+  </svg>
+);
+/** Fawry SVG card icon */
+const FawryIcon = () => (
+  <svg viewBox="0 0 48 20" className="h-6 w-auto" aria-label="Fawry" role="img">
+    <rect width="48" height="20" rx="2" fill="#f37021" />
+    <text x="6" y="14" fontSize="8" fontWeight="bold" fill="#fff" fontFamily="Arial,sans-serif">
+      fawry
+    </text>
+  </svg>
+);
+/** Meza SVG card icon */
+const MezaIcon = () => (
+  <svg viewBox="0 0 48 20" className="h-6 w-auto" aria-label="Meeza" role="img">
+    <rect width="48" height="20" rx="2" fill="#c8102e" />
+    <text x="5" y="14" fontSize="8" fontWeight="bold" fill="#fff" fontFamily="Arial,sans-serif">
+      meeza
+    </text>
+  </svg>
+);
+
+const FOOTER_NAV = [
+  ["now", "nav.now"],
+  ["soon", "nav.soon"],
+  ["tvguide", "nav.tvguide"],
+  ["boxoffice", "nav.boxoffice"],
+  ["vod", "nav.vod"],
+  ["video", "nav.video"],
+  ["lineup", "nav.lineup"],
+] as const;
+
+const FOOTER_HELP = [
+  ["about", "footer.about"],
+  ["contact", "footer.contact"],
+  ["advertise", "footer.advertise"],
+  ["privacy", "footer.privacy"],
+  ["terms", "footer.terms"],
+] as const;
 
 export function SiteFooter({ lang }: { lang: Lang }) {
-  const c = COPY[lang];
+  const t = makeT(lang);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubscribed(true);
+    setEmail("");
+  };
+
   return (
-    <footer className="mt-12 border-t border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-        <div className="flex justify-end gap-2">
-          <a
-            href={SOCIAL.instagram}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Instagram"
-            className={iconBtn}
-          >
-            <Instagram className="h-4 w-4" />
-          </a>
-          <a
-            href={SOCIAL.facebook}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Facebook"
-            className={iconBtn}
-          >
-            <Facebook className="h-4 w-4" />
-          </a>
-          <a href={SOCIAL.x} target="_blank" rel="noreferrer" aria-label="X" className={iconBtn}>
-            <Twitter className="h-4 w-4" />
-          </a>
+    <footer className="border-t border-border bg-card">
+      {/* ── Top band: 4 columns ───────────────────────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Col 1 – About */}
+          <div className="flex flex-col gap-4">
+            <ImgWithFallback
+              src={FOOTER_LOGO_URL}
+              alt="elCinema"
+              fit="contain"
+              className="h-10 w-auto self-start rounded-md bg-foreground p-1"
+              fallback={
+                <span className="self-start rounded-md bg-foreground px-2 py-1 text-lg font-black text-background">
+                  elCinema
+                </span>
+              }
+            />
+            <p className="text-sm leading-relaxed text-muted-foreground">{t("footer.siteDesc")}</p>
+            <div className="flex gap-2">
+              <a
+                href={SOCIAL.facebook}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className={iconBtn}
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href={SOCIAL.x}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X"
+                className={iconBtn}
+              >
+                <Twitter className="h-4 w-4" />
+              </a>
+              <a
+                href={SOCIAL.instagram}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className={iconBtn}
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Col 2 – Main nav links */}
+          <div>
+            <h3 className="mb-4 text-sm font-black uppercase tracking-widest text-foreground">
+              {t("footer.mainLinks")}
+            </h3>
+            <ul className="space-y-2.5">
+              {FOOTER_NAV.map(([seg, key]) => (
+                <li key={seg}>
+                  <Na
+                    href={`/${lang}/${seg}`}
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {t(key)}
+                  </Na>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 3 – Help links */}
+          <div>
+            <h3 className="mb-4 text-sm font-black uppercase tracking-widest text-foreground">
+              {t("footer.helpLinks")}
+            </h3>
+            <ul className="space-y-2.5">
+              {FOOTER_HELP.map(([seg, key]) => (
+                <li key={seg}>
+                  <Na
+                    href={`/${lang}/${seg}`}
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {t(key)}
+                  </Na>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4 – Newsletter */}
+          <div>
+            <h3 className="mb-2 text-sm font-black uppercase tracking-widest text-foreground">
+              {t("footer.newsletter")}
+            </h3>
+            <p className="mb-4 text-sm text-muted-foreground">{t("footer.newsletterDesc")}</p>
+            {subscribed ? (
+              <p className="rounded-lg bg-primary/10 px-4 py-3 text-sm font-semibold text-primary">
+                {t("footer.subscribeOk")}
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t("footer.emailPlaceholder")}
+                  className="rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                  {t("footer.subscribe")}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
-        <hr className="my-6 border-border" />
-        <div className="space-y-4">
-          <LinkList links={c.footer1} lang={lang} />
-          <LinkList links={c.footer2} lang={lang} />
-        </div>
-        <hr className="my-6 border-border" />
-        <div className="grid items-center gap-4 md:grid-cols-4">
-          <img
-            src={FOOTER_LOGO_URL}
-            alt="elCinema"
-            className="h-12 w-auto justify-self-start rounded-md bg-foreground p-1"
-          />
-          <div className="space-y-1 text-center text-sm text-muted-foreground md:col-span-2">
-            <div>{c.copyright}</div>
-            <div>{c.chairman}</div>
-            <div>{c.editor}</div>
+      </div>
+
+      {/* ── Bottom band: 3 columns ─────────────────────────────────────── */}
+      <div className="border-t border-border bg-card/80">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 text-xs text-muted-foreground md:grid-cols-3 md:px-8">
+          {/* Left – Executives */}
+          <div className="flex flex-col gap-1 md:justify-center">
+            <div className="font-semibold text-foreground/80">{t("chrome.chairman")}</div>
+            <div className="font-semibold text-foreground/80">{t("chrome.editor")}</div>
+          </div>
+
+          {/* Center – Payment icons */}
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-xs text-muted-foreground">{t("footer.paymentTitle")}</span>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <VisaIcon />
+              <MastercardIcon />
+              <FawryIcon />
+              <MezaIcon />
+            </div>
+          </div>
+
+          {/* Right – Copyright */}
+          <div className="flex flex-col items-start gap-1 md:items-end md:justify-center">
+            <span>© {new Date().getFullYear()} elCinema</span>
+            <span className="text-primary">{t("footer.builtBy")}</span>
           </div>
         </div>
       </div>

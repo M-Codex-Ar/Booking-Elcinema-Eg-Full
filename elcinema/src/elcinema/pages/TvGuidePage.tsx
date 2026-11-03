@@ -1,9 +1,9 @@
 /** TV Guide — full evening grid across all channels, filterable by
  * category and by channel name (URL-driven). */
-import { Search, Tv } from "lucide-react";
+import { Tv } from "lucide-react";
 import { TvGuideView } from "../TvGuide";
 import type { ChannelCategory, Lang, TvGuide } from "../home.shared";
-import { ListToolbar, type SetSearch } from "../controls";
+import { FilterInput, ListToolbar, type SetSearch } from "../controls";
 
 const CATS: { id: ChannelCategory | "all"; en: string; ar: string }[] = [
   { id: "all", en: "All", ar: "الكل" },
@@ -78,16 +78,12 @@ export function TvGuidePage({
           </button>
         ))}
         <span className="grow" />
-        <label className="flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1.5">
-          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <input
-            type="text"
-            value={q}
-            onChange={(e) => setSearch({ q: e.target.value || undefined })}
-            placeholder={Lx.filter}
-            className="w-40 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-56"
-          />
-        </label>
+        <FilterInput
+          lang={lang}
+          value={q}
+          onChange={(v) => setSearch({ q: v || undefined })}
+          placeholder={Lx.filter}
+        />
       </ListToolbar>
 
       <p className="mt-4 text-xs text-muted-foreground">

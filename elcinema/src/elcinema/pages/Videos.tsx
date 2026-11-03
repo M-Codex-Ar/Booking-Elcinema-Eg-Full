@@ -4,7 +4,8 @@
  * Video cards link internally; the player itself is the site's own YouTube
  * embed.
  */
-import { Play } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import { useState } from "react";
 import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "../live.shared";
@@ -58,7 +59,7 @@ function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boole
           </span>
         </div>
         {v.duration && (
-          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
             {v.duration}
           </span>
         )}
@@ -166,20 +167,18 @@ export function VideoGalleryPage({
             {extra.map((v) => (
               <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="group w-full">
                 <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">
-                  {v.thumb_url ? (
-                    <img
-                      src={v.thumb_url}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <Play className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
+                  <ImgWithFallback
+                    src={v.thumb_url}
+                    alt=""
+                    className="h-full w-full"
+                    fallback={
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Play className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    }
+                  />
                   {v.duration && (
-                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
                       {v.duration}
                     </span>
                   )}
@@ -247,8 +246,12 @@ export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang })
       )}
 
       <div className="pb-10">
-        <Na href={`/${lang}/video`} className="text-sm font-semibold text-primary hover:underline">
-          ← {lang === "ar" ? "معرض الفيديو" : "Video Gallery"}
+        <Na
+          href={`/${lang}/video`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />{" "}
+          {lang === "ar" ? "معرض الفيديو" : "Video Gallery"}
         </Na>
       </div>
     </div>

@@ -11,7 +11,7 @@
  * actions.
  */
 import { MOVIES, PEOPLE } from "./data";
-import { personId, workId } from "./build";
+import { movieBySlug, personBySlug, personId, workId } from "./build";
 import type { Lang } from "./home.shared";
 
 export interface CardLink {
@@ -43,13 +43,19 @@ const normalize = (s: string) =>
 function movieForTitle(title: string) {
   const t = normalize(title);
   if (!t) return undefined;
-  return MOVIES.find((m) => normalize(m.title.en) === t || normalize(m.title.ar) === t);
+  return (
+    movieBySlug.get(t) ??
+    MOVIES.find((m) => normalize(m.title.en) === t || normalize(m.title.ar) === t)
+  );
 }
 
 function personForTitle(title: string) {
   const t = normalize(title);
   if (!t) return undefined;
-  return PEOPLE.find((p) => normalize(p.name.en) === t || normalize(p.name.ar) === t);
+  return (
+    personBySlug.get(t) ??
+    PEOPLE.find((p) => normalize(p.name.en) === t || normalize(p.name.ar) === t)
+  );
 }
 
 const numeric = (s: string | undefined) => (s && /^\d+$/.test(s) ? s : null);

@@ -38,7 +38,8 @@ export const Route = createFileRoute("/$lang/work/$id")({
   loader: ({ context, params }) => {
     if (params.id.startsWith("m-"))
       return context.queryClient.ensureQueryData(managedContentOptions);
-    if (!/^\d+$/.test(params.id) || movieById.has(Number(params.id))) return null;
+    if (!/^\d+$/.test(params.id) || movieById.has(Number(params.id)) || movieBySlug.has(params.id))
+      return null;
     const lang: Lang = params.lang === "ar" ? "ar" : "en";
     return context.queryClient.ensureQueryData(liveWorkOptions(lang, params.id));
   },
@@ -63,7 +64,7 @@ export const Route = createFileRoute("/$lang/work/$id")({
       : undefined;
     const sample =
       !managedMovie && /^\d+$/.test(params.id)
-        ? movieById.get(Number(params.id))
+        ? (movieById.get(Number(params.id)) ?? movieBySlug.get(params.id))
         : !managedMovie
           ? movieBySlug.get(params.id)
           : undefined;
@@ -112,8 +113,8 @@ function WorkRoute() {
   const l: Lang = lang === "ar" ? "ar" : "en";
   // Dashboard-managed movie ("m-…" ids).
   if (id.startsWith("m-")) return <ManagedWorkLoader lang={l} id={id} />;
-  // Sample catalogue page (also serves legacy text slugs via redirect above).
-  if (!/^\d+$/.test(id) || movieById.has(Number(id))) {
+  // Sample catalogue page (also serves text name slugs via redirect above).
+  if (!/^\d+$/.test(id) || movieById.has(Number(id)) || movieBySlug.has(id)) {
     return <WorkPage lang={l} id={id} />;
   }
   return <LiveWorkLoader lang={l} id={id} />;

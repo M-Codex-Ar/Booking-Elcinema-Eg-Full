@@ -294,7 +294,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
         {similar.length > 0 && (
           <section className="py-10">
             <h2 className="mb-4 text-xl font-black">{Lx.similar}</h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {similar.map((m) => (
                 <SimilarCard key={m.slug} movie={m} lang={lang} />
               ))}
@@ -315,14 +315,14 @@ function SimilarCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
         {movie.title[lang]}
       </h3>
-      <div className="text-[11px] text-muted-foreground">{fmtDate(movie.release, lang)}</div>
+      <div className="text-meta text-muted-foreground">{fmtDate(movie.release, lang)}</div>
     </Na>
   );
 }
 
-/** Resolves either the numeric work ID or a legacy text slug. */
+/** Resolves either the numeric work ID or a text name slug. */
 function movieBySlugOrId(id: string) {
-  if (/^\d+$/.test(id)) return movieById.get(Number(id));
+  if (/^\d+$/.test(id)) return movieById.get(Number(id)) ?? movieBySlug.get(id);
   return movieBySlug.get(id);
 }
 
