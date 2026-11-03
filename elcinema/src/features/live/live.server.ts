@@ -1,7 +1,8 @@
 /**
  * Live elcinema.com scrapers for the pages beyond the homepage (server-only):
  * work/person details, video gallery + video page, VOD platform guide,
- * featured lists and booking showtimes. Mirrors the approach of
+ * featured lists and booking showtimes, plus the static content pages
+ * (About, Contact, Advertise, Privacy, Terms). Mirrors the approach of
  * home.server.ts: fetch with a browser UA, parse with cheerio, cache in
  * memory for 10 minutes. All returned values are plain, SSR-serializable
  * DTOs declared in live.shared.ts.
@@ -15,6 +16,9 @@ import type {
   LiveLineupList,
   LivePerson,
   LiveRef,
+  LiveStaticBlock,
+  LiveStaticPage,
+  LiveStaticSection,
   LiveVideo,
   LiveVideoCard,
   LiveVideoGallery,
@@ -609,6 +613,67 @@ export function parseLineupDetail(html: string, id: string): LiveLineupDetail {
     }
   });
   return { id, title, items };
+}
+
+// ---------------------------------------------------------------------------
+// Static pages (About, Contact, Advertise, Privacy, Terms, …)
+// ---------------------------------------------------------------------------
+
+/** Heading levels that open a new content section after the page title. */
+const STATIC_HEADING_SELECTOR = "h2, h3, h4, h5, h6";
+
+/** Heading text without its own markup (nested <em>/<strong> go away with it). */
+function staticHeadingText($heading: $El): string {
+  const clone = $heading.clone();
+  clone.children().remove();
+  const text = clean(clone.text()) || clean($heading.text());
+  return text;
+}
+
+/** Content blocks of the section that starts at a heading, up to the next one. */
+function staticBlocks($: $Html, $heading: $El): LiveStaticBlock[] {
+  const blocks: LiveStaticBlock[] = [];
+  const $content = $heading.nextUntil(STATIC_HEADING_SELECTOR);
+  $content.each((_, el) => {
+    const $el = $(el);
+    const tag = String((el as { tagName?: string }).tagName ?? "").toLowerCase();
+    if (tag === "p") {
+      const text = clean($el.text());
+      if (text) blocks.push({ type: "p", text });
+    } else if (tag === "ul" || tag === "ol") {
+      const items: string[] = [];
+      $el.find("li").each((___, li) => {
+        const text = clean($(li).text());
+        if (text && !items.includes(text)) items.push(text);
+      });
+      if (items.length) blocks.push({ type: "list", items });
+    }
+  });
+  return blocks;
+}
+
+/**
+ * Parse a scraped static content page (elcinema.com/<edition>/about_us/,
+ * /contact/, /advertise/, /privacy_policy/, …) into a title + ordered sections.
+ */
+export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
+  const $ = cheerio.load(html);
+  const $h1 = $("h1").first();
+  const title = clean($h1.clone().children().remove().end().text()) || clean($h1.text());
+  const scope = $h1.parent();
+  const sections: LiveStaticSection[] = [];
+  scope.find(STATIC_HEADING_SELECTOR).each((_, el) => {
+    const $heading = $(el);
+    const heading = staticHeadingText($heading);
+    if (!heading) return;
+    sections.push({ heading, blocks: staticBlocks($, $heading) });
+  });
+  return { title, sections };
+}
+
+export async function getStaticPage(lang: Lang, path: string): Promise<LiveStaticPage> {
+  const html = await fetchPage(path);
+  return parseStaticPage(html, lang);
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 /**
  * Client-safe shapes for pages that render live elcinema.com data
- * (work/person details, videos, VOD guide, featured lists, booking).
+ * (work/person details, videos, VOD guide, featured lists, booking, static
+ * legal/help pages such as About, Contact, Advertise, Privacy, Terms).
  * All scrapers live in live.server.ts and every field is a plain,
  * SSR-serializable value.
  */
@@ -134,4 +135,30 @@ export interface LiveLineupDetail {
   id: string;
   title: string;
   items: LiveLineupItem[];
+}
+
+/** One content block of a scraped static page section. */
+export interface LiveStaticParagraphBlock {
+  type: "p";
+  text: string;
+}
+
+/** A bullet/numbered list inside a scraped static page section. */
+export interface LiveStaticListBlock {
+  type: "list";
+  items: string[];
+}
+
+export type LiveStaticBlock = LiveStaticParagraphBlock | LiveStaticListBlock;
+
+/** A titled content section of a scraped static page (About, Contact, …). */
+export interface LiveStaticSection {
+  heading: string;
+  blocks: LiveStaticBlock[];
+}
+
+/** A scraped static content page from elcinema.com (About, Contact, Advertise, …). */
+export interface LiveStaticPage {
+  title: string;
+  sections: LiveStaticSection[];
 }

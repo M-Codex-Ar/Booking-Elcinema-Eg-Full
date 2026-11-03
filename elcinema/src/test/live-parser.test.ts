@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parsePersonPage,
+  parseStaticPage,
   parseVideoGallery,
   parseVideoPage,
   parseWorkPage,
@@ -219,6 +220,62 @@ const VIDEO_FIXTURE = `
   </div>
 </body></html>
 `;
+
+const STATIC_FIXTURE = `
+<html><body>
+  <div class="row">
+    <div class="columns small-12 min-body">
+      <div class="row collapse">
+        <ul class="breadcrumbs"><li><a href="/en/">Main</a></li><li>About elCinema.com</li></ul>
+        <h1 class="section-title">About elCinema.com</h1>
+        <div class="boxed-3">
+          <h2>Who We Are</h2>
+          <p><a href='/'>Elcinema.com</a> is the largest Arabic-language database for film, theater, and television.</p>
+        </div>
+        <div class="boxed-3">
+          <h2>What We Offer</h2>
+          <p>Elcinema.com offers an exclusive online ticket booking service.</p>
+          <ul>
+            <li><p>The website includes up-to-date entries of works produced in all media.</p></li>
+            <li><p>The website offers an online ticket booking service.</p></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body></html>
+`;
+
+describe("parseStaticPage reads the live static-page markup", () => {
+  const page = parseStaticPage(STATIC_FIXTURE, "en");
+
+  it("extracts the edition title from the h1", () => {
+    expect(page.title).toBe("About elCinema.com");
+  });
+
+  it("groups the content into titled sections after the h1", () => {
+    expect(page.sections.map((s) => s.heading)).toEqual(["Who We Are", "What We Offer"]);
+  });
+
+  it("reads prose paragraphs and list items per section", () => {
+    expect(page.sections[0]!.blocks).toEqual([
+      {
+        type: "p",
+        text: "Elcinema.com is the largest Arabic-language database for film, theater, and television.",
+      },
+    ]);
+    expect(page.sections[1]!.blocks).toEqual([
+      { type: "p", text: "Elcinema.com offers an exclusive online ticket booking service." },
+      {
+        type: "list",
+        items: [
+          "The website includes up-to-date entries of works produced in all media.",
+          "The website offers an online ticket booking service.",
+        ],
+      },
+    ]);
+  });
+});
 
 describe("video scrapers", () => {
   it("extracts the YouTube embed and related videos from a video page", () => {

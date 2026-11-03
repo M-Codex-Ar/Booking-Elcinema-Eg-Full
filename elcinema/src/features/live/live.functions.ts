@@ -3,6 +3,7 @@ import {
   getLineupDetail,
   getLineupIndex,
   getPersonDetail,
+  getStaticPage,
   getVideoDetail,
   getVideoGallery,
   getVodGuide,
@@ -13,6 +14,7 @@ import type {
   LiveLineupDetail,
   LiveLineupIndex,
   LivePerson,
+  LiveStaticPage,
   LiveVideo,
   LiveVideoGallery,
   LiveVodGuide,
@@ -95,5 +97,15 @@ export const getLineupDetailFn = createServerFn({ method: "GET" })
       return { data: await getLineupDetail(data.lang, data.id), error: null };
     } catch (error) {
       return wrap<LiveLineupDetail>(error, data.lang);
+    }
+  });
+
+export const getStaticPageFn = createServerFn({ method: "GET" })
+  .validator((input: { lang: Lang; path: string }) => input)
+  .handler(async ({ data }) => {
+    try {
+      return { data: await getStaticPage(data.lang, data.path), error: null };
+    } catch (error) {
+      return wrap<LiveStaticPage>(error, data.lang);
     }
   });
