@@ -26,7 +26,7 @@ import type {
   EcBoxofficeRow,
   EcTvLine,
   EcTvSlot,
-} from "@/features/home/home.shared";
+} from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
 
 export type ManagedMovieRow = Record<string, unknown> & {

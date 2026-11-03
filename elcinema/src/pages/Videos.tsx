@@ -6,9 +6,9 @@
  */
 import { ArrowLeft, Play } from "lucide-react";
 import { ImgWithFallback } from "@/components/shared/primitives";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { useState } from "react";
-import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "@/features/live/live.shared";
+import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "@/types/live";
 import type { ManagedVideoRow } from "@/features/content/content";
 import {
   Chip,

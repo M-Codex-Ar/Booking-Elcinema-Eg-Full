@@ -21,21 +21,14 @@ import {
   MonitorPlay,
   Cake,
 } from "lucide-react";
-import type {
-  Bi,
-  EcBornPerson,
-  EcHomeData,
-  EcPromo,
-  EcTvSlot,
-  EcVod,
-} from "@/features/home/home.shared";
+import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/types/home";
 import { cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay } from "@/components/shared/ui";
 import { bi, makeT } from "@/i18n";
 import { VodBadge } from "@/features/live/live-ui";
-import type { PlaceholderKind } from "@/lib/media.shared";
-import type { Lang } from "@/features/home/home.shared";
+import type { PlaceholderKind } from "@/types/media";
+import type { Lang } from "@/types/home";
 
 /** Anchor that never navigates the app to elcinema.com (see links.ts). */
 function CardA({

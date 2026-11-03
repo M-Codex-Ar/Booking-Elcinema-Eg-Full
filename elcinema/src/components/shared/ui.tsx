@@ -7,7 +7,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-r
 import { useRef, type CSSProperties, type ReactNode } from "react";
 import { AppLink, Artwork } from "@/components/shared/primitives";
 import { makeT } from "@/i18n";
-import type { Bi, Lang } from "@/features/home/home.shared";
+import type { Bi, Lang } from "@/types/home";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");

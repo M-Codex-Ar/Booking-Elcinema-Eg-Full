@@ -23,7 +23,7 @@ import {
 import { GENRES } from "@/lib/data";
 import { PosterArt, fmtDate } from "@/components/shared/ui";
 import { ImgWithFallback, Pill } from "@/components/shared/primitives";
-import type { Lang, Movie } from "@/features/home/home.shared";
+import type { Lang, Movie } from "@/types/home";
 import { pair as L } from "@/i18n";
 import type { ManagedContent } from "@/features/content/content.functions";
 import {

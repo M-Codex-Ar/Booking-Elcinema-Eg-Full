@@ -4,8 +4,8 @@
  * English or Arabic edition; filmography works link to internal work pages.
  */
 import { Film, UserRound } from "lucide-react";
-import type { Lang } from "@/features/home/home.shared";
-import type { LivePerson } from "@/features/live/live.shared";
+import type { Lang } from "@/types/home";
+import type { LivePerson } from "@/types/live";
 import { Na } from "@/components/shared/ui";
 import { LiveImg, LivePoster, bookingPath } from "@/features/live/live-ui";
 import { makeT } from "@/i18n";

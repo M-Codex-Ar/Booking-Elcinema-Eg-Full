@@ -83,7 +83,7 @@ import {
   managedVideos,
 } from "@/features/content/content";
 import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE } from "@/lib/data";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 const L = (lang: Lang, en: string, ar: string) => (lang === "ar" ? ar : en);
 const COLORS = [

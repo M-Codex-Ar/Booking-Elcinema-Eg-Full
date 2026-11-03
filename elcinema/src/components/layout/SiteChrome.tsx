@@ -7,7 +7,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search, Send, User } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useRouterState } from "@tanstack/react-router";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { ImgWithFallback, SmartImg } from "@/components/shared/primitives";
 import { Na } from "@/components/shared/ui";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";

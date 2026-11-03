@@ -6,7 +6,7 @@
 import { Film, UserRound } from "lucide-react";
 import { movieBySlug, personById, personBySlug, workId } from "@/lib/build";
 import { Na, PosterArt, fmtDate, workPath } from "@/components/shared/ui";
-import type { Lang, Movie, Person } from "@/features/home/home.shared";
+import type { Lang, Movie, Person } from "@/types/home";
 import { makeT } from "@/i18n";
 
 function personBySlugOrId(id: string) {

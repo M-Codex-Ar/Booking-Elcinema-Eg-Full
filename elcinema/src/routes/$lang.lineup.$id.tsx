@@ -10,8 +10,8 @@ import {
   movieArt,
 } from "@/features/content/content";
 import type { ManagedContent } from "@/features/content/content.functions";
-import type { LiveLineupDetail } from "@/features/live/live.shared";
-import type { Lang } from "@/features/home/home.shared";
+import type { LiveLineupDetail } from "@/types/live";
+import type { Lang } from "@/types/home";
 import { makeT, rowTitle, asLang } from "@/i18n";
 
 const lineupDetailOptions = (lang: Lang, id: string) =>

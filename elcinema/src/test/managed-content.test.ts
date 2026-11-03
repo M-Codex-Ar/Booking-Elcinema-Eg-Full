@@ -14,7 +14,7 @@ import {
   matchesBuiltinPerson,
 } from "@/features/content/content";
 import { tvGuide } from "@/lib/build";
-import type { EcHomeData } from "@/features/home/home.shared";
+import type { EcHomeData } from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
 
 const empty: ManagedContent = {

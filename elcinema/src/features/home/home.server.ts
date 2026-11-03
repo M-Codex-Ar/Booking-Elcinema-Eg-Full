@@ -25,8 +25,8 @@ import type {
   EcVideo,
   EcVod,
   EcWatchOnlineItem,
-} from "@/features/home/home.shared";
-import { pickArtwork } from "@/lib/media.shared";
+} from "@/types/home";
+import { pickArtwork } from "@/types/media";
 import artworkJson from "@/data/artwork.json";
 
 /**

@@ -4,8 +4,8 @@
  * plus one list's contents. Items link to internal work/person pages.
  */
 import { ArrowLeft, ListVideo } from "lucide-react";
-import type { Lang } from "@/features/home/home.shared";
-import type { LiveLineupDetail, LiveLineupIndex } from "@/features/live/live.shared";
+import type { Lang } from "@/types/home";
+import type { LiveLineupDetail, LiveLineupIndex } from "@/types/live";
 import { Na } from "@/components/shared/ui";
 import {
   FilterInput,

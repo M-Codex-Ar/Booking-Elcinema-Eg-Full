@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { artworkSrc, useArtwork, LogoImage } from "@/components/shared/primitives";
 import { stateBlock } from "@/components/shared/variants";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { Na } from "@/components/shared/ui";
 

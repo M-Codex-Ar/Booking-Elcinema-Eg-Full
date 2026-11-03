@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { isAdmin } from "@/features/auth/auth";
 

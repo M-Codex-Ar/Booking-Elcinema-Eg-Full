@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { dir, locale, makeT } from "@/i18n";
 import { chip } from "@/components/shared/variants";
 

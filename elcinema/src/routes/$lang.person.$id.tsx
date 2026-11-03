@@ -14,7 +14,7 @@ import {
 import type { ManagedContent } from "@/features/content/content.functions";
 import { personById, personBySlug, personId } from "@/lib/build";
 import { asLang } from "@/i18n";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 const livePersonOptions = (lang: Lang, id: string) =>
   queryOptions({

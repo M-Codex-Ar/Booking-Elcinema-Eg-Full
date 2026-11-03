@@ -14,7 +14,7 @@
  *   t("home.boxOffice")
  *   t("search.results", { count: 12 })
  */
-import type { Bi, Lang } from "@/features/home/home.shared";
+import type { Bi, Lang } from "@/types/home";
 import { enChrome } from "./en/chrome";
 import { arChrome } from "./ar/chrome";
 import { enCommon } from "./en/common";

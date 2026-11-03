@@ -13,8 +13,8 @@ import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { dayLabel, movieById } from "@/lib/build";
 import { getLiveWorkFn } from "@/features/live/live.functions";
 import { cardLink } from "@/lib/links";
-import type { Lang } from "@/features/home/home.shared";
-import type { LiveWork } from "@/features/live/live.shared";
+import type { Lang } from "@/types/home";
+import type { LiveWork } from "@/types/live";
 import { LiveImg, LiveError, liveWorkPath } from "@/features/live/live-ui";
 import { Na } from "@/components/shared/ui";
 import {

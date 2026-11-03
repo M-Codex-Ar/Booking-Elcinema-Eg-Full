@@ -22,7 +22,7 @@ import type {
   Movie,
   Person,
   TvLine,
-} from "@/features/home/home.shared";
+} from "@/types/home";
 
 export const GENRES = genresData as Record<string, Bi>;
 

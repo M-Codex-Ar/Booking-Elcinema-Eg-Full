@@ -16,7 +16,7 @@ import type { VariantProps } from "class-variance-authority";
 import { Clapperboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { img as resolveImg } from "@/lib/images";
-import { isUsableArtwork, PLACEHOLDER, type PlaceholderKind } from "@/lib/media.shared";
+import { isUsableArtwork, PLACEHOLDER, type PlaceholderKind } from "@/types/media";
 import {
   container,
   heading,

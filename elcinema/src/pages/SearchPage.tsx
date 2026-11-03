@@ -4,7 +4,7 @@ import { Search, User, Tv, Film } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { searchAll } from "@/lib/build";
 import { Na, PosterArt, personPath, workPath } from "@/components/shared/ui";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import type { SearchResult } from "@/lib/build";
 import { dedupeSearchResults } from "@/features/content/content";
 import {

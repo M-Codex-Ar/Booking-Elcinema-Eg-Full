@@ -8,7 +8,7 @@ import {
   getVodGuide,
   getWorkDetail,
 } from "@/features/live/live.server";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import type {
   LiveLineupDetail,
   LiveLineupIndex,
@@ -17,7 +17,7 @@ import type {
   LiveVideoGallery,
   LiveVodGuide,
   LiveWork,
-} from "@/features/live/live.shared";
+} from "@/types/live";
 
 const NOT_AVAILABLE_EN =
   "This page couldn't be loaded from the cinema guide right now. Please try again soon.";

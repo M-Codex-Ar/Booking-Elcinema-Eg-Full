@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 export interface Col<T> {
   key: string;

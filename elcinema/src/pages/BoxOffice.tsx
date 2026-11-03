@@ -2,7 +2,7 @@
 import { TrendingUp } from "lucide-react";
 import { boxofficeDate, fmtRevenue, movieBySlug, workId } from "@/lib/build";
 import { Na, workPath } from "@/components/shared/ui";
-import type { BoxofficeEntry, Lang } from "@/features/home/home.shared";
+import type { BoxofficeEntry, Lang } from "@/types/home";
 import { useState } from "react";
 import { FilterInput, ListToolbar, SortSelect, matches } from "@/components/shared/controls";
 import { makeT } from "@/i18n";

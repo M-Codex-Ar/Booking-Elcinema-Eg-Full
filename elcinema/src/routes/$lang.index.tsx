@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { HomePage } from "@/pages/HomePage";
-import type { EcHomeData } from "@/features/home/home.shared";
+import type { EcHomeData } from "@/types/home";
 import { managedContentOptions, mergedHomeData } from "@/features/content/content";
 import { asLang } from "@/i18n";
 

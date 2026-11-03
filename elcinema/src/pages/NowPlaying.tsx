@@ -7,7 +7,7 @@ import { locale, makeT } from "@/i18n";
 import { fmtDate, Na, t, workPath } from "@/components/shared/ui";
 import { PosterArt } from "@/components/shared/ui";
 import { pill } from "@/components/shared/variants";
-import type { Lang, Movie } from "@/features/home/home.shared";
+import type { Lang, Movie } from "@/types/home";
 import {
   ListToolbar,
   Pagination,

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { makeT } from "@/i18n";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/$lang/privacy")({

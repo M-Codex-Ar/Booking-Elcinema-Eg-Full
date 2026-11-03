@@ -4,7 +4,7 @@
  * All scrapers live in live.server.ts and every field is a plain,
  * SSR-serializable value.
  */
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 /** A linked title/person card with its elcinema numeric id. */
 export interface LiveRef {

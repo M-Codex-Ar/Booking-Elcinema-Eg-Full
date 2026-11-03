@@ -4,7 +4,7 @@ import { CalendarClock, Star } from "lucide-react";
 import { GENRES } from "@/lib/data";
 import { movieMeta, workId } from "@/lib/build";
 import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
-import type { Lang, Movie } from "@/features/home/home.shared";
+import type { Lang, Movie } from "@/types/home";
 import {
   ListToolbar,
   Pagination,

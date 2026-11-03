@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";

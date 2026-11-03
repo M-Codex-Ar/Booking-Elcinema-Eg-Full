@@ -2,7 +2,7 @@
  * category and by channel name (URL-driven). */
 import { Tv } from "lucide-react";
 import { TvGuideView } from "@/components/shared/TvGuide";
-import type { ChannelCategory, Lang, TvGuide } from "@/features/home/home.shared";
+import type { ChannelCategory, Lang, TvGuide } from "@/types/home";
 import { FilterInput, ListToolbar, type SetSearch } from "@/components/shared/controls";
 import { bi, makeT } from "@/i18n";
 

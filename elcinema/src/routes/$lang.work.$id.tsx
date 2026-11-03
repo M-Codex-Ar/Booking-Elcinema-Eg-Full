@@ -9,7 +9,7 @@ import { managedContentOptions, managedMovieById } from "@/features/content/cont
 import type { ManagedContent } from "@/features/content/content.functions";
 import { movieById, movieBySlug, workId } from "@/lib/build";
 import { asLang } from "@/i18n";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 const liveWorkOptions = (lang: Lang, id: string) =>
   queryOptions({

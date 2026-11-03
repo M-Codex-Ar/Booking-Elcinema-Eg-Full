@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getVodGuideFn } from "@/features/live/live.functions";
 import { getElcinemaHomeFn } from "@/features/home/home.functions";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { asLang } from "@/i18n";
 import { WatchOnlineRoute } from "@/pages/WatchOnline";
 

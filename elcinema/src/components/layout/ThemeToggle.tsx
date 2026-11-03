@@ -2,7 +2,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState, type MouseEvent } from "react";
 import { cn } from "@/lib/utils";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { iconAction } from "@/components/shared/variants";
 

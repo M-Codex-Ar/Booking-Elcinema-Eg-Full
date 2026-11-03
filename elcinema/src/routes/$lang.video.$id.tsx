@@ -4,7 +4,7 @@ import { getVideoDetailFn } from "@/features/live/live.functions";
 import { LiveError } from "@/features/live/live-ui";
 import { VideoDetailPage } from "@/pages/Videos";
 import { asLang } from "@/i18n";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 const videoOptions = (lang: Lang, id: string) =>
   queryOptions({

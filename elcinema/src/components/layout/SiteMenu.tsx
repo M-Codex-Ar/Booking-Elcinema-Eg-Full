@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { AuthDialog } from "@/features/auth/AuthDialog";
 import { supabase } from "@/services/clients/supabase/client";

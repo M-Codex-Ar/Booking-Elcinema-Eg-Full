@@ -8,8 +8,8 @@ import { ArrowLeft, MonitorPlay } from "lucide-react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ImgWithFallback } from "@/components/shared/primitives";
 import { getElcinemaHomeFn } from "@/features/home/home.functions";
-import type { Lang } from "@/features/home/home.shared";
-import type { LiveVodGuide } from "@/features/live/live.shared";
+import type { Lang } from "@/types/home";
+import type { LiveVodGuide } from "@/types/live";
 import { LiveError, LivePoster, VodBadge } from "@/features/live/live-ui";
 import { Na, Row } from "@/components/shared/ui";
 import {

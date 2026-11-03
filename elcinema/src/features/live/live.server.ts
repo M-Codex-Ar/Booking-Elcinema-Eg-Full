@@ -8,7 +8,7 @@
  */
 import * as cheerio from "cheerio";
 import type { Element } from "domhandler";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 import type {
   LiveLineupDetail,
   LiveLineupIndex,
@@ -20,8 +20,8 @@ import type {
   LiveVideoGallery,
   LiveVodGuide,
   LiveWork,
-} from "@/features/live/live.shared";
-import { pickArtwork, toArtworkUrl } from "@/lib/media.shared";
+} from "@/types/live";
+import { pickArtwork, toArtworkUrl } from "@/types/media";
 
 const BASE = "https://elcinema.com";
 const UA =

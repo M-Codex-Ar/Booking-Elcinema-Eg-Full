@@ -3,7 +3,7 @@
  * - Generates clean, SEO-friendly, bilingual URL slugs from titles and names.
  * - Resolves movies and people deterministically by ID, slug, or title/name.
  */
-import type { Bi, Movie, Person } from "@/features/home/home.shared";
+import type { Bi, Movie, Person } from "@/types/home";
 
 /**
  * Convert any string (English, Arabic, numbers) into a normalized, URL-safe slug.

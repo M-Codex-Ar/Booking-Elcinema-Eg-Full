@@ -4,7 +4,7 @@ import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE, TV_GUIDE_DATA } from "@/li
 import { fmtAirtime, fmtRevenue, personId, posterUrl, photoUrl, workId } from "@/lib/build";
 import { ImgWithFallback } from "@/components/shared/primitives";
 import { Na, personPath, workPath } from "@/components/shared/ui";
-import type { Lang, Movie } from "@/features/home/home.shared";
+import type { Lang, Movie } from "@/types/home";
 import { pair as L } from "@/i18n";
 import { DataTable, type Col } from "./DataTable";
 

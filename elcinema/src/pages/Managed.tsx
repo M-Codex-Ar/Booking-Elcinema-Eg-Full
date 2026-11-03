@@ -3,7 +3,7 @@ import { ArrowLeft, CalendarDays, Clapperboard, Star, UserRound, Users } from "l
 import { ImgWithFallback } from "@/components/shared/primitives";
 import { GENRES } from "@/lib/data";
 import { fmtDate, Na, PosterArt, t } from "@/components/shared/ui";
-import type { Lang, Movie, Person } from "@/features/home/home.shared";
+import type { Lang, Movie, Person } from "@/types/home";
 import { makeT } from "@/i18n";
 
 /** Managed movie detail: catalogue-style card without showtimes/VOD. */

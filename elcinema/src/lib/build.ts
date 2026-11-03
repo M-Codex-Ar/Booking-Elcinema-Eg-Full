@@ -14,7 +14,7 @@ import {
 } from "@/lib/data";
 import { img } from "@/lib/images";
 import { toSlug, movieSlug, personSlug } from "@/utils/slug";
-import type { Bi, BoxofficeEntry, Lang, Movie, Person, TvGuide } from "@/features/home/home.shared";
+import type { Bi, BoxofficeEntry, Lang, Movie, Person, TvGuide } from "@/types/home";
 
 export type { Bi, Movie };
 export { GENRES, PEOPLE, boxofficeDate, toSlug, movieSlug, personSlug };

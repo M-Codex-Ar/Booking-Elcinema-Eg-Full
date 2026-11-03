@@ -12,7 +12,7 @@
  */
 import { MOVIES, PEOPLE } from "@/lib/data";
 import { movieBySlug, personBySlug, personId, workId } from "@/lib/build";
-import type { Lang } from "@/features/home/home.shared";
+import type { Lang } from "@/types/home";
 
 export interface CardLink {
   href: string;

@@ -19,8 +19,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ImgWithFallback } from "@/components/shared/primitives";
-import type { Lang } from "@/features/home/home.shared";
-import type { LiveWork } from "@/features/live/live.shared";
+import type { Lang } from "@/types/home";
+import type { LiveWork } from "@/types/live";
 import { Na, Row } from "@/components/shared/ui";
 import {
   LiveImg,

@@ -7,7 +7,7 @@ import { fmtAirtime, fmtClock, layoutSlots } from "@/lib/build";
 import { artworkSrc, LogoImage } from "@/components/shared/primitives";
 import { cardLink } from "@/lib/links";
 import { Na } from "@/components/shared/ui";
-import type { TvGuide as TvGuideData, TvLine, Lang } from "@/features/home/home.shared";
+import type { TvGuide as TvGuideData, TvLine, Lang } from "@/types/home";
 
 export function TvGuideView({
   guide,

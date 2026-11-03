@@ -16,7 +16,6 @@ import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
 
-
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
 function NotFoundComponent() {
   return (
@@ -46,7 +45,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-
 
   return (
     <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">
