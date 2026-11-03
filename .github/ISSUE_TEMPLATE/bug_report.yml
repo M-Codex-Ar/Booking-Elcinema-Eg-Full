@@ -60,7 +60,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Output of `bun --version`, `node --version`, browser + OS, and the commit SHA (`git rev-parse --short HEAD`).
+      description: Output of `pnpm --version`, `node --version`, browser + OS, and the commit SHA (`git rev-parse --short HEAD`).
     validations:
       required: true
   - type: textarea

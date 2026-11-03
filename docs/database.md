@@ -27,7 +27,7 @@ unit-tested.
 Created by
 [`drizzle/migrations/0001_create_managed_content_tables.sql`](../elcinema/drizzle/migrations/0001_create_managed_content_tables.sql);
 `MANAGED_TABLES` in
-[`content.functions.ts`](../elcinema/src/elcinema/content.functions.ts) is the
+[`content.functions.ts`](../elcinema/src/features/content/content.functions.ts) is the
 authoritative list the read endpoint iterates.
 
 | Table | Columns that matter | Constraints |
@@ -46,7 +46,7 @@ is **not** auto-maintained; a write path must set it, or the value lies.
 ### Row → domain mapping
 
 `managedMovieToMovie()` and `managedPersonToPerson()` in
-[`content.ts`](../elcinema/src/elcinema/content.ts) turn a row into a `Movie` /
+[`content.ts`](../elcinema/src/features/content/content.ts) turn a row into a `Movie` /
 `Person`. Rules: an empty `*_ar` falls back to the English value; numeric strings
 are coerced with a default; `genre` splits into `genres[]`; a poster of `null`
 falls back to the deterministic gradient (`hue`), never a broken image;
@@ -56,7 +56,7 @@ operator id can never shadow a catalogue slug on a detail route.
 ## Merge rules
 
 The single place operator and catalogue content combine is
-[`elcinema/src/elcinema/content.ts`](../elcinema/src/elcinema/content.ts). Pages
+[`elcinema/src/features/content/content.ts`](../elcinema/src/features/content/content.ts). Pages
 must not query `managed_*` themselves.
 
 | Function | Precedence | Dedupe key |
