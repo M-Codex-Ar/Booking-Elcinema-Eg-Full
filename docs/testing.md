@@ -17,6 +17,28 @@ The acceptance gate is `pnpm run check` (format check → lint → typecheck →
 build), locally via
 [`/scripts/check.sh`](../scripts/check.sh) and in CI as `Web CI`.
 
+## Production browser smoke tests
+
+`elcinema/tests/production/public-pages.test.ts` contains short, read-only
+TestDriver checks against the public production English homepage and Arabic FAQ.
+They do not sign in or submit forms. These tests use TestDriver's hosted browser
+service and are deliberately separate from `pnpm run test` and the normal CI gate.
+
+Set a TestDriver API key in your shell, then run the dedicated command:
+
+```powershell
+$env:TD_API_KEY = "your-testdriver-api-key"
+pnpm run test:e2e
+```
+
+```sh
+TD_API_KEY="your-testdriver-api-key" pnpm run test:e2e
+```
+
+The command fails early with setup guidance when `TD_API_KEY` is missing. These
+hosted browser runs may consume TestDriver account usage; run them intentionally
+and never commit the key.
+
 ## What is covered
 
 | Suite | Protects |

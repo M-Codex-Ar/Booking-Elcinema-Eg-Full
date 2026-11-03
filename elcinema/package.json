@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "test:e2e": "node scripts/check-testdriver-key.mjs && vitest run --config vitest.testdriver.config.ts",
     "test:watch": "vitest",
     "seed:admin": "node scripts/seed-admin.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
@@ -84,6 +85,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
+    "testdriverai": "7.11.171",
     "vite": "8.1.5",
     "vitest": "^4.1.10"
   }
