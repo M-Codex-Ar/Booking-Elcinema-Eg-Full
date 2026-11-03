@@ -32,12 +32,12 @@ describe("Supabase Auth Roles & Helpers", () => {
     expect(isAdmin(adminUser)).toBe(true);
   });
 
-  it("detects admin from seed email admin@elcinema.com", () => {
-    const adminUser = mockUser({
+  it("does not grant admin from email alone (role must come from metadata)", () => {
+    const user = mockUser({
       email: "admin@elcinema.com",
     });
-    expect(getUserRole(adminUser)).toBe("admin");
-    expect(isAdmin(adminUser)).toBe(true);
+    expect(getUserRole(user)).toBe("user");
+    expect(isAdmin(user)).toBe(false);
   });
 
   it("defaults to user role for normal users", () => {

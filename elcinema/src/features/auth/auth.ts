@@ -15,10 +15,10 @@ export function getUserRole(user: User | null | undefined): UserRole {
   const appRole = user.app_metadata?.["role"] as string | undefined;
   if (appRole === "admin") return "admin";
 
+  // user_metadata is user-editable, so this is UI gating only; real
+  // authorization happens server-side via requireAdminRole on JWT claims.
   const userRole = user.user_metadata?.["role"] as string | undefined;
   if (userRole === "admin") return "admin";
-
-  if (user.email?.toLowerCase() === "admin@elcinema.com") return "admin";
 
   return "user";
 }
@@ -43,16 +43,15 @@ export function getUserDisplayName(user: User | null | undefined): string {
  * Extract role from JWT claims object (used in server functions).
  * Priority same as getUserRole but works with claims object instead of User.
  */
-export function getRoleFromClaims(
-  claims: Record<string, unknown> | undefined
-): string | null {
+export function getRoleFromClaims(claims: Record<string, unknown> | undefined): string | null {
   if (!claims) return null;
-  
+
+  // Note: a top-level claims["role"] in a Supabase JWT is the Postgres role
+  // ("authenticated"/"anon"), never the app role, so it must not be trusted here.
   const role =
-    (claims["role"] as string | undefined) ||
     ((claims["app_metadata"] as Record<string, unknown>)?.["role"] as string | undefined) ||
     ((claims["user_metadata"] as Record<string, unknown>)?.["role"] as string | undefined);
-  
+
   return role || null;
 }
 
