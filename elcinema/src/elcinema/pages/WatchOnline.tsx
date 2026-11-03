@@ -6,7 +6,7 @@
  */
 import { ArrowLeft, MonitorPlay } from "lucide-react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { ImgWithFallback, LogoImage } from "../components/primitives";
+import { ImgWithFallback } from "../components/primitives";
 import { getElcinemaHomeFn } from "../home.functions";
 import type { Lang } from "../home.shared";
 import type { LiveVodGuide } from "../live.shared";
@@ -24,23 +24,7 @@ import {
   textSortOptions,
   useListState,
 } from "../controls";
-
-const L = {
-  en: {
-    title: "Watch Online",
-    subtitle: "Where to stream movies and series right now",
-    platforms: "Streaming platforms",
-    onDemand: "Movies & series available online",
-    cats: "Categories",
-  },
-  ar: {
-    title: "شاهد أونلاين",
-    subtitle: "أين تشاهد الأفلام والمسلسلات الآن",
-    platforms: "منصات المشاهدة",
-    onDemand: "أفلام ومسلسلات متاحة أونلاين",
-    cats: "التصنيفات",
-  },
-} as const;
+import { makeT } from "../i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],
@@ -49,7 +33,7 @@ const homeQueryOptions = queryOptions({
 });
 
 export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const home = useSuspenseQuery(homeQueryOptions).data;
   const watchOnline = home.data?.watchOnline ?? [];
   const st = useListState();
@@ -65,11 +49,11 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      <h1 className="text-2xl font-black md:text-3xl">{Lx.title}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{Lx.subtitle}</p>
+      <h1 className="text-2xl font-black md:text-3xl">{t("vod.title")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{t("vod.subtitle")}</p>
 
       {watchOnline.length > 0 && (
-        <Row title={Lx.onDemand} icon={<MonitorPlay className="h-5 w-5" />} lang={lang}>
+        <Row title={t("vod.onDemand")} icon={<MonitorPlay className="h-5 w-5" />} lang={lang}>
           {watchOnline.map((w, i) => {
             const m = /\/work\/(\d+)/.exec(w.href);
             return m ? (
@@ -89,7 +73,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
 
       <section className="py-4">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
-          <MonitorPlay className="h-5 w-5 text-primary" /> {Lx.platforms}
+          <MonitorPlay className="h-5 w-5 text-primary" /> {t("vod.platforms")}
         </h2>
         <ListToolbar>
           <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
@@ -146,8 +130,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
           href={`/${lang}/now`}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
         >
-          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />{" "}
-          {lang === "ar" ? "السينمات الآن" : "Now Playing"}
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("now.title")}
         </Na>
       </div>
     </div>

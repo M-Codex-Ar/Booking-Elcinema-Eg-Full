@@ -30,29 +30,7 @@ import {
   textSortOptions,
   useListState,
 } from "../controls";
-
-const L = {
-  en: {
-    title: "Book tickets",
-    subtitle: "Pick a movie to see its cinemas and showtimes",
-    cinemas: "Cinemas & showtimes",
-    getTickets: "tickets",
-    ticketNote: "Opens the real ticket service in a new tab.",
-    back: "All movies",
-    sampleNote: "Sample catalogue — showtimes generated for the demo.",
-    noTimes: "No showtimes published for this day.",
-  },
-  ar: {
-    title: "احجز تذاكر",
-    subtitle: "اختر فيلمًا لعرض سينماته ومواعيده",
-    cinemas: "السينمات ومواعيد العرض",
-    getTickets: "تذاكر",
-    ticketNote: "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
-    back: "كل الأفلام",
-    sampleNote: "بيانات العرض التجريبية — المواعيد مولّدة للعرض فقط.",
-    noTimes: "لا توجد مواعيد معلنة لهذا اليوم.",
-  },
-} as const;
+import { makeT } from "../i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],
@@ -72,7 +50,7 @@ const liveWorkQueryOptions = (lang: Lang, id: string) =>
 // ---------------------------------------------------------------------------
 
 export function BookingIndexPage({ lang }: { lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const home = useSuspenseQuery(homeQueryOptions).data;
   const tx = listText(lang);
   const st = useListState();
@@ -93,9 +71,9 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="mb-2 flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <Ticket className="h-6 w-6 text-primary" /> {Lx.title}
+        <Ticket className="h-6 w-6 text-primary" /> {t("booking.title")}
       </h1>
-      <p className="text-sm text-muted-foreground">{Lx.subtitle}</p>
+      <p className="text-sm text-muted-foreground">{t("booking.subtitle")}</p>
 
       <ListToolbar>
         <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
@@ -121,7 +99,7 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
                 <LiveImg src={m.img} alt={m.title} className="h-full w-full" />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
                   <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
-                    {Lx.getTickets} <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+                    {t("common.getTickets")} <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
                   </span>
                 </div>
               </div>
@@ -148,7 +126,7 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
                 {m.title}
               </h3>
               <span className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground">
-                <Ticket className="inline h-3.5 w-3.5" /> {Lx.getTickets}
+                <Ticket className="inline h-3.5 w-3.5" /> {t("common.getTickets")}
               </span>
             </Na>
           ))}
@@ -173,7 +151,7 @@ export function BookingMoviePage({
   id: string;
   data: LiveWork | null;
 }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const [day, setDay] = useState(0);
 
   // Built-in dataset movie: its real scraped showtimes.
@@ -201,7 +179,7 @@ export function BookingMoviePage({
         href={`/${lang}/booking`}
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
       >
-        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {Lx.back}
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("booking.back")}
       </Na>
 
       <div className="mt-4 flex items-start gap-4">
@@ -213,21 +191,23 @@ export function BookingMoviePage({
         <div className="min-w-0">
           <h1 className="text-2xl font-black md:text-3xl">{title}</h1>
           <h2 className="mt-1 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-            <CalendarClock className="h-4 w-4 text-primary" /> {Lx.cinemas}
+            <CalendarClock className="h-4 w-4 text-primary" /> {t("booking.cinemas")}
           </h2>
           {!sampleMovie && (
             <Na
               href={liveWorkPath(lang, id)}
               className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
-              {lang === "ar" ? "صفحة الفيلم" : "Movie page"}
+              {t("booking.moviePage")}
               <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </Na>
           )}
         </div>
       </div>
 
-      {sampleMovie && <p className="mt-4 text-xs text-muted-foreground">{Lx.sampleNote}</p>}
+      {sampleMovie && (
+        <p className="mt-4 text-xs text-muted-foreground">{t("booking.sampleNote")}</p>
+      )}
 
       {days.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
@@ -263,14 +243,14 @@ export function BookingMoviePage({
                         rel="noreferrer"
                         className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
                       >
-                        <Ticket className="h-3.5 w-3.5" /> {Lx.getTickets}
+                        <Ticket className="h-3.5 w-3.5" /> {t("common.getTickets")}
                       </a>
                     ) : (
                       <Na
                         href={cl.href}
                         className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
                       >
-                        <Ticket className="h-3.5 w-3.5" /> {Lx.getTickets}
+                        <Ticket className="h-3.5 w-3.5" /> {t("common.getTickets")}
                       </Na>
                     );
                   })()}
@@ -288,11 +268,13 @@ export function BookingMoviePage({
             </div>
           ))}
           {!sampleMovie && (
-            <p className="text-meta text-muted-foreground md:col-span-2">{Lx.ticketNote}</p>
+            <p className="text-meta text-muted-foreground md:col-span-2">
+              {t("booking.ticketNote")}
+            </p>
           )}
         </div>
       ) : (
-        <p className="mt-6 text-sm text-muted-foreground">{Lx.noTimes}</p>
+        <p className="mt-6 text-sm text-muted-foreground">{t("booking.noTimes")}</p>
       )}
     </div>
   );

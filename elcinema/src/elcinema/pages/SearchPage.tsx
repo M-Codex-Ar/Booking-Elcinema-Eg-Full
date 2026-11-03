@@ -1,4 +1,5 @@
 /** Search — filters the built-in dataset across titles, persons and channels. */
+import { makeT } from "../i18n";
 import { Search, User, Tv, Film } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { searchAll } from "../build";
@@ -49,7 +50,14 @@ export function SearchPage({
   q: string | undefined;
   extra: SearchResult[];
 }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
+  const tabLabels: Record<Tab, string> = {
+    all: t("search.tabAll"),
+    movie: t("search.tabMovie"),
+    person: t("search.tabPerson"),
+    channel: t("search.tabChannel"),
+  };
+  const tabs: Tab[] = ["all", "movie", "person", "channel"];
   const [tab, setTab] = useState<Tab>("all");
   const [draft, setDraft] = useState(q ?? "");
   const results = dedupeSearchResults([...searchAll(q ?? ""), ...extra]);
@@ -67,7 +75,7 @@ export function SearchPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
-      <h1 className="text-2xl font-black md:text-3xl">{Lx.title}</h1>
+      <h1 className="text-2xl font-black md:text-3xl">{t("search.title")}</h1>
 
       <form
         onSubmit={submit}
@@ -78,7 +86,7 @@ export function SearchPage({
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={Lx.placeholder}
+          placeholder={t("search.placeholder")}
           className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground"
           autoFocus
         />
@@ -86,12 +94,12 @@ export function SearchPage({
           type="submit"
           className="bg-primary px-5 py-3 text-sm font-bold text-primary-foreground hover:bg-primary/90"
         >
-          {Lx.title}
+          {t("search.title")}
         </button>
       </form>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        {(Object.keys(Lx.tabs) as Tab[]).map((k) => {
+        {tabs.map((k) => {
           const Icon = TAB_ICON[k];
           return (
             <button
@@ -107,17 +115,17 @@ export function SearchPage({
               }`}
             >
               <Icon className="h-4 w-4" />
-              {Lx.tabs[k]}
+              {tabLabels[k]}
             </button>
           );
         })}
       </div>
 
-      {!q && <p className="mt-10 text-center text-sm text-muted-foreground">{Lx.empty}</p>}
+      {!q && <p className="mt-10 text-center text-sm text-muted-foreground">{t("search.empty")}</p>}
 
       {q && (
         <p className="mt-6 text-sm text-muted-foreground">
-          {sorted.length} {Lx.results} {Lx.in} “{q}”
+          {sorted.length} {t("search.resultsWord")} {t("search.inQuery")} “{q}”
         </p>
       )}
 
@@ -138,7 +146,7 @@ export function SearchPage({
 
       {q && sorted.length === 0 && (
         <p className="mt-10 text-center text-sm text-muted-foreground">
-          {Lx.none} “{q}”
+          {t("search.none")} “{q}”
         </p>
       )}
 
@@ -162,7 +170,7 @@ export function SearchPage({
               <div className="min-w-0 flex-1">
                 <div className="truncate font-bold">{r.title[lang]}</div>
                 <div className="truncate text-xs text-muted-foreground">
-                  {Lx.tabs[r.type]} · {r.sub[lang]}
+                  {tabLabels[r.type]} · {r.sub[lang]}
                 </div>
               </div>
             </>

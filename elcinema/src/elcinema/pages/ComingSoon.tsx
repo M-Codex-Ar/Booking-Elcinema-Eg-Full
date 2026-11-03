@@ -16,32 +16,12 @@ import {
   type SetSearch,
   type ViewMode,
 } from "../controls";
-
-const L = {
-  en: {
-    title: "Coming Soon",
-    sub: "Upcoming releases in Egyptian cinemas",
-    release: "Releases",
-    director: "Director",
-    runtime: "min",
-    all: "All",
-    sort: { soon: "Soonest", title: "A to Z", runtime: "Longest" },
-  },
-  ar: {
-    title: "قريباً",
-    sub: "أفلام قادمة إلى السينمات المصرية",
-    release: "يُعرض",
-    director: "المخرج",
-    runtime: "دقيقة",
-    all: "الكل",
-    sort: { soon: "الأقرب عرضًا", title: "أبجديًا", runtime: "الأطول" },
-  },
-} as const;
+import { makeT } from "../i18n";
 
 type SortKey = "soon" | "title" | "runtime";
 
 function SoonCard({ movie, lang }: { movie: Movie; lang: Lang }) {
-  const Lx = L[lang];
+  const copy = makeT(lang);
   return (
     <Na href={workPath(lang, workId(movie))} className="glass-card hover-lift flex gap-4 p-4">
       <div className="w-24 shrink-0 overflow-hidden rounded-lg md:w-28">
@@ -52,7 +32,7 @@ function SoonCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <div className="min-w-0 flex-1">
         <h3 className="text-base font-black md:text-lg">{movie.title[lang]}</h3>
         <p className="mt-1 text-xs font-semibold text-primary">
-          {Lx.release} {fmtDate(movie.release, lang)}
+          {copy("soon.release")} {fmtDate(movie.release, lang)}
         </p>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{movie.synopsis[lang]}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -62,10 +42,10 @@ function SoonCard({ movie, lang }: { movie: Movie; lang: Lang }) {
             </span>
           ))}
           <span>
-            {Lx.director}: {movie.director[lang]}
+            {copy("common.director")}: {movie.director[lang]}
           </span>
           <span>
-            {movie.runtime} {Lx.runtime}
+            {movie.runtime} {copy("common.runtimeMin")}
           </span>
         </div>
       </div>
@@ -90,7 +70,7 @@ export function ComingSoonPage({
   page?: number | undefined;
   setSearch: SetSearch;
 }) {
-  const Lx = L[lang];
+  const copy = makeT(lang);
   const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
   const sorted = [...filtered].sort((a, b) => {
@@ -103,12 +83,18 @@ export function ComingSoonPage({
   const shown = pageSlice(sorted, page, 8);
   const pages = pageCount(sorted.length, 8);
 
+  const sortOptions = [
+    { value: "soon", label: copy("soon.sortSoonest") },
+    { value: "title", label: copy("controls.az") },
+    { value: "runtime", label: copy("soon.sortLongest") },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <CalendarClock className="h-6 w-6 text-primary" /> {Lx.title}
+        <CalendarClock className="h-6 w-6 text-primary" /> {copy("soon.title")}
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">{Lx.sub}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{copy("soon.sub")}</p>
 
       <ListToolbar>
         <Na
@@ -119,7 +105,7 @@ export function ComingSoonPage({
               : "border-border hover:border-primary"
           }`}
         >
-          {Lx.all}
+          {copy("controls.all")}
         </Na>
         {genres.map((g) => (
           <Na
@@ -140,10 +126,7 @@ export function ComingSoonPage({
           lang={lang}
           value={sort}
           onChange={(v) => setSearch({ sort: v, page: undefined })}
-          options={(Object.keys(Lx.sort) as SortKey[]).map((k) => ({
-            value: k,
-            label: Lx.sort[k],
-          }))}
+          options={sortOptions}
         />
         <ViewToggle lang={lang} view={view} onChange={(v) => setSearch({ view: v })} />
       </ListToolbar>
@@ -165,7 +148,7 @@ export function ComingSoonPage({
                 <h3 className="mt-3 line-clamp-1 text-sm font-bold">{m.title[lang]}</h3>
               </Na>
               <div className="mt-1 text-xs text-muted-foreground">
-                {Lx.release} {fmtDate(m.release, lang)}
+                {copy("soon.release")} {fmtDate(m.release, lang)}
               </div>
               <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                 <Star className="h-3 w-3 fill-gold text-gold" /> {movieMeta(m).rating.toFixed(1)}
@@ -176,9 +159,7 @@ export function ComingSoonPage({
       )}
 
       {sorted.length === 0 && (
-        <p className="mt-12 text-center text-muted-foreground">
-          {lang === "en" ? "Nothing announced in this genre yet." : "لا إعلانات في هذا النوع بعد."}
-        </p>
+        <p className="mt-12 text-center text-muted-foreground">{copy("soon.empty")}</p>
       )}
 
       <Pagination lang={lang} page={page} pages={pages} onChange={(p) => setSearch({ page: p })} />
