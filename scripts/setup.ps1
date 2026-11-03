@@ -8,13 +8,13 @@ function Step($m) { Write-Host "`n==> $m" -ForegroundColor Cyan }
 function Warn($m) { Write-Host "    $m" -ForegroundColor Yellow }
 
 Step "Checking the toolchain"
-$hasBun = Get-Command bun -ErrorAction SilentlyContinue
-if ($hasBun) {
-  Write-Host "    bun  $(bun --version)"
+$hasPnpm = Get-Command pnpm -ErrorAction SilentlyContinue
+if ($hasPnpm) {
+  Write-Host "    pnpm  $(pnpm --version)"
 } elseif (Get-Command node -ErrorAction SilentlyContinue) {
-  Warn "bun not found; falling back to npm $(node --version). The lockfile is bun.lock, so npm resolves fresh."
+  Warn "pnpm not found; falling back to npm $(node --version). The lockfile is pnpm-lock.yaml, so npm resolves fresh."
 } else {
-  Write-Error "Neither bun nor node is on PATH. Install Node.js >= 20 or bun 1.x first."
+  Write-Error "Neither pnpm nor node is on PATH. Install Node.js >= 20 or pnpm 9+ first."
 }
 
 if (Get-Command dotnet -ErrorAction SilentlyContinue) {
@@ -25,7 +25,7 @@ if (Get-Command dotnet -ErrorAction SilentlyContinue) {
 
 Step "Installing frontend dependencies (elcinema/)"
 Push-Location elcinema
-try { if ($hasBun) { bun install } else { npm install } } finally { Pop-Location }
+try { if ($hasPnpm) { pnpm install } else { npm install } } finally { Pop-Location }
 
 Step "Creating elcinema/.env from .env.example if missing"
 if (-not (Test-Path elcinema/.env) -and (Test-Path elcinema/.env.example)) {

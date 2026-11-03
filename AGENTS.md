@@ -24,7 +24,7 @@ These rules apply to the whole repository. Area-specific rules live in
 ```sh
 npm run check:web            # lint + typecheck + tests + build (the acceptance gate)
 npm run dev:web              # frontend dev server
-cd elcinema && bun run test  # vitest, 51+ tests must stay green
+cd elcinema && pnpm run test  # vitest, 51+ tests must stay green
 ```
 
 Verify with the real tools before claiming work is done: `tsc --noEmit`, `vitest run`,

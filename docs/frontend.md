@@ -10,15 +10,15 @@ Run from `elcinema/` (or `npm run <script>:web` from the repository root):
 
 | Command | What it does |
 | --- | --- |
-| `bun install` | Install dependencies (`bun.lock`; `bunfig.toml` enforces a 24-hour supply-chain age guard). |
-| `bun run dev` | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort). |
-| `bun run build` | Type-free production build through Nitro, output in `.output/`. |
-| `bun run preview` | Serve the built output locally. |
-| `bun run lint` | ESLint over the whole project. |
-| `bun run format` / `format:check` | Prettier write / verify. |
-| `bun run typecheck` | `tsc -p tsconfig.json --noEmit`. |
-| `bun run test` | Vitest once; `test:watch` for the loop. |
-| `bun run check` | The gate: format check, lint, typecheck, tests, build. |
+| `pnpm install` | Install dependencies (`pnpm-lock.yaml`; `pnpm-workspace.yaml` enforces a 24-hour supply-chain age guard). |
+| `pnpm run dev` | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort). |
+| `pnpm run build` | Type-free production build through Nitro, output in `.output/`. |
+| `pnpm run preview` | Serve the built output locally. |
+| `pnpm run lint` | ESLint over the whole project. |
+| `pnpm run format` / `format:check` | Prettier write / verify. |
+| `pnpm run typecheck` | `tsc -p tsconfig.json --noEmit`. |
+| `pnpm run test` | Vitest once; `test:watch` for the loop. |
+| `pnpm run check` | The gate: format check, lint, typecheck, tests, build. |
 
 [`/scripts/check.sh`](../scripts/check.sh) wraps the same gate and adds the
 committed route-tree freshness check that CI enforces.
@@ -71,7 +71,7 @@ a query or server function, render a page component. Anything that looks like a
 filter, a sort, a merge, or a class string belongs one layer down.
 
 `src/routeTree.gen.ts` is committed and imported directly. Adding, renaming or
-deleting a route file means regenerating it (`bun run build` does) and committing
+deleting a route file means regenerating it (`pnpm run build` does) and committing
 the result, otherwise production breaks while dev looks fine — that is exactly the
 drift `Web CI` fails on.
 

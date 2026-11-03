@@ -4,7 +4,7 @@
 
 | Piece | Runtime | Notes |
 | --- | --- | --- |
-| `elcinema/` (SSR + server functions) | Cloudflare via Nitro | `bun run build` → `.output/`; `.wrangler/` holds local deploy state |
+| `elcinema/` (SSR + server functions) | Cloudflare via Nitro | `pnpm run build` → `.output/`; `.wrangler/` holds local deploy state |
 | Postgres + auth | Supabase, project `twuzevyzjvmvufoutbny` | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
 | Static assets | Same origin, `public/` | `favicon.ico`, `robots.txt` (all crawlers allowed) |
 | Artwork | Bundled under `src/assets/img` via the `images.ts` manifest, plus external elcinema URLs | Catalogue posters resolve locally; scraped posters point at elcinema's CDN |
@@ -19,7 +19,7 @@ rewritten ([../CONTRIBUTING.md](../CONTRIBUTING.md)).
 
 ```sh
 ./scripts/check.sh                      # the gate, before anything ships
-cd elcinema && bun run build            # .output/
+cd elcinema && pnpm run build            # .output/
 ```
 
 Release checklist, in order:
@@ -51,7 +51,7 @@ is ignored; `.env.example` never holds a real value
 
 ### The build gate
 
-`bun run build` runs `elcinema/scripts/check-env.mjs` first and refuses to emit a
+`pnpm run build` runs `elcinema/scripts/check-env.mjs` first and refuses to emit a
 bundle when `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` cannot be
 resolved. Vite inlines silently, so an env-free build compiles green and then
 throws in the browser on every page ("Missing Supabase environment variable(s)")
@@ -102,13 +102,13 @@ Worth adding, in order: request logging with a correlation id, an uptime check o
 | Symptom | First look | Likely fix |
 | --- | --- | --- |
 | A rail is empty but the page renders | Server logs for a parser warning; compare a stored fixture with the live page | Fix the selector in `*.server.ts`, refresh the fixture, keep the test |
-| 404 on a route that exists in dev | `src/routeTree.gen.ts` vs `src/routes/` | `bun run build`, commit the regenerated tree |
+| 404 on a route that exists in dev | `src/routeTree.gen.ts` vs `src/routes/` | `pnpm run build`, commit the regenerated tree |
 | Arabic page laid out like English | `dir` on the wrapper and `<html>`; grep for `ml-`/`left-` in the changed component | Logical properties, then `rtl:` where logic cannot reach ([design-system.md](design-system.md#direction)) |
 | Sign-in works, dashboard is blank | Token/RLS mismatch; `requireSupabaseAuth` in the server function | Check the session claim, not the query |
 | Site renders unstyled after deploy | Tailwind `@source` scan; `styles.css` import order | Restore the explicit `@source "../src"` |
 | Image 404 | `images.ts` key vs `src/assets/img` | Add the asset or the manifest entry; the fallback poster must still show |
 | Missing/broken key in a deploy | Which environment, which variable | Rotate, redeploy, record in [../SECURITY.md](../SECURITY.md) |
-| Console says "Missing Supabase environment variable(s)", pages blank | Was the bundle built where `elcinema/.env` exists? Compare the asset hash in the deployed HTML with a local `bun run build` | Rebuild with the values present and redeploy; [The build gate](#the-build-gate) now blocks the env-free bundle |
+| Console says "Missing Supabase environment variable(s)", pages blank | Was the bundle built where `elcinema/.env` exists? Compare the asset hash in the deployed HTML with a local `pnpm run build` | Rebuild with the values present and redeploy; [The build gate](#the-build-gate) now blocks the env-free bundle |
 
 ## Backup and restore
 

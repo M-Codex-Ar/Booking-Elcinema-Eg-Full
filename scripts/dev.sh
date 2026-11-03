@@ -23,4 +23,4 @@ fi
 
 echo "==> elcinema dev server (Ctrl+C to stop; it prints its own URL)"
 cd elcinema
-if command -v bun >/dev/null 2>&1; then exec bun run dev; else exec npm run dev; fi
+if command -v pnpm >/dev/null 2>&1; then exec pnpm run dev; else exec npm run dev; fi

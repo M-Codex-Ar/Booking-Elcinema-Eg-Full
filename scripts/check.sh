@@ -24,7 +24,7 @@ run() { # run <label> <dir> <cmd...>
 
 [[ -d elcinema/node_modules ]] || { echo "Dependencies missing — run ./scripts/setup.sh first." >&2; exit 1; }
 
-pick() { if command -v bun >/dev/null 2>&1; then printf 'bun'; else printf 'npm'; fi; }
+pick() { if command -v pnpm >/dev/null 2>&1; then printf 'pnpm'; else printf 'npm'; fi; }
 pm="$(pick)"
 
 run "Prettier check"   elcinema "$pm" run format:check

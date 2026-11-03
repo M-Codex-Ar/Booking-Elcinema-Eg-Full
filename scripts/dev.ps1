@@ -23,4 +23,4 @@ if ($WithApi) {
 
 Write-Host "==> elcinema dev server (Ctrl+C to stop; it prints its own URL)" -ForegroundColor Cyan
 Set-Location elcinema
-if (Get-Command bun -ErrorAction SilentlyContinue) { bun run dev } else { npm run dev }
+if (Get-Command pnpm -ErrorAction SilentlyContinue) { pnpm run dev } else { npm run dev }

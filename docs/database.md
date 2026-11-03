@@ -5,7 +5,7 @@ source of bugs in this codebase, so the distinction is stated first.
 
 | Kind | Where it lives | How it changes | Read by |
 | --- | --- | --- | --- |
-| **Catalogue** | `elcinema/src/elcinema/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app |
+| **Catalogue** | `elcinema/src/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app |
 | **Operator content** | Supabase Postgres, `managed_*` tables | By an operator in the dashboard | `getManagedContent` server function, once per page tree |
 | **Live elCinema content** | Nowhere durable — parsed per request from elcinema.com | Whenever elcinema.com changes | `*.server.ts` behind `*.functions.ts` |
 

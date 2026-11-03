@@ -6,14 +6,14 @@ Vitest 4 with `jsdom`, Testing Library, globals enabled, setup in
 
 ```sh
 cd elcinema
-bun run test          # once
-bun run test:watch    # loop
-bunx vitest run src/test/managed-content.test.ts   # one file
-bunx vitest run -t "box office"                    # one case
-bunx vitest run --coverage                          # when a coverage config exists
+pnpm run test          # once
+pnpm run test:watch    # loop
+pnpm exec vitest run src/test/managed-content.test.ts   # one file
+pnpm exec vitest run -t "box office"                    # one case
+pnpm exec vitest run --coverage                          # when a coverage config exists
 ```
 
-The acceptance gate is `bun run check` (format check → lint → typecheck → tests →
+The acceptance gate is `pnpm run check` (format check → lint → typecheck → tests →
 build), locally via
 [`/scripts/check.sh`](../scripts/check.sh) and in CI as `Web CI`.
 
@@ -69,7 +69,7 @@ Stated plainly so nobody reads a green suite as full assurance.
 
 A passing build proves compilation, not correctness. Before saying "done":
 
-1. `bun run check` green.
+1. `pnpm run check` green.
 2. Run the app and look at **both** `/en` and `/ar`, in both themes, at a narrow
    width, with the keyboard — focus must be visible and nothing may scroll sideways.
 3. Break something deliberately once (wrong precedence, missing label) and confirm
@@ -96,7 +96,7 @@ width × theme, measures:
 
 ```sh
 chrome --headless=new --remote-debugging-port=9333 --user-data-dir=<tmp-dir> &
-bun run dev:web             # the Nitro build cannot be previewed, so measure the dev server
+pnpm run dev:web             # the Nitro build cannot be previewed, so measure the dev server
 node scripts/responsive-audit.mjs --base http://localhost:4360 \
   --widths 360,768,1440 --theme dark,light --shots
 ```

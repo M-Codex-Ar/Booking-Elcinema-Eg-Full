@@ -13,9 +13,9 @@ Vitest + Testing Library · Vite 8 with Nitro (Cloudflare target).
 ## Run it
 
 ```sh
-bun install          # or npm install
+pnpm install         # or npm install
 cp .env.example .env # publishable Supabase values only
-bun run dev
+pnpm run dev
 ```
 
 | Script                           | What it does                                                                            |
