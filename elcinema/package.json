@@ -16,7 +16,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed:admin": "node scripts/seed-admin.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
+    "db:pull": "supabase db pull --local",
+    "db:diff": "supabase db diff --local",
+    "db:gen-types": "supabase gen types --local > src/types/database.ts"
   },
   "overrides": {
     "rolldown": "1.2.1"

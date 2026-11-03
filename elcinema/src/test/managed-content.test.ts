@@ -149,11 +149,11 @@ describe("duplicate rules", () => {
     expect(clay[0]!.id).toBe("m-abc-123");
   });
 
-  it("allMovies keeps the built-in entry when a managed movie copies its title", () => {
+  it("allMovies keeps the managed (DB) entry when a managed movie copies its title", () => {
     const list = allMovies({ ...empty, movies: [dupeRow] } as unknown as ManagedContent);
     const clay = list.filter((mv) => mv.title.en.toLowerCase() === "clayface");
     expect(clay).toHaveLength(1);
-    expect(clay[0]!.id).not.toBe("m-abc-123");
+    expect(clay[0]!.id).toBe("m-abc-123");
   });
 
   it("a managed box-office row overrides a scraped row with the same title", () => {

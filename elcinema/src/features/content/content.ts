@@ -230,12 +230,13 @@ export function matchesBuiltinPerson(name: string): boolean {
   );
 }
 
-/** Built-in catalogue + managed movies, in one list. A managed movie whose
- * title matches a built-in one is dropped here: the built-in detail page
- * stays the single entry for that film. */
+/** Managed (DB) movies lead, then the built-in catalogue. A managed movie whose
+ * title matches a built-in one wins here: the operator/DB entry becomes the
+ * single entry for that film. The bundled JSON remains the offline floor when
+ * the database is unreachable. */
 export function allMovies(m: ManagedContent | null): Movie[] {
   return dedupeByTitle(
-    [...MOVIES, ...managedMovies(m).map(managedMovieToMovie)],
+    [...managedMovies(m).map(managedMovieToMovie), ...MOVIES],
     (mv) => mv.title.en,
   );
 }

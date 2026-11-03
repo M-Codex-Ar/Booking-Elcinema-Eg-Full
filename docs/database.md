@@ -61,7 +61,7 @@ must not query `managed_*` themselves.
 
 | Function | Precedence | Dedupe key |
 | --- | --- | --- |
-| `allMovies` | Catalogue first; a managed movie whose title matches a built-in one is **dropped**, keeping one detail page per film | normalised `title.en` |
+| `allMovies` | Managed (DB) first; a managed movie whose title matches a built-in one **wins**, keeping one detail page per film (catalogue is the offline floor) | normalised `title.en` |
 | `mergedNowPlaying` | **Managed `now` entries lead**, then built-in — an operator addition appears immediately | first wins |
 | `mergedComingSoon` | Managed `soon` lead for duplicate precedence, then re-sorted by release date | first wins, then `release` asc |
 | `mergedBoxoffice` | **Managed rows lead** so a corrected figure overrides the scraped one | `title.en` |
