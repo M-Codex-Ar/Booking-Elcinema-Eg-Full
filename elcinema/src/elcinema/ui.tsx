@@ -4,9 +4,8 @@
  * the scrolling poster row and bilingual helpers.
  */
 import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
-import { Link, useRouterState } from "@tanstack/react-router";
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { Artwork } from "./components/primitives";
+import { AppLink, Artwork } from "./components/primitives";
 import { makeT } from "./i18n";
 import type { Bi, Lang } from "./home.shared";
 
@@ -14,9 +13,9 @@ import type { Bi, Lang } from "./home.shared";
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");
 
 /**
- * Internal link for dynamically built paths. Route paths are parameterised
- * by language, so hrefs are composed at runtime; `to` is cast to satisfy
- * the generated route-tree typing while keeping client-side navigation.
+ * Internal link for dynamically built paths. Route paths are parameterised by
+ * language, so hrefs are composed at runtime. `AppLink` owns the single route
+ * cast (see components/primitives.tsx); this stays as the site-wide shorthand.
  */
 export function Na({
   href,
@@ -30,21 +29,21 @@ export function Na({
   children: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
-  search?: Record<string, string | undefined>;
+  search?: Record<string, string | number | undefined>;
   /** Accessible name for icon-only links, which have no text to read. */
   label?: string | undefined;
 }) {
   return (
-    <Link
-      to={href as never}
-      search={search as never}
+    <AppLink
+      href={href}
       className={className}
       style={style}
-      aria-label={label}
+      search={search}
+      ariaLabel={label}
       title={label}
     >
       {children}
-    </Link>
+    </AppLink>
   );
 }
 
@@ -59,11 +58,9 @@ export const personPath = (lang: Lang, id: number | string) => `/${lang}/person/
 /**
  * Real artwork when available, deterministic gradient poster otherwise.
  *
- * Thin alias over the `Artwork` primitive, kept so existing pages keep
- * compiling while they migrate: one implementation means one fallback design,
- * one set of tokens and one error path (a dead URL degrades to the gradient,
- * never to a broken-image icon). The inline `hsl()` gradients this function
- * used to compute are gone with it — colour lives in `src/theme/`.
+ * Thin alias over the `Artwork` primitive — the one fallback design, one set
+ * of tokens and one error path (a dead URL degrades to the gradient, never to
+ * a broken-image icon). Colour lives in `src/theme/`.
  */
 export function PosterArt({
   hue,

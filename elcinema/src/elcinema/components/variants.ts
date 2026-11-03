@@ -37,30 +37,6 @@ export const heading = cva("flex items-center gap-2 font-display font-black text
 /** Supporting line under a heading. */
 export const subheading = cva("mt-1 text-sm text-muted-foreground");
 
-/** Primary call to action, secondary outline action, quiet link and danger. */
-export const cta = cva(
-  "inline-flex items-center justify-center gap-2 rounded-lg font-bold transition-all hover:shadow-glow-md active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
-  {
-    variants: {
-      tone: {
-        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-        secondary:
-          "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary",
-        outline: "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
-        ghost: "text-muted-foreground hover:bg-secondary hover:text-foreground",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        link: "font-semibold text-primary underline-offset-4 hover:underline hover:shadow-none",
-      },
-      size: {
-        sm: "px-3 py-1.5 text-sm",
-        md: "px-4 py-2 text-sm",
-        lg: "px-6 py-3 text-base",
-      },
-    },
-    defaultVariants: { tone: "primary", size: "md" },
-  },
-);
-
 /** Circular icon-only control (social links, row arrows, sign-out). */
 export const iconAction = cva(
   // 40px on touch widths, 36 from `sm` up: an icon-only control that is smaller
@@ -104,11 +80,6 @@ export const pill = cva(
     },
     defaultVariants: { tone: "default" },
   },
-);
-
-/** Label overlaid on artwork (duration, VOD platform, live status). */
-export const artBadge = cva(
-  "inline-flex items-center gap-1 rounded-md bg-scrim px-2 py-1 text-micro font-bold backdrop-blur-sm",
 );
 
 /** Frosted panel: the default card surface for every page. */

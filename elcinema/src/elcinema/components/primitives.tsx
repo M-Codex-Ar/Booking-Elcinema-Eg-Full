@@ -9,30 +9,15 @@
  * `bg-gradient-to-r`). Logical properties (`start-`, `ms-`, `rtl:`) keep the
  * Arabic edition correct without a second stylesheet.
  */
-import type { ButtonHTMLAttributes, ComponentType, CSSProperties, ReactNode } from "react";
+import type { ComponentType, CSSProperties, ReactNode } from "react";
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { VariantProps } from "class-variance-authority";
 import { Clapperboard } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Lang } from "../home.shared";
-import { cardLink } from "../links";
 import { img as resolveImg } from "../images";
 import { isUsableArtwork, PLACEHOLDER, type PlaceholderKind } from "../media.shared";
-import {
-  artBadge,
-  chip,
-  container,
-  cta,
-  heading,
-  iconAction,
-  panel,
-  pill,
-  section,
-  sectionHeader,
-  stateBlock,
-  subheading,
-} from "./variants";
+import { container, heading, panel, pill, section, sectionHeader, subheading } from "./variants";
 
 /* ------------------------------------------------------------------ layout */
 
@@ -132,7 +117,7 @@ export function AppLink({
   children: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
-  search?: Record<string, string | number | undefined>;
+  search?: Record<string, string | number | undefined> | undefined;
   ariaLabel?: string | undefined;
   title?: string | undefined;
 }) {
@@ -147,73 +132,6 @@ export function AppLink({
     >
       {children}
     </Link>
-  );
-}
-
-/** External link: always a new tab with `noreferrer`, never a redirect surprise. */
-export function OutboundLink({
-  href,
-  children,
-  className,
-  style,
-  ariaLabel,
-  title,
-}: {
-  href: string;
-  children: ReactNode;
-  className?: string | undefined;
-  style?: CSSProperties | undefined;
-  ariaLabel?: string | undefined;
-  title?: string | undefined;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer noopener"
-      className={className}
-      style={style}
-      aria-label={ariaLabel}
-      title={title}
-    >
-      {children}
-    </a>
-  );
-}
-
-/**
- * A link built from a *scraped* elcinema.com href: resolved through `cardLink`
- * so it lands on an app page when one exists and on a genuine external host
- * (YouTube, social) otherwise. This is the only sanctioned way to render
- * scraped hrefs — see the contract in links.ts.
- */
-export function ScrapedLink({
-  lang,
-  href,
-  title = "",
-  children,
-  className,
-  style,
-  ariaLabel,
-}: {
-  lang: Lang;
-  href: string | null | undefined;
-  title?: string;
-  children: ReactNode;
-  className?: string | undefined;
-  style?: CSSProperties | undefined;
-  ariaLabel?: string | undefined;
-}) {
-  const link = cardLink(lang, href, title);
-  const shared = { className, style, ariaLabel };
-  return link.external ? (
-    <OutboundLink href={link.href} {...shared}>
-      {children}
-    </OutboundLink>
-  ) : (
-    <AppLink href={link.href} {...shared}>
-      {children}
-    </AppLink>
   );
 }
 
@@ -267,144 +185,6 @@ export function Pill({
       {icon}
       {children}
     </span>
-  );
-}
-
-/** Label overlaid on artwork: duration, platform logo, live flag. */
-export function ArtBadge({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string | undefined;
-}) {
-  return <span className={cn(artBadge(), className)}>{children}</span>;
-}
-
-/** Toggle chip for filter rows (channel categories, booking day tabs). */
-export function ToggleChip({
-  children,
-  active,
-  onClick,
-  className,
-}: {
-  children: ReactNode;
-  active: boolean;
-  onClick: () => void;
-  className?: string | undefined;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(chip({ active }), className)}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** CTA button. For navigation use `CtaLink` so the router stays in charge. */
-export function Cta({
-  children,
-  className,
-  tone,
-  size,
-  icon,
-  ...buttonProps
-}: {
-  children?: ReactNode;
-  className?: string | undefined;
-  tone?: VariantProps<typeof cta>["tone"];
-  size?: VariantProps<typeof cta>["size"];
-  icon?: ReactNode;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">) {
-  return (
-    <button type="button" className={cn(cta({ tone, size }), className)} {...buttonProps}>
-      {icon}
-      {children}
-    </button>
-  );
-}
-
-/** A CTA that navigates: the same visual language as `Cta`, as a route link. */
-export function CtaLink({
-  href,
-  children,
-  tone,
-  size,
-  className,
-  external,
-  ariaLabel,
-}: {
-  href: string;
-  children: ReactNode;
-  tone?: VariantProps<typeof cta>["tone"];
-  size?: VariantProps<typeof cta>["size"];
-  className?: string | undefined;
-  external?: boolean;
-  ariaLabel?: string | undefined;
-}) {
-  const classes = cta({ tone, size });
-  return external ? (
-    <OutboundLink href={href} className={classes} ariaLabel={ariaLabel}>
-      {children}
-    </OutboundLink>
-  ) : (
-    <AppLink href={href} className={classes} ariaLabel={ariaLabel}>
-      {children}
-    </AppLink>
-  );
-}
-
-/** Icon-only control; the accessible name is mandatory, not optional. */
-export function IconButton({
-  label,
-  icon,
-  className,
-  tone,
-  ...buttonProps
-}: {
-  label: string;
-  icon: ReactNode;
-  className?: string | undefined;
-  tone?: VariantProps<typeof iconAction>["tone"];
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className" | "aria-label">) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      className={cn(iconAction({ tone }), className)}
-      {...buttonProps}
-    >
-      {icon}
-    </button>
-  );
-}
-
-/** Empty or error state: heading, why it happened, and the way back. */
-export function StatePanel({
-  title,
-  message,
-  action,
-  icon,
-  className,
-}: {
-  title: string;
-  message?: string;
-  action?: ReactNode;
-  icon?: ReactNode;
-  className?: string | undefined;
-}) {
-  return (
-    <div className={cn(stateBlock(), className)}>
-      {icon && <div className="mx-auto text-primary [&>svg]:h-10 [&>svg]:w-10">{icon}</div>}
-      <h1 className={cn(heading({ level: "h1" }), "justify-center", icon && "mt-4")}>{title}</h1>
-      {message && <p className={cn(subheading())}>{message}</p>}
-      {action && <div className="mt-6 flex flex-wrap justify-center gap-2">{action}</div>}
-    </div>
   );
 }
 
