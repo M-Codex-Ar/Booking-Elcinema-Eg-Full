@@ -407,6 +407,7 @@ const FOOTER_HELP = [
   ["advertise", "footer.advertise"],
   ["privacy", "footer.privacy"],
   ["terms", "footer.terms"],
+  ["faq", "footer.faq"],
 ] as const;
 
 export function SiteFooter({ lang }: { lang: Lang }) {

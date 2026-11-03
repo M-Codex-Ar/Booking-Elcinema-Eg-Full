@@ -634,21 +634,27 @@ function staticHeadingText($heading: $El): string {
 function staticBlocks($: $Html, $heading: $El): LiveStaticBlock[] {
   const blocks: LiveStaticBlock[] = [];
   const $content = $heading.nextUntil(STATIC_HEADING_SELECTOR);
-  $content.each((_, el) => {
-    const $el = $(el);
-    const tag = String((el as { tagName?: string }).tagName ?? "").toLowerCase();
-    if (tag === "p") {
-      const text = clean($el.text());
-      if (text) blocks.push({ type: "p", text });
-    } else if (tag === "ul" || tag === "ol") {
-      const items: string[] = [];
-      $el.find("li").each((___, li) => {
-        const text = clean($(li).text());
-        if (text && !items.includes(text)) items.push(text);
-      });
-      if (items.length) blocks.push({ type: "list", items });
-    }
-  });
+  const walk = ($scope: $El) => {
+    $scope.each((_, el) => {
+      const $el = $(el);
+      const tag = String((el as { tagName?: string }).tagName ?? "").toLowerCase();
+      if (/^h[1-6]$/.test(tag)) return;
+      if (tag === "p") {
+        const text = clean($el.text());
+        if (text) blocks.push({ type: "p", text });
+      } else if (tag === "ul" || tag === "ol") {
+        const items: string[] = [];
+        $el.find("li").each((___, li) => {
+          const text = clean($(li).text());
+          if (text && !items.includes(text)) items.push(text);
+        });
+        if (items.length) blocks.push({ type: "list", items });
+      } else {
+        walk($el.children());
+      }
+    });
+  };
+  walk($content);
   return blocks;
 }
 
@@ -660,15 +666,24 @@ export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
   const $ = cheerio.load(html);
   const $h1 = $("h1").first();
   const title = clean($h1.clone().children().remove().end().text()) || clean($h1.text());
-  const scope = $h1.parent();
+  const $root = $h1.parent().length ? $h1.parent() : $("body");
+  const headings = $root.find("h2, h3, h4, h5, h6");
+  const titleHeading = headings.first();
+  const resolvedTitle =
+    title || clean(titleHeading.clone().children().remove().end().text()) || clean(titleHeading.text());
+  
+  // Extract first image from the page (sidebar or featured image)
+  const $img = $root.find("img").first();
+  const image = $img.attr("src") || null;
+  
   const sections: LiveStaticSection[] = [];
-  scope.find(STATIC_HEADING_SELECTOR).each((_, el) => {
+  headings.each((_, el) => {
     const $heading = $(el);
     const heading = staticHeadingText($heading);
     if (!heading) return;
     sections.push({ heading, blocks: staticBlocks($, $heading) });
   });
-  return { title, sections };
+  return { title: resolvedTitle, sections, image: image ?? undefined };
 }
 
 export async function getStaticPage(lang: Lang, path: string): Promise<LiveStaticPage> {

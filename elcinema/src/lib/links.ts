@@ -33,6 +33,12 @@ const SECTION_ROUTES = new Set([
   "vod",
   "lineup",
   "booking",
+  "faq",
+  "about",
+  "contact",
+  "advertise",
+  "privacy",
+  "terms",
 ]);
 
 const normalize = normalizeLinkTitle;

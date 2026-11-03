@@ -161,4 +161,5 @@ export interface LiveStaticSection {
 export interface LiveStaticPage {
   title: string;
   sections: LiveStaticSection[];
+  image?: string | null;
 }
