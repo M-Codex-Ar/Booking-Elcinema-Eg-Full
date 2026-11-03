@@ -1,50 +1,46 @@
-/** TV Guide — full evening grid across all channels, filterable by
- * category and by channel name (URL-driven). */
+/** TV Guide â€” full evening grid across all channels, filterable by
+ * category and by channel name (URL-driven), paginated. */
 import { Tv } from "lucide-react";
 import { TvGuideView } from "@/components/shared/TvGuide";
 import type { ChannelCategory, Lang, TvGuide } from "@/types/home";
-import { FilterInput, ListToolbar, type SetSearch } from "@/components/shared/controls";
+import {
+  FilterInput,
+  ListToolbar,
+  Pagination,
+  clampPage,
+  pageCount,
+  pageSlice,
+  type SetSearch,
+} from "@/components/shared/controls";
 import { bi, makeT } from "@/i18n";
 
+const PAGE_SIZE = 20;
+
 const CATS: { id: ChannelCategory | "all"; en: string; ar: string }[] = [
-  { id: "all", en: "All", ar: "الكل" },
-  { id: "general", en: "General", ar: "عام" },
-  { id: "movies", en: "Movies", ar: "أفلام" },
-  { id: "series", en: "Series", ar: "مسلسلات" },
-  { id: "news", en: "News", ar: "أخبار" },
-  { id: "sports", en: "Sports", ar: "رياضة" },
-  { id: "kids", en: "Kids", ar: "أطفال" },
-  { id: "music", en: "Music", ar: "موسيقى" },
-  { id: "documentary", en: "Documentary", ar: "وثائقي" },
-  { id: "religion", en: "Religion", ar: "ديني" },
+  { id: "all", en: "All", ar: "Ø§Ù„ÙƒÙ„" },
+  { id: "general", en: "General", ar: "Ø¹Ø§Ù…" },
+  { id: "movies", en: "Movies", ar: "Ø£ÙÙ„Ø§Ù…" },
+  { id: "series", en: "Series", ar: "Ù…Ø³Ù„Ø³Ù„Ø§Øª" },
+  { id: "news", en: "News", ar: "Ø£Ø®Ø¨Ø§Ø±" },
+  { id: "sports", en: "Sports", ar: "Ø±ÙŠØ§Ø¶Ø©" },
+  { id: "kids", en: "Kids", ar: "Ø£Ø·ÙØ§Ù„" },
+  { id: "music", en: "Music", ar: "Ù…ÙˆØ³ÙŠÙ‚Ù‰" },
+  { id: "documentary", en: "Documentary", ar: "ÙˆØ«Ø§Ø¦Ù‚ÙŠ" },
+  { id: "religion", en: "Religion", ar: "Ø¯ÙŠÙ†ÙŠ" },
 ];
-
-const L = {
-  en: {
-    title: "TV Guide",
-    sub: "Tonight across Arab satellite channels",
-    channels: "channels",
-    filter: "Filter channels…",
-  },
-  ar: {
-    title: "جدول القنوات",
-    sub: "الليلة على القنوات الفضائية العربية",
-    channels: "قناة",
-    filter: "ابحث في القنوات…",
-  },
-} as const;
-
 export function TvGuidePage({
   lang,
   guide,
   cat = "all",
   q = "",
+  page: pageParam,
   setSearch,
 }: {
   lang: Lang;
   guide: TvGuide;
   cat?: string | undefined;
   q?: string | undefined;
+  page?: number | undefined;
   setSearch: SetSearch;
 }) {
   const t = makeT(lang);
@@ -55,6 +51,9 @@ export function TvGuidePage({
       (activeCat === "all" || l.channel.category === activeCat) &&
       (!needle || l.channel.name[lang].toLowerCase().includes(needle)),
   );
+  const page = clampPage(pageParam, lines.length, PAGE_SIZE);
+  const shown = pageSlice(lines, page, PAGE_SIZE);
+  const pages = pageCount(lines.length, PAGE_SIZE);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
@@ -68,7 +67,7 @@ export function TvGuidePage({
           <button
             key={c.id}
             type="button"
-            onClick={() => setSearch({ cat: c.id, q: undefined })}
+            onClick={() => setSearch({ cat: c.id, q: undefined, page: undefined })}
             className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
               activeCat === c.id
                 ? "border-primary bg-primary text-primary-foreground"
@@ -82,7 +81,7 @@ export function TvGuidePage({
         <FilterInput
           lang={lang}
           value={q}
-          onChange={(v) => setSearch({ q: v || undefined })}
+          onChange={(v) => setSearch({ q: v || undefined, page: undefined })}
           placeholder={t("guide.filterChannels")}
         />
       </ListToolbar>
@@ -92,8 +91,10 @@ export function TvGuidePage({
       </p>
 
       <div className="mt-4">
-        <TvGuideView guide={guide} lang={lang} lines={lines} />
+        <TvGuideView guide={guide} lang={lang} lines={shown} />
       </div>
+
+      <Pagination lang={lang} page={page} pages={pages} onChange={(p) => setSearch({ page: p })} />
     </div>
   );
 }
