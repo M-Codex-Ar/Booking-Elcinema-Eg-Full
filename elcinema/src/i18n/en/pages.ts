@@ -110,6 +110,8 @@ export const enPages = {
   "faq.contactLead": "Send the elCinema team a message through the contact page.",
   "faq.contactAction": "Contact us",
   "contact.getInTouch": "Get in touch",
+  "contact.intro": "Have a question or suggestion? We'd love to hear from you!",
+  "contact.formTitle": "Send us a Message",
   "soon.release": "Releases",
   "vod.watchOn": "Watch on",
   "vod.playbackNote": "Opens the real play link in a new tab.",

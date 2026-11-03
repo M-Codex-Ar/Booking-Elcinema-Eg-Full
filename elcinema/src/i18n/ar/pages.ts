@@ -109,6 +109,8 @@ export const arPages = {
   "faq.contactLead": "أرسل رسالة إلى فريق إل سينما عبر صفحة التواصل.",
   "faq.contactAction": "تواصل معنا",
   "contact.getInTouch": "تواصل معنا",
+  "contact.intro": "هل لديك سؤال أو اقتراح؟ يسعدنا أن نسمع منك!",
+  "contact.formTitle": "أرسل لنا رسالة",
   "soon.release": "يُعرض",
   "vod.watchOn": "شاهد على",
   "vod.playbackNote": "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",

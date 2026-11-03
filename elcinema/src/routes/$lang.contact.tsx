@@ -1,9 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Mail } from "lucide-react";
 import { LiveError } from "@/features/live/live-ui";
 import { staticPageOptions } from "@/features/live/live.options";
-import { StaticPage } from "@/pages/StaticPage";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { ContactGlobe } from "@/components/shared/ContactGlobe";
 import { asLang, makeT } from "@/i18n";
@@ -31,7 +29,7 @@ function ContactPage() {
   // Show form even if scraping fails
   const sidebarForm = (
     <div className="space-y-4">
-      <h3 className="text-base font-bold">Send us a Message</h3>
+      <h2 className="text-lg font-bold">{t("contact.formTitle")}</h2>
       <div aria-hidden="true" className="border-t border-dotted border-border" />
       <ContactForm lang={l} />
     </div>
@@ -93,60 +91,81 @@ function ContactPage() {
     </div>
   );
 
-  // Show error message only if scraping failed AND has error content
   if (result.error && !result.data) {
     return <LiveError message={result.error} lang={l} />;
   }
 
-  // Fallback static content if scraping fails
-  if (!result.data) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-        <div className="border-b border-border bg-background/50 backdrop-blur-sm">
-          <div className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center gap-4 sm:gap-6">
-              <div className="rounded-lg bg-primary/10 p-3 sm:p-4">
-                <Mail className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
-              </div>
-              <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">Get in Touch</h1>
-            </div>
-          </div>
-        </div>
+  const page = result.data ?? {
+    title: t("footer.contact"),
+    sections: [
+      {
+        heading: t("contact.getInTouch"),
+        blocks: [{ type: "p" as const, text: t("contact.intro") }],
+      },
+    ],
+  };
 
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-            <div className="glass-card p-5 sm:p-6 lg:col-span-1">
-              <h2 className="mb-3 text-xl font-black sm:text-2xl">{t("contact.getInTouch")}</h2>
-              <p className="mb-6 text-lg text-foreground/80">
-                Have a question or suggestion? We'd love to hear from you!
+  return (
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-site px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <header className="mx-auto mb-10 max-w-2xl text-center sm:mb-14">
+          <p className="mb-3 inline-flex rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
+            {t("footer.contact")}
+          </p>
+          <h1 className="font-display text-3xl font-black text-balance sm:text-4xl md:text-5xl">
+            {page.title}
+          </h1>
+        </header>
+
+        <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-2 lg:gap-12">
+          <section className="min-w-0 space-y-6" aria-labelledby="contact-details-title">
+            <div>
+              <h2 id="contact-details-title" className="text-xl font-bold sm:text-2xl">
+                {t("contact.getInTouch")}
+              </h2>
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {page.sections.length === 0 ? t("contact.intro") : null}
               </p>
-              <div className="mb-5">{socialIcons}</div>
-              <ContactGlobe />
             </div>
-            <aside className="hidden lg:block">
-              <div className="sticky top-6 space-y-6">
-                <div className="glass-card p-6 sm:p-8">{sidebarForm}</div>
-              </div>
-            </aside>
-            <div className="lg:hidden space-y-6">
-              <div className="glass-card p-6 sm:p-8">{sidebarForm}</div>
-            </div>
-          </div>
+
+            {page.sections.map((section, index) => (
+              <article key={`${section.heading}-${index}`} className="space-y-3">
+                {section.heading !== t("contact.getInTouch") && (
+                  <h3 className="font-bold">{section.heading}</h3>
+                )}
+                <div className="space-y-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  {section.blocks.map((block, blockIndex) =>
+                    block.type === "p" ? (
+                      <p key={blockIndex}>{block.text}</p>
+                    ) : (
+                      <ul key={blockIndex} className="space-y-2">
+                        {block.items.map((item, itemIndex) => (
+                          <li key={itemIndex} className="flex gap-2">
+                            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ),
+                  )}
+                </div>
+              </article>
+            ))}
+
+            <nav aria-label={t("footer.contact")} className="flex gap-3">
+              {socialIcons}
+            </nav>
+            <ContactGlobe />
+          </section>
+
+          <section
+            className="glass-card min-w-0 p-5 sm:p-7 lg:p-8"
+            aria-label={t("contact.formTitle")}
+          >
+            {sidebarForm}
+          </section>
         </div>
       </div>
-    );
-  }
-
-  const page = result.data;
-  return (
-    <StaticPage
-      icon={Mail}
-      page={page}
-      sidebarForm={sidebarForm}
-      socialIcons={socialIcons}
-      leftVisual={<ContactGlobe />}
-      contactHeading={t("contact.getInTouch")}
-      layout="contact"
-    />
+    </main>
   );
 }
