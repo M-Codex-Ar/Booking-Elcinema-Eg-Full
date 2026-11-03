@@ -4,7 +4,8 @@
  * Video cards link internally; the player itself is the site's own YouTube
  * embed.
  */
-import { Play } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import { useState } from "react";
 import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "../live.shared";
@@ -24,6 +25,7 @@ import {
   useListState,
 } from "../controls";
 import { Na } from "../ui";
+import { makeT, rowTitle } from "../i18n";
 import { LiveImg, LiveError, videoPath } from "../live-ui";
 
 const L = {
@@ -42,7 +44,7 @@ const L = {
 } as const;
 
 function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boolean }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   return (
     <Na
       href={videoPath(lang, v.id)}
@@ -54,11 +56,11 @@ function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boole
         <LiveImg src={v.img} alt={v.title} className="h-full w-full" wide />
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
           <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-            {Lx.play} ▶
+            {t("video.play")} ▶
           </span>
         </div>
         {v.duration && (
-          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+          <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
             {v.duration}
           </span>
         )}
@@ -81,7 +83,7 @@ export function VideoGalleryPage({
   extra?: ManagedVideoRow[] | undefined;
   lang: Lang;
 }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const tx = listText(lang);
   const st = useListState();
   const [section, setSection] = useState<string>("all");
@@ -101,7 +103,7 @@ export function VideoGalleryPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <Play className="h-6 w-6 text-primary" /> {Lx.gallery}
+        <Play className="h-6 w-6 text-primary" /> {t("video.gallery")}
       </h1>
 
       <ListToolbar>
@@ -138,7 +140,7 @@ export function VideoGalleryPage({
       </ListToolbar>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        {filtered.length} {Lx.latest}
+        {filtered.length} {t("video.latest")}
       </p>
 
       {filtered.length === 0 ? (
@@ -159,38 +161,34 @@ export function VideoGalleryPage({
 
       {extra && extra.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-black">
-            {lang === "ar" ? "من إضافة المحررين" : "Added by the editors"}
-          </h2>
+          <h2 className="mb-4 text-xl font-black">{t("common.addedByEditors")}</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {extra.map((v) => (
               <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="group w-full">
                 <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">
-                  {v.thumb_url ? (
-                    <img
-                      src={v.thumb_url}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <Play className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
+                  <ImgWithFallback
+                    src={v.thumb_url}
+                    alt=""
+                    className="h-full w-full"
+                    fallback={
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Play className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    }
+                  />
                   {v.duration && (
-                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-bold">
+                    <span className="absolute bottom-2 end-2 rounded-md bg-background/80 px-2 py-0.5 text-micro font-bold">
                       {v.duration}
                     </span>
                   )}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
                     <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-                      {L[lang].play} ▶
+                      {t("video.play")} ▶
                     </span>
                   </div>
                 </div>
                 <h3 className="mt-2 line-clamp-2 text-xs font-bold transition-colors group-hover:text-primary">
-                  {lang === "ar" ? v.title_ar || v.title_en : v.title_en}
+                  {rowTitle(v, lang)}
                 </h3>
               </a>
             ))}
@@ -204,7 +202,7 @@ export function VideoGalleryPage({
 }
 
 export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
       <h1 className="mb-4 text-xl font-black md:text-2xl">{data.title}</h1>
@@ -230,7 +228,7 @@ export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang })
 
       {data.related.length > 0 && (
         <section className="py-10">
-          <h2 className="mb-4 text-xl font-black">{Lx.related}</h2>
+          <h2 className="mb-4 text-xl font-black">{t("video.related")}</h2>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
             {data.related.map((v) => (
               <Na key={v.id} href={videoPath(lang, v.id)} className="group w-56 shrink-0">
@@ -247,8 +245,11 @@ export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang })
       )}
 
       <div className="pb-10">
-        <Na href={`/${lang}/video`} className="text-sm font-semibold text-primary hover:underline">
-          ← {lang === "ar" ? "معرض الفيديو" : "Video Gallery"}
+        <Na
+          href={`/${lang}/video`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("video.galleryTitle")}
         </Na>
       </div>
     </div>

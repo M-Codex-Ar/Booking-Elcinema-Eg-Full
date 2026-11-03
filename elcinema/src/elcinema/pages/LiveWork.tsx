@@ -6,12 +6,24 @@
  * internal booking page. Only true playback/purchase actions (watch buttons,
  * cinema ticket buttons) open the real destination in a new tab.
  */
-import { CalendarClock, Clock, Film, Images, MonitorPlay, Star, Ticket, Tv } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarClock,
+  Clock,
+  Film,
+  Images,
+  MonitorPlay,
+  Star,
+  Ticket,
+  Tv,
+} from "lucide-react";
 import { useState } from "react";
+import { ImgWithFallback } from "../components/primitives";
 import type { Lang } from "../home.shared";
 import type { LiveWork } from "../live.shared";
-import { Na } from "../ui";
+import { Na, Row } from "../ui";
 import { LiveImg, LivePoster, PersonChip, RatingPill, bookingPath, videoPath } from "../live-ui";
+import { makeT } from "../i18n";
 
 const L = {
   en: {
@@ -61,7 +73,7 @@ const L = {
 const DAY_COUNT = 5;
 
 export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const [day, setDay] = useState(0);
   const showtimes = data.showtimes.slice(0, DAY_COUNT);
   const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
@@ -71,17 +83,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
     <div>
       {/* Backdrop + poster header, elCinema style */}
       <div className="relative h-[38vh] w-full overflow-hidden md:h-[46vh]">
-        {data.poster ? (
-          <img
-            src={data.poster}
-            alt={data.title}
-            className="h-full w-full object-cover object-center"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-secondary">
-            <Film className="h-16 w-16 text-muted-foreground" />
-          </div>
-        )}
+        <ImgWithFallback
+          src={data.poster}
+          alt={data.title}
+          className="h-full w-full object-center"
+          fallback={
+            <div className="flex h-full items-center justify-center bg-secondary">
+              <Film className="h-16 w-16 text-muted-foreground" />
+            </div>
+          }
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </div>
 
@@ -129,7 +140,8 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                 )}
                 {data.runtimeMinutes && (
                   <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-primary" /> {data.runtimeMinutes} {Lx.runtime}
+                    <Clock className="h-4 w-4 text-primary" /> {data.runtimeMinutes}{" "}
+                    {t("common.runtimeMinutes")}
                   </span>
                 )}
                 {data.country && <span>{data.country}</span>}
@@ -141,11 +153,11 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               href={bookingPath(lang, data.id)}
               className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
             >
-              <Ticket className="h-4 w-4" /> {Lx.book}
+              <Ticket className="h-4 w-4" /> {t("booking.title")}
             </Na>
             {data.rating !== null && (
               <div className="text-center text-xs text-muted-foreground">
-                {Lx.rating}
+                {t("work.rating")}
                 {data.votes !== null ? `: ${data.votes}` : ""}
               </div>
             )}
@@ -156,7 +168,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
           <div className="min-w-0 lg:col-span-2">
             {data.synopsis && (
               <>
-                <h2 className="text-lg font-black">{Lx.story}</h2>
+                <h2 className="text-lg font-black">{t("common.story")}</h2>
                 <p className="mt-2 text-base leading-relaxed text-foreground/90">{data.synopsis}</p>
               </>
             )}
@@ -165,7 +177,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             <dl className="glass-card mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 p-5 text-sm">
               {data.director.length > 0 && (
                 <>
-                  <dt className="font-bold text-muted-foreground">{Lx.director}</dt>
+                  <dt className="font-bold text-muted-foreground">{t("common.directorColon")}</dt>
                   <dd className="flex flex-wrap gap-x-3 gap-y-1">
                     {data.director.map((p) => (
                       <Na
@@ -181,7 +193,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               )}
               {data.writers.length > 0 && (
                 <>
-                  <dt className="font-bold text-muted-foreground">{Lx.writer}</dt>
+                  <dt className="font-bold text-muted-foreground">{t("common.writerColon")}</dt>
                   <dd className="flex flex-wrap gap-x-3 gap-y-1">
                     {data.writers.map((p) => (
                       <Na
@@ -197,7 +209,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               )}
               {data.cast.length > 0 && (
                 <>
-                  <dt className="font-bold text-muted-foreground">{Lx.cast}</dt>
+                  <dt className="font-bold text-muted-foreground">{t("common.castColon")}</dt>
                   <dd>
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                       {data.cast.map((p) => (
@@ -215,9 +227,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               )}
               {data.country && (
                 <>
-                  <dt className="font-bold text-muted-foreground">
-                    {lang === "en" ? "Country:" : "البلد:"}
-                  </dt>
+                  <dt className="font-bold text-muted-foreground">{t("common.countryColon")}</dt>
                   <dd>{data.country}</dd>
                 </>
               )}
@@ -226,7 +236,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             {/* Cast cards */}
             {data.cast.length > 0 && (
               <section className="mt-8">
-                <h2 className="text-lg font-black">{Lx.cast}</h2>
+                <h2 className="text-lg font-black">{t("common.castColon")}</h2>
                 <div className="scrollbar-hide mt-3 flex gap-4 overflow-x-auto pb-2">
                   {data.cast.map((p) => (
                     <PersonChip key={p.id} lang={lang} id={p.id} title={p.title} img={p.img} />
@@ -239,7 +249,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             {data.photos.length > 0 && (
               <section className="mt-8">
                 <h2 className="flex items-center gap-2 text-lg font-black">
-                  <Images className="h-5 w-5 text-primary" /> {Lx.photos}
+                  <Images className="h-5 w-5 text-primary" /> {t("common.photos")}
                 </h2>
                 <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto pb-2">
                   {data.photos.map((p, i) => (
@@ -261,7 +271,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
           {data.vod.length > 0 && (
             <div className="space-y-6">
               <div className="glass-card h-fit p-5">
-                <h2 className="text-lg font-black">{Lx.watchOnline}</h2>
+                <h2 className="text-lg font-black">{t("vod.title")}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {data.vod.map((v, i) => (
                     <a
@@ -272,14 +282,14 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                       className="rounded-lg border border-border bg-secondary px-3 py-1.5 text-sm font-bold hover:border-primary"
                     >
                       <MonitorPlay className="me-1 inline h-4 w-4 text-primary" />
-                      {Lx.watchOn} {v.label}
+                      {t("vod.watchOn")} {v.label}
                       {v.note && (
                         <span className="ms-1 text-xs text-muted-foreground">({v.note})</span>
                       )}
                     </a>
                   ))}
                 </div>
-                <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+                <p className="mt-3 text-meta text-muted-foreground">{t("vod.playbackNote")}</p>
               </div>
               {data.imdbUrl && (
                 <div className="glass-card p-5 text-sm">
@@ -287,9 +297,9 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                     href={data.imdbUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                   >
-                    IMDB Page →
+                    IMDB Page <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                   </a>
                 </div>
               )}
@@ -302,13 +312,13 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
           <section className="mt-10">
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-xl font-black">
-                <Ticket className="h-5 w-5 text-primary" /> {Lx.showtimes}
+                <Ticket className="h-5 w-5 text-primary" /> {t("work.showtimes")}
               </h2>
               <Na
                 href={bookingPath(lang, data.id)}
-                className="text-sm font-semibold text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
               >
-                {Lx.book} →
+                {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Na>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -350,7 +360,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
         {data.videos.length > 0 && (
           <section className="py-10">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
-              <Tv className="h-5 w-5 text-primary" /> {Lx.videos}
+              <Tv className="h-5 w-5 text-primary" /> {t("video.brand")}
             </h2>
             <div className="grid grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
               {data.videos.slice(0, 4).map((v) => (
@@ -374,14 +384,16 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
 
         {/* Related strip */}
         {data.related.length > 0 && (
-          <section className="pb-12">
-            <h2 className="mb-4 text-xl font-black">{Lx.related}</h2>
-            <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-              {data.related.slice(0, 12).map((r) => (
-                <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
-              ))}
-            </div>
-          </section>
+          <Row
+            title={t("work.related")}
+            icon={<Film className="h-5 w-5" />}
+            more={`/${lang}/now`}
+            lang={lang}
+          >
+            {data.related.slice(0, 12).map((r) => (
+              <LivePoster key={r.id} lang={lang} id={r.id} title={r.title} img={r.img} />
+            ))}
+          </Row>
         )}
       </div>
     </div>
@@ -393,12 +405,12 @@ export function LiveWorkNotFound({ lang }: { lang: Lang }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
       <Star className="mx-auto h-10 w-10 text-muted-foreground" />
-      <h1 className="mt-4 text-2xl font-black">{L[lang].notAvailable}</h1>
+      <h1 className="mt-4 text-2xl font-black">{makeT(lang)("work.notFound")}</h1>
       <Na
         href={`/${lang}/now`}
         className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
       >
-        {lang === "en" ? "Now Playing" : "السينمات الآن"}
+        {makeT(lang)("now.title")}
       </Na>
     </div>
   );

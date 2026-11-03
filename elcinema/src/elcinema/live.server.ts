@@ -21,6 +21,7 @@ import type {
   LiveVodGuide,
   LiveWork,
 } from "./live.shared";
+import { pickArtwork, toArtworkUrl } from "./media.shared";
 
 const BASE = "https://elcinema.com";
 const UA =
@@ -50,11 +51,13 @@ function clean(text: string): string {
   return text.replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Plain URL references (og:image, absolute hrefs already resolved) go through
+ * the shared rule; lazy `<img>` tags use `pickArtwork`, which also reads
+ * `data-src`/`srcset` — elcinema renders `src=""` for anything lazy.
+ */
 function absUrl(src: string | undefined | null): string | null {
-  if (!src) return null;
-  const s = src.trim();
-  if (!s || s.endsWith("blank_photos/315x420.jpg")) return null;
-  return s.startsWith("http") ? s : `${BASE}${s}`;
+  return toArtworkUrl(src, BASE);
 }
 
 /** Numeric elcinema id from an href segment, e.g. "/en/work/2099119/" -> "2099119". */
@@ -95,7 +98,7 @@ function parseVideoCards($: $Html, scope: $El): LiveVideoCard[] {
         $a.attr("title")?.split("\n")[0]?.trim() ||
         "",
       duration: clean($a.find("span.duration").first().text()).match(/\d{1,2}:\d{2}/)?.[0] ?? null,
-      img: absUrl($a.find("img").attr("data-src") || $a.find("img").attr("src")),
+      img: pickArtwork($a.find("img"), BASE),
     });
   });
   return cards;
@@ -115,7 +118,7 @@ function parseVodButtons($: $Html, scope: $El): LiveWork["vod"] {
       label,
       note: clean($a.find("div").first().text()),
       href: href.startsWith("http") ? href : `${BASE}${href}`,
-      img: absUrl($a.find("img").attr("src")),
+      img: pickArtwork($a.find("img"), BASE),
     });
   });
   return out;
@@ -126,7 +129,7 @@ function parsePhotos($: $Html, scope: $El): { href: string; img: string | null }
   const out: { href: string; img: string | null }[] = [];
   scope.find("a[href*='/gallery/']").each((_, el) => {
     const $a = $(el);
-    const img = absUrl($a.find("img").attr("data-src") || $a.find("img").attr("src"));
+    const img = pickArtwork($a.find("img"), BASE);
     const href = $a.attr("href");
     if (img && href) out.push({ href: href.startsWith("http") ? href : `${BASE}${href}`, img });
   });
@@ -161,7 +164,7 @@ function yearFromH1($: $Html): string | null {
 export function parseWorkPage(html: string, lang: Lang, id: string): LiveWork {
   const $ = cheerio.load(html);
   const { title, alt } = titlesFromH1($, lang);
-  const poster = absUrl($(".button-group-vertical img").first().attr("src"));
+  const poster = pickArtwork($(".button-group-vertical img").first(), BASE);
 
   // Rating box: number in the stars widget, votes in the stats link title.
   const ratingText = clean($("div[class*='stars-orange'] div").first().text());
@@ -329,7 +332,7 @@ export function parseWorkPage(html: string, lang: Lang, id: string): LiveWork {
       castCards.push({
         id: pid,
         title: clean($tw.find("ul.description a").first().text()) || clean($a.text()),
-        img: absUrl($a.find("img").attr("data-src") || $a.find("img").attr("src")),
+        img: pickArtwork($a.find("img"), BASE),
         href: `/person/${pid}/`,
       });
     });
@@ -350,7 +353,7 @@ export function parseWorkPage(html: string, lang: Lang, id: string): LiveWork {
         const wid = idFromHref($(a).attr("href"), "work");
         if (!wid) return;
         const $card = $(a).closest("li");
-        const img = absUrl($card.find("img").attr("data-src") || $card.find("img").attr("src"));
+        const img = pickArtwork($card.find("img"), BASE);
         const t =
           clean($card.find("ul.description a").first().text()) ||
           clean($(a).find("ul.description a").first().text()) ||
@@ -400,7 +403,7 @@ export function parseWorkPage(html: string, lang: Lang, id: string): LiveWork {
 export function parsePersonPage(html: string, lang: Lang, id: string): LivePerson {
   const $ = cheerio.load(html);
   const { title: name, alt: altName } = titlesFromH1($, lang);
-  const photo = absUrl($(".button-group-vertical img").first().attr("src"));
+  const photo = pickArtwork($(".button-group-vertical img").first(), BASE);
 
   const bioHeading = $("h3")
     .filter((_, el) => /^biography|السيرة الذاتية$/i.test(clean($(el).text())))
@@ -440,7 +443,7 @@ export function parsePersonPage(html: string, lang: Lang, id: string): LivePerso
       const item: LiveRef = {
         id: wid,
         title: clean($meta.find("li a").first().text()) || clean($a.text()),
-        img: absUrl($grid.find("img").attr("data-src") || $grid.find("img").attr("src")),
+        img: pickArtwork($grid.find("img"), BASE),
         href: `/work/${wid}/`,
       };
       if (!items.some((x) => x.id === wid)) items.push(item);
@@ -461,7 +464,7 @@ export function parsePersonPage(html: string, lang: Lang, id: string): LivePerso
       const pid = idFromHref($(a).attr("href"), "person");
       if (!pid) return;
       const $card = $(a).closest("li");
-      const img = absUrl($card.find("img").attr("data-src") || $card.find("img").attr("src"));
+      const img = pickArtwork($card.find("img"), BASE);
       const title = clean($(a).text());
       if (title && !crewWith.some((r) => r.id === pid))
         crewWith.push({ id: pid, title, img, href: `/person/${pid}/` });
@@ -537,7 +540,7 @@ export function parseVodGuide(html: string): LiveVodGuide {
     const id = idFromHref($h.find("a[href*='/vod/']").first().attr("href"), "vod");
     if (!id) return;
     const $col = $h.closest(".columns").nextAll(".columns").first();
-    const img = absUrl($col.find("img[src*='vod_platforms']").first().attr("src"));
+    const img = pickArtwork($col.find("img[src*='vod_platforms']").first(), BASE);
     const cats: LiveVodGuide["platforms"][number]["cats"] = [];
     $col.find("a[href*='/vod/'][href*='vcategory=']").each((__, a) => {
       const vcat = new URL($(a).attr("href") || "", BASE).searchParams.get("vcategory");
@@ -564,7 +567,7 @@ export function parseLineupIndex(html: string): LiveLineupIndex {
     const id = idFromHref($a.attr("href"), "lineup");
     if (!id) return;
     const $card = $a.closest("div.thumbnail-wrapper, li");
-    const img = absUrl($card.find("img").attr("data-src") || $card.find("img").attr("src"));
+    const img = pickArtwork($card.find("img"), BASE);
     const t =
       clean($card.find("ul.description a").first().text()) ||
       clean($a.find("ul.description a").first().text()) ||
@@ -587,10 +590,7 @@ export function parseLineupDetail(html: string, id: string): LiveLineupDetail {
       .first();
     const wid = idFromHref($titleA.attr("href"), "work");
     if (!wid) return;
-    const img = absUrl(
-      $row.find("div.thumbnail-wrapper img").attr("data-src") ||
-        $row.find("div.thumbnail-wrapper img").attr("src"),
-    );
+    const img = pickArtwork($row.find("div.thumbnail-wrapper img"), BASE);
     const cast: LiveRef[] = [];
     $row.find("a[href*='/person/']").each((__, a) => {
       const pid = idFromHref($(a).attr("href"), "person");

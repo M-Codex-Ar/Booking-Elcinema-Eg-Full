@@ -1,36 +1,21 @@
 /** Detail pages for dashboard-managed movies and people. */
 import { ArrowLeft, CalendarDays, Clapperboard, Star, UserRound, Users } from "lucide-react";
+import { ImgWithFallback } from "./components/primitives";
 import { GENRES } from "./data";
 import { fmtDate, Na, PosterArt, t } from "./ui";
 import type { Lang, Movie, Person } from "./home.shared";
-
-const L = {
-  en: {
-    back: "Back to Now Playing",
-    director: "Director",
-    runtime: "min",
-    unrated: "Not rated yet",
-    addedBy: "Added by the elCinema editors",
-  },
-  ar: {
-    back: "العودة إلى السينمات الآن",
-    director: "المخرج",
-    runtime: "دقيقة",
-    unrated: "لم يُقيَّم بعد",
-    addedBy: "أضافه محررو إل سينما",
-  },
-} as const;
+import { makeT } from "./i18n";
 
 /** Managed movie detail: catalogue-style card without showtimes/VOD. */
 export function ManagedWorkPage({ movie, lang }: { movie: Movie; lang: Lang }) {
-  const x = L[lang];
+  const copy = makeT(lang);
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
       <Na
         href={`/${lang}/now`}
         className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
       >
-        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {x.back}
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {copy("managed.back")}
       </Na>
 
       <div className="cinema-gradient mt-4 grid gap-6 rounded-2xl border border-border p-4 sm:p-6 md:grid-cols-[220px_1fr]">
@@ -52,7 +37,7 @@ export function ManagedWorkPage({ movie, lang }: { movie: Movie; lang: Lang }) {
             )}
             {movie.runtime > 0 && (
               <span className="rounded-md bg-secondary px-2 py-1">
-                {movie.runtime} {x.runtime}
+                {movie.runtime} {copy("common.runtimeMin")}
               </span>
             )}
             {movie.cert && <span className="rounded-md bg-secondary px-2 py-1">{movie.cert}</span>}
@@ -74,7 +59,7 @@ export function ManagedWorkPage({ movie, lang }: { movie: Movie; lang: Lang }) {
           {movie.director.en && (
             <p className="mt-4 flex items-center gap-2 text-sm">
               <Clapperboard className="h-4 w-4 text-primary" />{" "}
-              <span className="text-muted-foreground">{x.director}:</span>
+              <span className="text-muted-foreground">{copy("common.director")}:</span>
               <span className="font-bold">{movie.director[lang]}</span>
             </p>
           )}
@@ -86,7 +71,7 @@ export function ManagedWorkPage({ movie, lang }: { movie: Movie; lang: Lang }) {
           )}
 
           <p className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
-            <Users className="h-3.5 w-3.5 text-primary" /> {x.addedBy}
+            <Users className="h-3.5 w-3.5 text-primary" /> {copy("common.addedBy")}
           </p>
         </div>
       </div>
@@ -104,29 +89,28 @@ export function ManagedPersonPage({
   bio?: string | undefined;
   lang: Lang;
 }) {
+  const copy = makeT(lang);
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-8">
       <Na
         href={`/${lang}`}
         className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
       >
-        <ArrowLeft className="h-4 w-4 rtl:rotate-180" />{" "}
-        {lang === "ar" ? "العودة للرئيسية" : "Back home"}
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {copy("common.backHome")}
       </Na>
 
       <div className="cinema-gradient mt-4 flex flex-col items-center gap-6 rounded-2xl border border-border p-6 text-center sm:flex-row sm:text-start">
         <div className="h-32 w-32 shrink-0 overflow-hidden rounded-full bg-secondary">
-          {person.photo ? (
-            <img
-              src={person.photo}
-              alt={person.name[lang]}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <UserRound className="h-12 w-12 text-muted-foreground" />
-            </div>
-          )}
+          <ImgWithFallback
+            src={person.photo}
+            alt={person.name[lang]}
+            className="h-full w-full"
+            fallback={
+              <div className="flex h-full w-full items-center justify-center">
+                <UserRound className="h-12 w-12 text-muted-foreground" />
+              </div>
+            }
+          />
         </div>
         <div className="min-w-0">
           <h1 className="text-2xl font-black md:text-3xl">{person.name[lang]}</h1>

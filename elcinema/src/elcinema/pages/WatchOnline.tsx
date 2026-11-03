@@ -4,13 +4,14 @@
  * plus the movies currently offered to watch online (from the homepage
  * scrape), each linking to its internal work detail page.
  */
-import { MonitorPlay } from "lucide-react";
+import { ArrowLeft, MonitorPlay } from "lucide-react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { ImgWithFallback } from "../components/primitives";
 import { getElcinemaHomeFn } from "../home.functions";
 import type { Lang } from "../home.shared";
 import type { LiveVodGuide } from "../live.shared";
-import { LiveError, LivePoster } from "../live-ui";
-import { Na } from "../ui";
+import { LiveError, LivePoster, VodBadge } from "../live-ui";
+import { Na, Row } from "../ui";
 import {
   FilterInput,
   ListToolbar,
@@ -23,23 +24,7 @@ import {
   textSortOptions,
   useListState,
 } from "../controls";
-
-const L = {
-  en: {
-    title: "Watch Online",
-    subtitle: "Where to stream movies and series right now",
-    platforms: "Streaming platforms",
-    onDemand: "Movies & series available online",
-    cats: "Categories",
-  },
-  ar: {
-    title: "شاهد أونلاين",
-    subtitle: "أين تشاهد الأفلام والمسلسلات الآن",
-    platforms: "منصات المشاهدة",
-    onDemand: "أفلام ومسلسلات متاحة أونلاين",
-    cats: "التصنيفات",
-  },
-} as const;
+import { makeT } from "../i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],
@@ -48,7 +33,7 @@ const homeQueryOptions = queryOptions({
 });
 
 export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const home = useSuspenseQuery(homeQueryOptions).data;
   const watchOnline = home.data?.watchOnline ?? [];
   const st = useListState();
@@ -64,44 +49,31 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      <h1 className="text-2xl font-black md:text-3xl">{Lx.title}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{Lx.subtitle}</p>
+      <h1 className="text-2xl font-black md:text-3xl">{t("vod.title")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{t("vod.subtitle")}</p>
 
       {watchOnline.length > 0 && (
-        <section className="py-8">
-          <h2 className="mb-4 text-xl font-black">{Lx.onDemand}</h2>
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-            {watchOnline.map((w, i) => {
-              const m = /\/work\/(\d+)/.exec(w.href);
-              return m ? (
-                <LivePoster
-                  key={i}
-                  lang={lang}
-                  id={m[1]!}
-                  title={w.title}
-                  img={w.img}
-                  sub={w.meta}
-                  badge={
-                    w.vod && (
-                      <span className="rounded-md bg-background/80 px-2 py-1 text-[10px] font-bold backdrop-blur-sm">
-                        {w.vod.img ? (
-                          <img src={w.vod.img} alt={w.vod.label} className="h-4" />
-                        ) : (
-                          w.vod.label
-                        )}
-                      </span>
-                    )
-                  }
-                />
-              ) : null;
-            })}
-          </div>
-        </section>
+        <Row title={t("vod.onDemand")} icon={<MonitorPlay className="h-5 w-5" />} lang={lang}>
+          {watchOnline.map((w, i) => {
+            const m = /\/work\/(\d+)/.exec(w.href);
+            return m ? (
+              <LivePoster
+                key={i}
+                lang={lang}
+                id={m[1]!}
+                title={w.title}
+                img={w.img}
+                sub={w.meta}
+                badge={<VodBadge vod={w.vod} />}
+              />
+            ) : null;
+          })}
+        </Row>
       )}
 
       <section className="py-4">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
-          <MonitorPlay className="h-5 w-5 text-primary" /> {Lx.platforms}
+          <MonitorPlay className="h-5 w-5 text-primary" /> {t("vod.platforms")}
         </h2>
         <ListToolbar>
           <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
@@ -121,7 +93,15 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
             <div key={p.id} className="glass-card flex gap-4 p-4">
               {p.img && (
                 <div className="flex h-12 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-card p-1">
-                  <img src={p.img} alt={p.name} className="max-h-full max-w-full object-contain" />
+                  <ImgWithFallback
+                    src={p.img}
+                    alt={p.name}
+                    fit="contain"
+                    className="max-h-full max-w-full"
+                    fallback={
+                      <span className="truncate text-center text-xs font-semibold">{p.name}</span>
+                    }
+                  />
                 </div>
               )}
               <div className="min-w-0">
@@ -131,7 +111,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
                     {p.cats.slice(0, 6).map((c) => (
                       <span
                         key={c.label}
-                        className="rounded-md bg-secondary px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
+                        className="rounded-md bg-secondary px-2 py-0.5 text-meta font-semibold text-muted-foreground"
                       >
                         {c.label}
                       </span>
@@ -146,8 +126,11 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
       </section>
 
       <div className="py-8">
-        <Na href={`/${lang}/now`} className="text-sm font-semibold text-primary hover:underline">
-          ← {lang === "ar" ? "السينمات الآن" : "Now Playing"}
+        <Na
+          href={`/${lang}/now`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("now.title")}
         </Na>
       </div>
     </div>

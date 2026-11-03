@@ -49,6 +49,20 @@
 }
 
 /*
+ * Horizontal cousin of `poster-shade`, for a title that sits at the inline
+ * start of a full-bleed image (the home hero). A directional gradient has no
+ * logical axis, so the reading-direction flip lives here rather than as a
+ * `bg-gradient-to-r rtl:bg-gradient-to-l` pair in a feature file — the same
+ * reason the rest of the layout avoids physical sides.
+ */
+@utility scrim-start {
+  background-image: linear-gradient(to right, var(--scrim), transparent 55%);
+  &:where([dir="rtl"] *) {
+    background-image: linear-gradient(to left, var(--scrim), transparent 55%);
+  }
+}
+
+/*
  * Deterministic fallback poster for items without artwork. The hue arrives as
  * `--poster-hue` from the component, so the gradient maths stays in CSS and out
  * of inline style strings. The default (232) is the brand blue hue, so an item
@@ -105,4 +119,31 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/*
+ * Page flow: the shell stacks the page in a column flex container, and a
+ * centred block (`mx-auto max-w-*`) inside one is a flex item whose cross size
+ * is indefinite — so it resolves to max-content instead of the viewport width.
+ * On a phone that makes every section the width of a desktop page: the rails
+ * never scroll, and in Arabic the block lands mostly off-screen. Pinning the
+ * children's inline size restores the normal block behaviour those centred
+ * containers assume, and rails go back to scrolling inside their own box.
+ */
+@utility page-flow {
+  & > * {
+    max-inline-size: 100%;
+  }
+}
+
+/*
+ * Dialog body: a phone in landscape, or the register form with its confirm
+ * fields, is taller than the viewport. The dialog layer is fixed and the page
+ * behind it cannot scroll, so without this the submit button simply does not
+ * exist. `overflow-y` still clips to the rounded corner, so the surface keeps
+ * its shape while scrolling.
+ */
+@utility dialog-scroll {
+  max-block-size: 85vh;
+  overflow-y: auto;
 }

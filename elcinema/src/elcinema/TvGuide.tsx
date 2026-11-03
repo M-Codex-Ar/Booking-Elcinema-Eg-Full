@@ -4,7 +4,7 @@
  * size and horizontally scrollable inside its rounded card.
  */
 import { fmtAirtime, fmtClock, layoutSlots } from "./build";
-import { img } from "./images";
+import { artworkSrc, LogoImage } from "./components/primitives";
 import { cardLink } from "./links";
 import { Na } from "./ui";
 import type { TvGuide as TvGuideData, TvLine, Lang } from "./home.shared";
@@ -39,21 +39,19 @@ export function TvGuideView({
             {lines.map((line, i) => (
               <div key={i} className="flex border-b border-border/60 last:border-0">
                 <div className="sticky start-0 z-[1] flex w-28 shrink-0 items-center gap-2 border-e border-border/60 bg-card/95 p-2 backdrop-blur-sm transition-colors hover:bg-secondary sm:w-40">
-                  {img(line.channel.img) ? (
-                    <img
-                      src={img(line.channel.img)}
-                      alt={line.channel.name[lang]}
-                      className="max-h-7 max-w-20 object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="truncate text-xs font-semibold">
+                  <LogoImage
+                    src={line.channel.img}
+                    text={line.channel.name[lang]}
+                    imgClassName="max-h-7 max-w-20 object-contain"
+                  />
+                  {/* The name is the label on phones where a 20px logo is not
+                      identifiable — but only when there *is* a logo, because
+                      `LogoImage` already prints the name as its own fallback. */}
+                  {artworkSrc(line.channel.img) ? (
+                    <span className="truncate text-xs font-semibold sm:hidden">
                       {line.channel.name[lang]}
                     </span>
-                  )}
-                  <span className="truncate text-xs font-semibold sm:hidden">
-                    {line.channel.name[lang]}
-                  </span>
+                  ) : null}
                 </div>
                 <div className="relative h-14 flex-1">
                   {layoutSlots(line.slots, guide).map(({ index, left, width }) => {

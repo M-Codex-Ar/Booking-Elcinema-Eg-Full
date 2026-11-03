@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default portrait artwork (2:3) for cast and crew cards.
+  Colours mirror src/theme/tokens.css (.dark); see poster-placeholder.svg.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" width="300" height="450" role="img" aria-label="No photo available">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#121416"/>
+      <stop offset="1" stop-color="#08090b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.28" r="0.55">
+      <stop offset="0" stop-color="#25aae1" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#25aae1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="300" height="450" fill="url(#bg)"/>
+  <rect width="300" height="450" fill="url(#glow)"/>
+  <g fill="#f0f2f4" fill-opacity="0.62">
+    <circle cx="150" cy="182" r="46"/>
+    <path d="M64 330c0-48 39-78 86-78s86 30 86 78Z"/>
+  </g>
+  <rect x="132" y="352" width="36" height="4" rx="2" fill="#ecb417"/>
+</svg>

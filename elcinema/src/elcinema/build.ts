@@ -5,12 +5,44 @@
  */
 import { BOXOFFICE, boxofficeDate, CHANNELS, GENRES, MOVIES, PEOPLE, TV_GUIDE_DATA } from "./data";
 import { img } from "./images";
+import { toSlug, movieSlug, personSlug } from "./slug";
 import type { Bi, BoxofficeEntry, Lang, Movie, Person, TvGuide } from "./home.shared";
 
 export type { Bi, Movie };
-export { GENRES, PEOPLE, boxofficeDate };
+export { GENRES, PEOPLE, boxofficeDate, toSlug, movieSlug, personSlug };
 
-export const movieBySlug = new Map(MOVIES.map((m) => [m.slug, m]));
+// ---------- Centralized Slug & Title Resolution ----------
+// Secondary indices mapping normalized name slugs, titles, and IDs to entities.
+const movieByTitleSlug = new Map<string, Movie>();
+for (const m of MOVIES) {
+  const sEn = toSlug(m.title.en);
+  if (sEn) movieByTitleSlug.set(sEn, m);
+  const sAr = toSlug(m.title.ar);
+  if (sAr) movieByTitleSlug.set(sAr, m);
+  movieByTitleSlug.set(m.title.en.toLowerCase().trim(), m);
+  movieByTitleSlug.set(m.title.ar.toLowerCase().trim(), m);
+  if (m.id) movieByTitleSlug.set(String(m.id).trim(), m);
+}
+
+class MovieSlugMap extends Map<string, Movie> {
+  override get(key: string): Movie | undefined {
+    const direct = super.get(key);
+    if (direct) return direct;
+    const normalized = toSlug(key);
+    if (normalized) {
+      const match = movieByTitleSlug.get(normalized);
+      if (match) return match;
+    }
+    const lower = key.toLowerCase().trim();
+    return movieByTitleSlug.get(lower);
+  }
+
+  override has(key: string): boolean {
+    return super.has(key) || this.get(key) !== undefined;
+  }
+}
+
+export const movieBySlug = new MovieSlugMap(MOVIES.map((m) => [m.slug, m]));
 export const nowPlaying = MOVIES.filter((m) => m.status === "now");
 export const comingSoon = [...MOVIES.filter((m) => m.status === "soon")].sort((a, b) =>
   a.release.localeCompare(b.release),
@@ -31,9 +63,58 @@ export function personId(person: Person): number {
 
 export const movieById = new Map(MOVIES.map((m) => [workId(m), m]));
 
-/** Map of legacy public slugs (the old /en/work/<slug>/ URLs) for redirects. */
-export const personBySlug = new Map(PEOPLE.map((p) => [p.slug, p]));
+const personByNameSlug = new Map<string, Person>();
+for (const p of PEOPLE) {
+  const sEn = toSlug(p.name.en);
+  if (sEn) personByNameSlug.set(sEn, p);
+  const sAr = toSlug(p.name.ar);
+  if (sAr) personByNameSlug.set(sAr, p);
+  personByNameSlug.set(p.name.en.toLowerCase().trim(), p);
+  personByNameSlug.set(p.name.ar.toLowerCase().trim(), p);
+  if (p.id) personByNameSlug.set(String(p.id).trim(), p);
+}
+
+class PersonSlugMap extends Map<string, Person> {
+  override get(key: string): Person | undefined {
+    const direct = super.get(key);
+    if (direct) return direct;
+    const normalized = toSlug(key);
+    if (normalized) {
+      const match = personByNameSlug.get(normalized);
+      if (match) return match;
+    }
+    const lower = key.toLowerCase().trim();
+    return personByNameSlug.get(lower);
+  }
+
+  override has(key: string): boolean {
+    return super.has(key) || this.get(key) !== undefined;
+  }
+}
+
+/** Map of public slugs (both name-based and numeric) for resolution and redirects. */
+export const personBySlug = new PersonSlugMap(PEOPLE.map((p) => [p.slug, p]));
 export const personById = new Map(PEOPLE.map((p) => [personId(p), p]));
+
+/** Get a movie by its name slug, legacy slug, or numeric ID. */
+export function getMovieBySlug(idOrSlug: string | number): Movie | undefined {
+  const str = String(idOrSlug).trim();
+  if (/^\d+$/.test(str)) {
+    const byId = movieById.get(Number(str));
+    if (byId) return byId;
+  }
+  return movieBySlug.get(str);
+}
+
+/** Get a person by their name slug, legacy slug, or numeric ID. */
+export function getPersonBySlug(idOrSlug: string | number): Person | undefined {
+  const str = String(idOrSlug).trim();
+  if (/^\d+$/.test(str)) {
+    const byId = personById.get(Number(str));
+    if (byId) return byId;
+  }
+  return personBySlug.get(str);
+}
 
 /** Cast-name lookup so movie cast entries can link to person pages. */
 export const personByName = new Map(PEOPLE.map((p) => [p.name.en, p]));

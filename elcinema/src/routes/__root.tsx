@@ -13,6 +13,7 @@ import { Clapperboard } from "lucide-react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -106,7 +107,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -151,6 +155,12 @@ function RootComponent() {
   // Keep the router and caches in sync with identity changes (sign-in,
   // sign-out, profile updates) — not token refreshes or initial session.
   useEffect(() => {
+    // Without the publishable env baked into the build, the generated client
+    // throws on first property access; that must not blank every public page.
+    if (!isSupabaseConfigured()) {
+      console.warn("[elcinema] Supabase is not configured in this build; auth is disabled.");
+      return;
+    }
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();

@@ -63,7 +63,9 @@ export const cta = cva(
 
 /** Circular icon-only control (social links, row arrows, sign-out). */
 export const iconAction = cva(
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary",
+  // 40px on touch widths, 36 from `sm` up: an icon-only control that is smaller
+  // than this is a miss on a phone, and the header/rails are full of them.
+  "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9",
   {
     variants: {
       tone: { default: "", destructive: "hover:border-destructive hover:text-destructive" },
@@ -169,3 +171,11 @@ export const guideHeader = cva(
 
 /** Full-page empty/error state block. */
 export const stateBlock = cva("mx-auto max-w-3xl px-4 py-20 text-center md:px-8");
+
+/**
+ * Minimum inline size of a horizontally scrollable table or grid (box office,
+ * the TV guide). The content needs print-like room on a phone, so it scrolls
+ * inside its own container instead of squashing its columns or pushing the
+ * whole page sideways; from `lg` the page is wide enough to hold it.
+ */
+export const wideScroll = cva("min-w-[560px] sm:min-w-[720px] lg:min-w-[960px]");

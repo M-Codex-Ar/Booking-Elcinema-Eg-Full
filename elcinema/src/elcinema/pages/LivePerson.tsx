@@ -8,34 +8,10 @@ import type { Lang } from "../home.shared";
 import type { LivePerson } from "../live.shared";
 import { Na } from "../ui";
 import { LiveImg, LivePoster, bookingPath } from "../live-ui";
-
-const L = {
-  en: {
-    filmography: "Filmography",
-    works: "works",
-    nationality: "Nationality:",
-    photos: "Photos",
-    watchOnline: "Watch Online",
-    watchOn: "Watch on",
-    crew: "Crew worked with",
-    notFound: "Person not found",
-    playbackNote: "Opens the real play link in a new tab.",
-  },
-  ar: {
-    filmography: "الأعمال",
-    works: "عمل",
-    nationality: "الجنسية:",
-    photos: "صور",
-    watchOnline: "شاهد أونلاين",
-    watchOn: "شاهد على",
-    crew: "عمل مع",
-    notFound: "الشخص غير موجود",
-    playbackNote: "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",
-  },
-} as const;
+import { makeT } from "../i18n";
 
 export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   return (
     <div>
       {/* Header */}
@@ -57,7 +33,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
               )}
               {data.filmography.length > 0 && (
                 <span className="rounded-full border border-border px-3 py-1 font-bold text-muted-foreground">
-                  {data.filmography.reduce((n, s) => n + s.items.length, 0)} {Lx.works}
+                  {data.filmography.reduce((n, s) => n + s.items.length, 0)} {t("person.works")}
                 </span>
               )}
             </div>
@@ -75,7 +51,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
               <Film className="h-5 w-5 text-primary" /> {section.section}
             </h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {section.items.map((w) => (
                 <LivePoster key={w.id} lang={lang} id={w.id} title={w.title} img={w.img} fluid />
               ))}
@@ -85,7 +61,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
 
         {data.photos.length > 0 && (
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-black">{Lx.photos}</h2>
+            <h2 className="mb-4 text-xl font-black">{t("common.photos")}</h2>
             <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
               {data.photos.map((p, i) => (
                 <div
@@ -103,7 +79,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
 
         {data.vod.length > 0 && (
           <section className="glass-card mb-10 p-5">
-            <h2 className="text-lg font-black">{Lx.watchOnline}</h2>
+            <h2 className="text-lg font-black">{t("vod.title")}</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {data.vod.map((v, i) => (
                 <a
@@ -113,19 +89,19 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
                   rel="noreferrer"
                   className="rounded-lg border border-border bg-secondary px-3 py-1.5 text-sm font-bold hover:border-primary"
                 >
-                  {Lx.watchOn} {v.label}
+                  {t("vod.watchOn")} {v.label}
                   {v.note && <span className="ms-1 text-xs text-muted-foreground">({v.note})</span>}
                 </a>
               ))}
             </div>
-            <p className="mt-3 text-[11px] text-muted-foreground">{Lx.playbackNote}</p>
+            <p className="mt-3 text-meta text-muted-foreground">{t("vod.playbackNote")}</p>
           </section>
         )}
 
         {data.crewWith.length > 0 && (
           <section className="pb-4">
-            <h2 className="mb-4 text-xl font-black">{Lx.crew}</h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <h2 className="mb-4 text-xl font-black">{t("person.crew")}</h2>
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {data.crewWith.slice(0, 12).map((p) => (
                 <Na key={p.id} href={`/${lang}/person/${p.id}`} className="group w-full max-w-40">
                   <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
@@ -145,7 +121,7 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
             href={bookingPath(lang)}
             className="inline-flex rounded-lg border border-border px-6 py-3 font-bold hover:border-primary hover:text-primary"
           >
-            {lang === "en" ? "Book cinema tickets" : "احجز تذاكر السينما"}
+            {t("booking.ticketCinema")}
           </Na>
         </div>
       </div>
@@ -154,15 +130,16 @@ export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang })
 }
 
 export function LivePersonNotFound({ lang }: { lang: Lang }) {
+  const t = makeT(lang);
   return (
     <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
       <UserRound className="mx-auto h-10 w-10 text-muted-foreground" />
-      <h1 className="mt-4 text-2xl font-black">{L[lang].notFound}</h1>
+      <h1 className="mt-4 text-2xl font-black">{t("person.notFound")}</h1>
       <Na
         href={`/${lang}/now`}
         className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
       >
-        {lang === "en" ? "Now Playing" : "السينمات الآن"}
+        {t("now.title")}
       </Na>
     </div>
   );

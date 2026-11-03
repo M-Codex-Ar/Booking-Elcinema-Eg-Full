@@ -1,9 +1,10 @@
 /** TV Guide — full evening grid across all channels, filterable by
  * category and by channel name (URL-driven). */
-import { Search, Tv } from "lucide-react";
+import { Tv } from "lucide-react";
 import { TvGuideView } from "../TvGuide";
 import type { ChannelCategory, Lang, TvGuide } from "../home.shared";
-import { ListToolbar, type SetSearch } from "../controls";
+import { FilterInput, ListToolbar, type SetSearch } from "../controls";
+import { bi, makeT } from "../i18n";
 
 const CATS: { id: ChannelCategory | "all"; en: string; ar: string }[] = [
   { id: "all", en: "All", ar: "الكل" },
@@ -46,7 +47,7 @@ export function TvGuidePage({
   q?: string | undefined;
   setSearch: SetSearch;
 }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const activeCat = (CATS.find((c) => c.id === cat)?.id ?? "all") as ChannelCategory | "all";
   const needle = q.trim().toLowerCase();
   const lines = guide.lines.filter(
@@ -58,9 +59,9 @@ export function TvGuidePage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <Tv className="h-6 w-6 text-primary" /> {Lx.title}
+        <Tv className="h-6 w-6 text-primary" /> {t("guide.title")}
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">{Lx.sub}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{t("guide.sub")}</p>
 
       <ListToolbar>
         {CATS.map((c) => (
@@ -74,24 +75,20 @@ export function TvGuidePage({
                 : "border-border hover:border-primary"
             }`}
           >
-            {lang === "en" ? c.en : c.ar}
+            {bi(c, lang)}
           </button>
         ))}
         <span className="grow" />
-        <label className="flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1.5">
-          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <input
-            type="text"
-            value={q}
-            onChange={(e) => setSearch({ q: e.target.value || undefined })}
-            placeholder={Lx.filter}
-            className="w-40 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-56"
-          />
-        </label>
+        <FilterInput
+          lang={lang}
+          value={q}
+          onChange={(v) => setSearch({ q: v || undefined })}
+          placeholder={t("guide.filterChannels")}
+        />
       </ListToolbar>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        {lines.length} {Lx.channels}
+        {lines.length} {t("guide.channels")}
       </p>
 
       <div className="mt-4">

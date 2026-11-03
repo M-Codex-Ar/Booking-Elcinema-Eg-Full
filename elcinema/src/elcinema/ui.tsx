@@ -3,12 +3,14 @@
  * internal link, real poster artwork with a generated gradient fallback,
  * the scrolling poster row and bilingual helpers.
  */
-import { Clapperboard, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { img as resolveImg } from "./images";
+import { Artwork } from "./components/primitives";
+import { makeT } from "./i18n";
 import type { Bi, Lang } from "./home.shared";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");
 
 /**
@@ -22,39 +24,53 @@ export function Na({
   className,
   style,
   search,
+  label,
 }: {
   href: string;
   children: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
   search?: Record<string, string | undefined>;
+  /** Accessible name for icon-only links, which have no text to read. */
+  label?: string | undefined;
 }) {
   return (
-    <Link to={href as never} search={search as never} className={className} style={style}>
+    <Link
+      to={href as never}
+      search={search as never}
+      className={className}
+      style={style}
+      aria-label={label}
+      title={label}
+    >
       {children}
     </Link>
   );
 }
 
 /** Public work URL, addressed by the elCinema-style numeric ID. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const workPath = (lang: Lang, id: number | string) => `/${lang}/work/${id}`;
 
 /** Public person URL, addressed by the elCinema-style numeric ID. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const personPath = (lang: Lang, id: number | string) => `/${lang}/person/${id}`;
 
-/** Highlights the active language-prefixed section in nav chrome. */
-export function useIsActive(href: string): boolean {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  return pathname === href || pathname.startsWith(href + "/");
-}
-
-/** Real artwork when available, deterministic gradient poster otherwise. */
+/**
+ * Real artwork when available, deterministic gradient poster otherwise.
+ *
+ * Thin alias over the `Artwork` primitive, kept so existing pages keep
+ * compiling while they migrate: one implementation means one fallback design,
+ * one set of tokens and one error path (a dead URL degrades to the gradient,
+ * never to a broken-image icon). The inline `hsl()` gradients this function
+ * used to compute are gone with it — colour lives in `src/theme/`.
+ */
 export function PosterArt({
   hue,
   title,
   icon,
   img: imgKey,
-  className = "",
+  className,
   large = false,
 }: {
   hue: number;
@@ -64,45 +80,15 @@ export function PosterArt({
   className?: string;
   large?: boolean;
 }) {
-  const src = imgKey
-    ? imgKey.startsWith("/") || /^https?:\/\//.test(imgKey)
-      ? imgKey
-      : resolveImg(imgKey)
-    : "";
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={title}
-        loading="lazy"
-        className={`h-full w-full object-cover ${className}`}
-      />
-    );
-  }
-  const Icon = icon ?? Clapperboard;
-  const h2 = (hue + 40) % 360;
   return (
-    <div
-      className={`relative flex h-full w-full flex-col items-center justify-center overflow-hidden ${className}`}
-      style={{
-        background: `linear-gradient(160deg, hsl(${hue} 55% 26%), hsl(${h2} 60% 12%))`,
-      }}
-      aria-hidden="true"
-    >
-      <div
-        className="absolute inset-0 opacity-40"
-        style={{
-          background: `radial-gradient(circle at 70% 20%, hsl(${hue} 90% 65% / 0.35), transparent 55%)`,
-        }}
-      />
-      <Icon className={`${large ? "h-16 w-16" : "h-10 w-10"} text-white/80`} />
-      <span
-        className={`${large ? "text-3xl" : "text-base"} mt-4 px-6 text-center font-black leading-snug text-white drop-shadow-lg`}
-      >
-        {title}
-      </span>
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
-    </div>
+    <Artwork
+      hue={hue}
+      alt={title}
+      src={imgKey}
+      icon={icon}
+      large={large}
+      className={className ?? ""}
+    />
   );
 }
 
@@ -111,42 +97,55 @@ export function Row({
   title,
   icon,
   more,
+  lang = "en",
   children,
 }: {
   title: string;
   icon: ReactNode;
   more?: string;
+  lang?: Lang;
   children: ReactNode;
 }) {
+  const t = makeT(lang);
   const ref = useRef<HTMLDivElement>(null);
-  const scroll = (d: number) =>
-    ref.current?.scrollBy({ left: d * ref.current.clientWidth * 0.8, behavior: "smooth" });
+  const isRtl = lang === "ar";
+  const scroll = (d: number) => {
+    const factor = isRtl ? -d : d;
+    ref.current?.scrollBy({ left: factor * ref.current.clientWidth * 0.8, behavior: "smooth" });
+  };
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-xl md:text-2xl">
-          <span className="text-primary">{icon}</span>
-          {title}
-        </h2>
-        <div className="flex items-center gap-2">
+      <div className="mb-4 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+          <h2 className="flex min-w-0 items-center gap-2 text-xl font-bold md:text-2xl">
+            <span className="shrink-0 text-primary">{icon}</span>
+            <span className="truncate">{title}</span>
+          </h2>
           {more && (
-            <Na href={more} className="me-2 text-sm font-semibold text-primary hover:underline">
-              See all
+            <Na
+              href={more}
+              className="inline-flex h-8 shrink-0 items-center rounded-full bg-secondary/80 px-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:px-3"
+            >
+              {t("home.seeAll")}
             </Na>
           )}
+        </div>
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <button
-            aria-label="Previous"
+            type="button"
+            aria-label={t("home.previous")}
             onClick={() => scroll(-1)}
-            className="rounded-full border border-border p-2 hover:border-primary hover:text-primary"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
-            <ChevronLeft className="h-4 w-4" />
+            {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
           <button
-            aria-label="Next"
+            type="button"
+            aria-label={t("home.next")}
             onClick={() => scroll(1)}
-            className="rounded-full border border-border p-2 hover:border-primary hover:text-primary"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
           >
-            <ChevronRight className="h-4 w-4" />
+            {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
         </div>
       </div>
@@ -182,8 +181,8 @@ export function Poster({
           <PosterArt hue={hue} title={title} img={img} />
           {badge && <div className="absolute end-2 top-2">{badge}</div>}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              More info →
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+              More info <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </span>
           </div>
         </div>
@@ -212,8 +211,18 @@ const MONTHS: Bi[] = [
 ];
 
 /** Static bilingual date formatting, stable across SSR and client. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function fmtDate(iso: string, lang: Lang): string {
   const [y, m, d] = iso.split("-").map(Number);
   const month = MONTHS[((m ?? 1) - 1) % 12] ?? { en: "", ar: "" };
   return `${d} ${month[lang]} ${y}`;
+}
+
+/** "11-02" -> "2 November" / "2 نوفمبر" — the same table, without the year. */
+// eslint-disable-next-line react-refresh/only-export-components
+export function fmtMonthDay(dateKey: string, lang: Lang): string {
+  const [m, d] = dateKey.split("-").map(Number);
+  if (!m || !d) return "";
+  const month = MONTHS[(m - 1) % 12] ?? { en: "", ar: "" };
+  return `${d} ${month[lang]}`;
 }

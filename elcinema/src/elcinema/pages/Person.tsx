@@ -4,42 +4,29 @@
  * are known for, each addressed by the elCinema-style numeric ID.
  */
 import { Film, UserRound } from "lucide-react";
-import { movieBySlug, personById, workId } from "../build";
+import { movieBySlug, personById, personBySlug, workId } from "../build";
 import { Na, PosterArt, fmtDate, workPath } from "../ui";
 import type { Lang, Movie, Person } from "../home.shared";
+import { makeT } from "../i18n";
 
-const L = {
-  en: {
-    knownFor: "Known for",
-    filmography: "Filmography",
-    works: "works",
-    notFound: "Person not found",
-    back: "Now Playing",
-    role: "Role",
-  },
-  ar: {
-    knownFor: "معروف بـ",
-    filmography: "أعماله",
-    works: "عمل",
-    notFound: "الشخص غير موجود",
-    back: "السينمات الآن",
-    role: "الدور",
-  },
-} as const;
+function personBySlugOrId(id: string) {
+  if (/^\d+$/.test(id)) return personById.get(Number(id)) ?? personBySlug.get(id);
+  return personBySlug.get(id);
+}
 
 export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
-  const Lx = L[lang];
-  const person = personById.get(Number(id));
+  const t = makeT(lang);
+  const person = personBySlugOrId(id);
   if (!person) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
         <UserRound className="mx-auto h-10 w-10 text-muted-foreground" />
-        <h1 className="mt-4 text-2xl font-black">{Lx.notFound}</h1>
+        <h1 className="mt-4 text-2xl font-black">{t("person.notFound")}</h1>
         <Na
           href={`/${lang}/now`}
           className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
         >
-          {Lx.back}
+          {t("now.title")}
         </Na>
       </div>
     );
@@ -70,7 +57,7 @@ export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
                 {person.role[lang]}
               </span>
               <span className="rounded-full border border-border px-3 py-1 font-bold text-muted-foreground">
-                {knownFor.length} {Lx.works}
+                {knownFor.length} {t("person.works")}
               </span>
             </div>
           </div>
@@ -80,9 +67,9 @@ export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
       <div className="mx-auto max-w-5xl px-4 py-10 md:px-8">
         <section>
           <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
-            <Film className="h-5 w-5 text-primary" /> {Lx.filmography}
+            <Film className="h-5 w-5 text-primary" /> {t("person.filmography")}
           </h2>
-          <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+          <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
             {knownFor.map((m) => (
               <FilmCard key={m.slug} movie={m} lang={lang} />
             ))}
@@ -102,7 +89,7 @@ function FilmCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
         {movie.title[lang]}
       </h3>
-      <div className="text-[11px] text-muted-foreground">{fmtDate(movie.release, lang)}</div>
+      <div className="text-meta text-muted-foreground">{fmtDate(movie.release, lang)}</div>
     </Na>
   );
 }

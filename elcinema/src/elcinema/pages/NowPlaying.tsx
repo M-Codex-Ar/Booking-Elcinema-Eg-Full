@@ -3,8 +3,10 @@
 import { Ticket, Star } from "lucide-react";
 import { GENRES } from "../data";
 import { movieMeta, workId } from "../build";
+import { locale, makeT } from "../i18n";
 import { fmtDate, Na, t, workPath } from "../ui";
 import { PosterArt } from "../ui";
+import { pill } from "../components/variants";
 import type { Lang, Movie } from "../home.shared";
 import {
   ListToolbar,
@@ -18,22 +20,11 @@ import {
   type ViewMode,
 } from "../controls";
 
-const L = {
-  en: {
-    title: "Now Playing",
-    sub: "Movies in Egyptian cinemas this week",
-    all: "All",
-    sort: { featured: "Featured", rating: "Top rated", title: "A to Z", newest: "Newest" },
-  },
-  ar: {
-    title: "السينمات الآن",
-    sub: "أفلام في السينمات المصرية هذا الأسبوع",
-    all: "الكل",
-    sort: { featured: "المميز", rating: "الأعلى تقييمًا", title: "أبجديًا", newest: "الأحدث" },
-  },
-} as const;
-
 type SortKey = "featured" | "rating" | "title" | "newest";
+
+/** Managed rows may carry a genre code the built-in catalogue never defined;
+ *  an unlabelled one would render as an empty chip, so it is filtered out. */
+const hasGenreLabel = (g: string): boolean => Boolean(GENRES[g]);
 
 function sortMovies(movies: Movie[], sort: SortKey, lang: Lang): Movie[] {
   const list = [...movies];
@@ -41,9 +32,7 @@ function sortMovies(movies: Movie[], sort: SortKey, lang: Lang): Movie[] {
     case "rating":
       return list.sort((a, b) => movieMeta(b).rating - movieMeta(a).rating);
     case "title":
-      return list.sort((a, b) =>
-        a.title[lang].localeCompare(b.title[lang], lang === "ar" ? "ar" : "en"),
-      );
+      return list.sort((a, b) => a.title[lang].localeCompare(b.title[lang], locale(lang)));
     case "newest":
       return list.sort((a, b) => b.release.localeCompare(a.release));
     default:
@@ -69,11 +58,14 @@ function Row({ movie, lang }: { movie: Movie; lang: Lang }) {
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span>{fmtDate(movie.release, lang)}</span>
           <span>· {movie.cert}</span>
-          {movie.genres.slice(0, 3).map((g) => (
-            <span key={g} className="rounded-md bg-secondary px-2 py-0.5">
-              {t(GENRES[g], lang)}
-            </span>
-          ))}
+          {movie.genres
+            .slice(0, 3)
+            .filter(hasGenreLabel)
+            .map((g) => (
+              <span key={g} className={pill()}>
+                {t(GENRES[g], lang)}
+              </span>
+            ))}
         </div>
       </div>
       <span className="flex shrink-0 items-center gap-1 text-sm font-bold">
@@ -100,24 +92,31 @@ export function NowPlayingPage({
   page?: number | undefined;
   setSearch: SetSearch;
 }) {
-  const Lx = L[lang];
+  const copy = makeT(lang);
   const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
-  const sorted = sortMovies(
-    filtered,
-    (sort as SortKey) in Lx.sort ? (sort as SortKey) : "featured",
-    lang,
-  );
+  const validSorts: SortKey[] = ["featured", "rating", "title", "newest"];
+  const currentSort: SortKey = validSorts.includes(sort as SortKey)
+    ? (sort as SortKey)
+    : "featured";
+  const sorted = sortMovies(filtered, currentSort, lang);
   const page = clampPage(pageParam, sorted.length, 10);
   const shown = pageSlice(sorted, page, 10);
   const pages = pageCount(sorted.length, 10);
 
+  const sortOptions = [
+    { value: "featured", label: copy("now.sortFeatured") },
+    { value: "rating", label: copy("now.sortRating") },
+    { value: "title", label: copy("controls.az") },
+    { value: "newest", label: copy("now.sortNewest") },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <Ticket className="h-6 w-6 text-primary" /> {Lx.title}
+        <Ticket className="h-6 w-6 text-primary" /> {copy("now.title")}
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">{Lx.sub}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{copy("now.sub")}</p>
 
       <ListToolbar>
         <Na
@@ -128,7 +127,7 @@ export function NowPlayingPage({
               : "border-border hover:border-primary"
           }`}
         >
-          {Lx.all}
+          {copy("controls.all")}
         </Na>
         {genres.map((g) => (
           <Na
@@ -149,10 +148,7 @@ export function NowPlayingPage({
           lang={lang}
           value={sort}
           onChange={(v) => setSearch({ sort: v, page: undefined })}
-          options={(Object.keys(Lx.sort) as SortKey[]).map((k) => ({
-            value: k,
-            label: Lx.sort[k],
-          }))}
+          options={sortOptions}
         />
         <ViewToggle lang={lang} view={view} onChange={(v) => setSearch({ view: v })} />
       </ListToolbar>
@@ -170,15 +166,19 @@ export function NowPlayingPage({
                     {m.title[lang]}
                   </h3>
                 </Na>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  {fmtDate(m.release, lang)} · {m.cert}
+                <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{fmtDate(m.release, lang)}</span>
+                  <span className="flex items-center gap-1 font-semibold text-foreground">
+                    <Star className="h-3 w-3 fill-gold text-gold" />{" "}
+                    {movieMeta(m).rating.toFixed(1)}
+                  </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid gap-3">
+        <div className="mt-8 space-y-3">
           {shown.map((m) => (
             <Row key={m.slug} movie={m} lang={lang} />
           ))}
@@ -186,11 +186,7 @@ export function NowPlayingPage({
       )}
 
       {sorted.length === 0 && (
-        <p className="mt-12 text-center text-muted-foreground">
-          {lang === "en"
-            ? "No movies in this genre right now."
-            : "لا توجد أفلام في هذا النوع حاليًا."}
-        </p>
+        <p className="mt-12 text-center text-muted-foreground">{copy("now.empty")}</p>
       )}
 
       <Pagination lang={lang} page={page} pages={pages} onChange={(p) => setSearch({ page: p })} />

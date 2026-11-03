@@ -3,7 +3,7 @@
  * section scraped from elcinema.com/lineup/ (the real site's Lists section)
  * plus one list's contents. Items link to internal work/person pages.
  */
-import { ListVideo } from "lucide-react";
+import { ArrowLeft, ListVideo } from "lucide-react";
 import type { Lang } from "../home.shared";
 import type { LiveLineupDetail, LiveLineupIndex } from "../live.shared";
 import { Na } from "../ui";
@@ -21,26 +21,10 @@ import {
   useListState,
 } from "../controls";
 import { LiveImg, LiveError, LivePoster, lineupPath, liveWorkPath } from "../live-ui";
-
-const L = {
-  en: {
-    title: "Featured Lists",
-    subtitle: "Curated movies & series by the elCinema editors",
-    back: "All lists",
-    cast: "Cast",
-    empty: "This list is empty.",
-  },
-  ar: {
-    title: "قوائم مختارة",
-    subtitle: "أفلام ومسلسلات مختارة من محرري إل سينما",
-    back: "كل القوائم",
-    cast: "طاقم التمثيل",
-    empty: "هذه القائمة فارغة.",
-  },
-} as const;
+import { makeT } from "../i18n";
 
 export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const tx = listText(lang);
   const st = useListState();
   const filtered = sortByText(
@@ -53,9 +37,9 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       <h1 className="mb-2 flex items-center gap-2 text-2xl font-black md:text-3xl">
-        <ListVideo className="h-6 w-6 text-primary" /> {Lx.title}
+        <ListVideo className="h-6 w-6 text-primary" /> {t("lineup.title")}
       </h1>
-      <p className="text-sm text-muted-foreground">{Lx.subtitle}</p>
+      <p className="text-sm text-muted-foreground">{t("lineup.subtitle")}</p>
 
       <ListToolbar>
         <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
@@ -115,7 +99,7 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
 }
 
 export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang: Lang }) {
-  const Lx = L[lang];
+  const t = makeT(lang);
   const tx = listText(lang);
   const st = useListState();
   const filtered = sortByText(
@@ -127,13 +111,16 @@ export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang:
   const { page, pages, shown } = paginate(filtered, st.page, 24);
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      <Na href={lineupPath(lang)} className="text-sm font-semibold text-primary hover:underline">
-        ← {Lx.back}
+      <Na
+        href={lineupPath(lang)}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+      >
+        <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("lineup.back")}
       </Na>
       <h1 className="mt-3 text-2xl font-black md:text-3xl">{data.title}</h1>
 
       {data.items.length === 0 ? (
-        <p className="mt-8 text-sm text-muted-foreground">{Lx.empty}</p>
+        <p className="mt-8 text-sm text-muted-foreground">{t("lineup.empty")}</p>
       ) : (
         <>
           <ListToolbar>

@@ -20,6 +20,7 @@ import {
 } from "../build";
 import { Na, PosterArt, fmtDate, t, workPath } from "../ui";
 import type { Lang, Movie } from "../home.shared";
+import { makeT } from "../i18n";
 
 const L = {
   en: {
@@ -65,7 +66,7 @@ const L = {
 } as const;
 
 export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
-  const Lx = L[lang];
+  const copy = makeT(lang);
   const movie = movieBySlugOrId(id);
   const [day, setDay] = useState(0);
 
@@ -73,12 +74,12 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
         <Film className="mx-auto h-10 w-10 text-muted-foreground" />
-        <h1 className="mt-4 text-2xl font-black">{Lx.notFound}</h1>
+        <h1 className="mt-4 text-2xl font-black">{copy("work.notFound")}</h1>
         <Na
           href={`/${lang}/now`}
           className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
         >
-          {lang === "en" ? "Now Playing" : "السينمات الآن"}
+          {copy("now.title")}
         </Na>
       </div>
     );
@@ -135,7 +136,8 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
                   <CalendarClock className="h-4 w-4 text-primary" /> {fmtDate(movie.release, lang)}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Clock className="h-4 w-4 text-primary" /> {movie.runtime} {Lx.runtime}
+                  <Clock className="h-4 w-4 text-primary" /> {movie.runtime}{" "}
+                  {copy("common.runtimeMinutes")}
                 </span>
               </div>
             </div>
@@ -145,10 +147,10 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
               href={`/${lang}/booking/${workId(movie)}`}
               className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
             >
-              <Ticket className="h-4 w-4" /> {Lx.book}
+              <Ticket className="h-4 w-4" /> {copy("booking.title")}
             </Na>
             <div className="mt-2 text-center text-xs text-muted-foreground">
-              {Lx.rating}: {meta.votes}
+              {copy("work.rating")}: {meta.votes}
             </div>
           </div>
         </div>
@@ -158,21 +160,19 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
           <div className="min-w-0 lg:col-span-2">
             {/* Details list, elCinema-style */}
             <dl className="glass-card grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 p-5 text-sm">
-              <dt className="font-bold text-muted-foreground">
-                {lang === "en" ? "Movie" : "فيلم"}
-              </dt>
+              <dt className="font-bold text-muted-foreground">{copy("common.movieType")}</dt>
               <dd>{movie.country[lang]}</dd>
-              <dt className="font-bold text-muted-foreground">{Lx.release}</dt>
+              <dt className="font-bold text-muted-foreground">{copy("work.releaseDateColon")}</dt>
               <dd>
                 {fmtDate(movie.release, lang)} ({movie.country[lang]})
               </dd>
-              <dt className="font-bold text-muted-foreground">{Lx.language}</dt>
+              <dt className="font-bold text-muted-foreground">{copy("common.languageColon")}</dt>
               <dd>{meta.language[lang]}</dd>
-              <dt className="font-bold text-muted-foreground">{Lx.director}</dt>
+              <dt className="font-bold text-muted-foreground">{copy("common.directorColon")}</dt>
               <dd>{movie.director[lang]}</dd>
-              <dt className="font-bold text-muted-foreground">{Lx.writer}</dt>
+              <dt className="font-bold text-muted-foreground">{copy("common.writerColon")}</dt>
               <dd>{meta.writer[lang]}</dd>
-              <dt className="font-bold text-muted-foreground">{Lx.cast}</dt>
+              <dt className="font-bold text-muted-foreground">{copy("common.castColon")}</dt>
               <dd>
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
                   {movie.cast.map((p, i) => {
@@ -197,7 +197,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
             </dl>
 
             {/* Story */}
-            <h2 className="mt-8 text-lg font-black">{Lx.story}</h2>
+            <h2 className="mt-8 text-lg font-black">{copy("common.story")}</h2>
             <p className="mt-2 text-base leading-relaxed text-foreground/90">
               {movie.synopsis[lang]}
             </p>
@@ -207,7 +207,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
           <div className="space-y-6">
             {vod.length > 0 && (
               <div className="glass-card h-fit p-5">
-                <h2 className="text-lg font-black">{Lx.watchOnline}</h2>
+                <h2 className="text-lg font-black">{copy("vod.title")}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {vod
                     .filter(
@@ -238,7 +238,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
         {/* Showtimes with day tabs */}
         <section className={dayCount > 0 ? "mt-10" : "mt-10 hidden"}>
           <h2 className="flex items-center gap-2 text-xl font-black">
-            <Ticket className="h-5 w-5 text-primary" /> {Lx.showtimes}
+            <Ticket className="h-5 w-5 text-primary" /> {copy("work.showtimes")}
           </h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {Array.from({ length: dayCount }, (_, i) => {
@@ -293,8 +293,8 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
         {/* Similar */}
         {similar.length > 0 && (
           <section className="py-10">
-            <h2 className="mb-4 text-xl font-black">{Lx.similar}</h2>
-            <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-6">
+            <h2 className="mb-4 text-xl font-black">{copy("work.similar")}</h2>
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
               {similar.map((m) => (
                 <SimilarCard key={m.slug} movie={m} lang={lang} />
               ))}
@@ -315,14 +315,14 @@ function SimilarCard({ movie, lang }: { movie: Movie; lang: Lang }) {
       <h3 className="mt-2 line-clamp-1 text-xs font-bold transition-colors group-hover:text-primary">
         {movie.title[lang]}
       </h3>
-      <div className="text-[11px] text-muted-foreground">{fmtDate(movie.release, lang)}</div>
+      <div className="text-meta text-muted-foreground">{fmtDate(movie.release, lang)}</div>
     </Na>
   );
 }
 
-/** Resolves either the numeric work ID or a legacy text slug. */
+/** Resolves either the numeric work ID or a text name slug. */
 function movieBySlugOrId(id: string) {
-  if (/^\d+$/.test(id)) return movieById.get(Number(id));
+  if (/^\d+$/.test(id)) return movieById.get(Number(id)) ?? movieBySlug.get(id);
   return movieBySlug.get(id);
 }
 

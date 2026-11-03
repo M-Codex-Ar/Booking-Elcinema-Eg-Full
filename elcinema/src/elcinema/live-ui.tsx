@@ -4,23 +4,33 @@
  * design-system tokens in styles.css; links to other elcinema ids are built
  * as internal app routes.
  */
-import { Clapperboard, Star, UserRound } from "lucide-react";
+import { ArrowRight, Clapperboard, Star, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { artworkSrc, useArtwork, LogoImage } from "./components/primitives";
 import type { Lang } from "./home.shared";
 import { Na } from "./ui";
 
 /** Internal path to a live (or sample) work detail page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const liveWorkPath = (lang: Lang, id: string) => `/${lang}/work/${id}`;
 /** Internal path to a live (or sample) person detail page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const livePersonPath = (lang: Lang, id: string) => `/${lang}/person/${id}`;
 /** Internal path to a video page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const videoPath = (lang: Lang, id?: string) => `/${lang}/video${id ? `/${id}` : ""}`;
 /** Internal path to a featured-list page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const lineupPath = (lang: Lang, id?: string) => `/${lang}/lineup${id ? `/${id}` : ""}`;
 /** Internal path to a booking page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const bookingPath = (lang: Lang, id?: string) => `/${lang}/booking${id ? `/${id}` : ""}`;
 
-/** Poster/photo image with a clapperboard fallback for missing artwork. */
+/**
+ * Poster/photo image with a clapperboard placeholder for missing artwork.
+ * A URL that is present but dead (a moved CDN asset, a blocked hotlink) takes
+ * the same path, so no card can ever show a broken-image icon.
+ */
 export function LiveImg({
   src,
   alt,
@@ -32,14 +42,25 @@ export function LiveImg({
   className?: string;
   wide?: boolean;
 }) {
-  if (!src) {
+  const art = useArtwork(artworkSrc(src));
+  if (!art.src || art.failed) {
     return (
       <div className={`flex items-center justify-center bg-secondary ${className}`}>
         <Clapperboard className={`${wide ? "h-10 w-10" : "h-8 w-8"} text-muted-foreground`} />
       </div>
     );
   }
-  return <img src={src} alt={alt} loading="lazy" className={`${className} object-cover`} />;
+  return (
+    <img
+      src={art.src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={art.onError}
+      className={`${className} object-cover`}
+    />
+  );
 }
 
 /** Person card with round portrait, used in cast and crew strips. */
@@ -104,8 +125,8 @@ export function LivePoster({
           <LiveImg src={img} alt={title} className="h-full w-full" wide />
           {badge && <div className="absolute top-2 end-2 max-w-[85%]">{badge}</div>}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              More info →
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary">
+              More info <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </span>
           </div>
         </div>
@@ -147,5 +168,27 @@ export function LiveError({ message, lang }: { message: string; lang: Lang }) {
         {lang === "ar" ? "الصفحة الرئيسية" : "Go home"}
       </Na>
     </div>
+  );
+}
+
+/** Streaming / VOD badge displayed in the corner of cards (YouTube, Netflix, etc.). */
+export function VodBadge({
+  vod,
+}: {
+  vod: { img?: string | null; label: string } | null | undefined;
+}) {
+  if (!vod) return null;
+  return (
+    <span className="inline-flex max-w-[90%] items-center gap-1.5 rounded-full border border-border/50 bg-background/90 px-2 py-0.5 text-micro font-bold shadow-sm backdrop-blur-md">
+      {vod.img ? (
+        <LogoImage
+          src={vod.img}
+          text={vod.label}
+          imgClassName="h-3.5 w-auto shrink-0 object-contain"
+          textClassName="text-micro font-bold"
+        />
+      ) : null}
+      {vod.label ? <span className="truncate">{vod.label}</span> : null}
+    </span>
   );
 }

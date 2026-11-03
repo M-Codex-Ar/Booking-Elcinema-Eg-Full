@@ -66,12 +66,20 @@ export type ManagedContent = Awaited<ReturnType<typeof getManagedContent>>;
 
 export type ManagedRow = Record<string, unknown> & { id?: string };
 
-/** Staff-only write (RLS: authenticated). `row.id` present => update. */
+/** Staff-only write (RLS: authenticated admin). `row.id` present => update. */
 export const saveManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { table: ManagedTable; row: ManagedRow } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
+    const claims = context.claims as Record<string, unknown> | undefined;
+    const role =
+      claims?.["role"] ||
+      (claims?.["app_metadata"] as Record<string, unknown> | undefined)?.["role"] ||
+      (claims?.["user_metadata"] as Record<string, unknown> | undefined)?.["role"];
+    if (role !== "admin") {
+      throw new Error("Forbidden: Admin privileges required");
+    }
     const row: Record<string, unknown> = { ...data.row };
     delete row["created_at"];
     row["updated_at"] = new Date().toISOString();
@@ -85,12 +93,20 @@ export const saveManagedRow = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-/** Staff-only delete (RLS: authenticated). */
+/** Staff-only delete (RLS: authenticated admin). */
 export const deleteManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { table: ManagedTable; id: string } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
+    const claims = context.claims as Record<string, unknown> | undefined;
+    const role =
+      claims?.["role"] ||
+      (claims?.["app_metadata"] as Record<string, unknown> | undefined)?.["role"] ||
+      (claims?.["user_metadata"] as Record<string, unknown> | undefined)?.["role"];
+    if (role !== "admin") {
+      throw new Error("Forbidden: Admin privileges required");
+    }
     const { error } = await context.supabase
       .from(data.table as never)
       .delete()

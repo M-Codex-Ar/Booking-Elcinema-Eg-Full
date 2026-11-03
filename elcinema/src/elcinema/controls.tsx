@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Shared list controls for every catalogue page: sort select, grid/list view
  * toggle and pagination. State lives in the URL (validateSearch per route);
@@ -221,14 +222,14 @@ export function FilterInput({
   placeholder?: string;
 }) {
   return (
-    <label className="flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1.5">
+    <label className="flex h-9 items-center gap-2 rounded-full border border-border bg-secondary px-3">
       <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder ?? T2[lang].filter}
-        className="w-36 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-52"
+        className="h-full w-36 min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-52"
       />
     </label>
   );
