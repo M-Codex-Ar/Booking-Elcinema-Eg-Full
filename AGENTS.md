@@ -10,7 +10,7 @@ These rules apply to the whole repository. Area-specific rules live in
 | `elcinema/src/theme/` | Design tokens and CSS utilities | Component markup, feature copy |
 | `elcinema/src/elcinema/components/` | UI primitives + `cva` recipes | Data fetching, page-specific business rules |
 | `elcinema/src/elcinema/pages/` | Page composition | Re-usable visual recipes |
-| `elcinema/src/elcinema/i18n.ts` | All UI copy | Domain data (movie titles travel as `Bi` values) |
+| `elcinema/src/elcinema/i18n/` | All UI copy | Domain data (movie titles travel as `Bi` values) |
 | `elcinema/src/elcinema/content.ts` | Merge rules for operator + built-in content | Direct table queries from pages |
 | `elcinema/src/routes/` | Thin route wiring: params → data → component | Formatting, filtering, merge logic |
 | `server-api/` | ASP.NET Core API (spec first, code when approved) | Frontend code, secrets |
@@ -37,7 +37,7 @@ Verify with the real tools before claiming work is done: `tsc --noEmit`, `vitest
 3. **Centralised styling.** Visual recipes live in `elcinema/src/theme/` and
    `elcinema/src/elcinema/components/variants.ts`. Do not add a literal `oklch`/`hsl`/`#hex`,
    an arbitrary `shadow-[...]`, a `text-[10px]`, or a one-off CSS file in a feature folder.
-4. **Bilingual by construction.** Every rendered string comes from `i18n.ts` (`makeT(lang)`) or a
+4. **Bilingual by construction.** Every rendered string comes from `i18n/` (`makeT(lang)`) or a
    `Bi` data value. No `lang === "ar" ? … : …` inline in JSX.
 5. **RTL is the default assumption.** Use logical properties (`ms-`, `me-`, `start-`, `end-`,
    `text-start`) and `rtl:` variants. Never `ml-`/`mr-`/`left-`/`right-` for layout.
@@ -49,7 +49,7 @@ Verify with the real tools before claiming work is done: `tsc --noEmit`, `vitest
 
 - `npm run check:web` passes (format, lint, typecheck, tests, build).
 - New/changed UI renders in both languages and both themes, with keyboard focus visible.
-- Copy added to `i18n.ts`, not inline.
+- Copy added to `i18n/`, not inline.
 - Styles expressed as tokens/primitives, not literals.
 - Docs touched when behaviour or structure changed (see the doc that owns the topic in
   [`docs/README.md`](docs/README.md)).

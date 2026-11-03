@@ -42,7 +42,7 @@ than one role and are listed honestly in
 | Primitive | `elcinema/src/elcinema/components/` | Re-usable markup with `cva` recipes | Where its data comes from |
 | Recipe | `elcinema/src/elcinema/components/variants.ts` | Every repeated class string | JSX |
 | Token | `elcinema/src/theme/` | Colour, radius, shadow, size, motion, `@utility` | Component names |
-| Copy | `elcinema/src/elcinema/i18n.ts` | UI strings, both languages | Domain data |
+| Copy | `elcinema/src/elcinema/i18n/` | UI strings, both languages | Domain data |
 | Query/merge | `elcinema/src/elcinema/content.ts` | Combining operator content with the catalogue | Rendering |
 | Port | `*.shared.ts` | Types both sides of a server boundary agree on | Implementation |
 | Adapter | `*.server.ts`, `content.functions.ts` | Supabase, cheerio scraping, caching | The UI |

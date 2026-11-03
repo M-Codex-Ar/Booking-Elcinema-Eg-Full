@@ -62,7 +62,7 @@ Stated plainly so nobody reads a green suite as full assurance.
 | A route | `app-routing.test.tsx`, including the *other* language edition |
 | A primitive or recipe | A render test with Testing Library; assert role/name/label, not class strings |
 | A page's sizing, a shared utility or a control's hit area | `elcinema/scripts/responsive-audit.mjs` at 360/768/1440, both editions and both themes (see below) |
-| An `i18n.ts` key | The type system catches a missing key; assert both languages are non-empty in a cheap table test |
+| An `i18n/` key | The type system catches a missing key; assert both languages are non-empty in a cheap table test |
 | A server function | Unit-test validation and error mapping with an injected client; do not hit Supabase from CI |
 
 ## How to verify honestly

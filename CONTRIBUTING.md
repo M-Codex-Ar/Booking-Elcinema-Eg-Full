@@ -38,7 +38,7 @@ cause of a failure; do not silence a rule or delete a test to get green.
 
 - **Structure:** does the change respect the layer boundaries in [AGENTS.md](AGENTS.md)?
 - **Styling:** tokens and primitives only; no literal colours or arbitrary shadows.
-- **Copy:** strings in `i18n.ts`; both languages present; `{placeholders}` documented.
+- **Copy:** strings in `i18n/`; both languages present; `{placeholders}` documented.
 - **RTL/a11y:** logical properties, accessible names, focus visible, contrast in both themes.
 - **Data:** merge rules in `content.ts`; mutations through the guarded server function.
 - **Tests:** new pure logic gets a unit test; parser changes get a fixture-based test.

@@ -38,8 +38,8 @@ src/
 │   └── _authenticated/    dashboard, guarded by the auth route
 ├── elcinema/
 │   ├── pages/              one file per screen
-│   ├── components/         primitives.tsx + variants.ts
-│   ├── dashboard/          DataTable, Sections, editor
+│   ├── components/         primitives.tsx (markup) + variants.ts (class recipes)
+│   ├── dashboard/            DataTable, Sections, editor
 │   ├── data/*.json         built-in catalogue
 │   ├── i18n.ts             every UI string, both languages
 │   ├── content.ts          merge rules for operator + built-in content
@@ -51,8 +51,8 @@ src/
 │   ├── *.shared.ts         types crossing a server boundary
 │   ├── *.server.ts         cheerio parsers + fetch, server only
 │   └── *.functions.ts      createServerFn wrappers
-├── components/ui/          shadcn-generated primitives (app shell only)
-├── integrations/supabase/  client, client.server, auth-middleware, generated types
+├── components/ui/          shadcn primitives consumed by the app shell + dashboard
+├── integrations/supabase/  client, auth-attacher + auth-middleware, generated types
 ├── lib/                    cn(), error capture/reporting
 ├── test/                   Vitest suites + setup
 └── router.tsx, server.ts, start.ts, routeTree.gen.ts
@@ -116,10 +116,14 @@ is tracked as a task, not a rumour.
   one module.
 - `dashboard/editor.tsx` (713 lines) is one component doing form state, validation
   and writes; writes currently bypass the guarded server function.
-- `ui.tsx` duplicates primitives that now live in `components/primitives.tsx` and
-  should be deleted once call sites migrate.
-- Roughly eighteen local string dictionaries and ~44 inline `lang === "ar"`
-  ternaries remain; `i18n.ts` exists and they have not all moved to it.
+- `ui.tsx` remains the page-facing shorthand layer (`Na` delegates to
+  `AppLink`, `PosterArt` to `Artwork`, plus rail/poster/date helpers); the
+  second implementations are gone — only the aliasing remains.
+- Local string dictionaries are gone from `controls.tsx`, `live-ui.tsx`,
+  `SiteChrome.tsx` and the `auth`/lineup routes; route-level language
+  coercion now funnels through `asLang()` / `rowTitle()`. The dashboard's
+  local copy helper (`pages/Dashboard.tsx` `L()`) and a handful of chrome
+  ternaries remain; `i18n/` exists and they have not all moved to it.
 - The `search` route ignores `q` when merging results (correctness bug).
 
 See [../CHANGELOG.md](../CHANGELOG.md) for what changed most recently.

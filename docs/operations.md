@@ -41,8 +41,9 @@ Frontend server side — `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and
 `SUPABASE_SERVICE_ROLE_KEY` (service role; never in a `VITE_` variable, never in
 the browser bundle; `scripts/seed-admin.mjs` reads it).
 Browser — `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (publishable only).
-Platform — `LOVABLE_CRON_SECRET` (and `..._PREVIOUS` for overlap during rotation),
-consumed by `src/integrations/supabase/cron-auth.ts` for authenticated cron calls.
+Platform — `LOVABLE_CRON_SECRET` (and `..._PREVIOUS` for overlap during rotation)
+is reserved for authenticated cron calls in the backend phase; no frontend module
+consumes it today.
 
 Local: copy [`.env.example`](../elcinema/.env.example) to `elcinema/.env`. `.env`
 is ignored; `.env.example` never holds a real value

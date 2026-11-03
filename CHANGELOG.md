@@ -20,7 +20,7 @@ All notable changes to this repository are documented here. The format follows
   (`source(none)` plus an explicit `@source`).
 - UI primitive layer: `src/elcinema/components/variants.ts` (cva recipes) and
   `src/elcinema/components/primitives.tsx` (layout, links, panels, pills, CTAs, artwork).
-- Central bilingual copy: `src/elcinema/i18n.ts` with typed keys and `{placeholder}` interpolation.
+- Central bilingual copy: `src/elcinema/i18n/` with typed keys and `{placeholder}` interpolation.
 - Token layer extended to match the supplied theme: `--radius` anchored at `0.75rem` with a
   `rounded-4xl` step, `--font-display` (`Exo` → `Cairo`), `--color-success` / `--color-gold`
   utilities and the `--sidebar-*` mappings.
@@ -53,6 +53,32 @@ All notable changes to this repository are documented here. The format follows
   only; the "Copyright © Damlag S.A.E — sample replica for demo purposes" sentence and its
   now-unused `chrome.copyright` key were removed from both editions.
 
+- Source architecture consolidated under the documented layering (`src/theme/`, `src/routes/`,
+  `src/components/ui/`, `src/hooks/`, `src/lib/`, `src/integrations/` at the `src` root with the
+  app itself in `src/elcinema/`). The duplicate `src/elcinema/i18n.ts` (shadowing `i18n/`) and the
+  unused `src/elcinema/RouteState.tsx` state machine were deleted; `ui.tsx` `Na` now delegates to
+  `AppLink` so there is one link implementation, and `PosterArt` delegates to `Artwork`.
+- Live code brought in line with the house rules: the inline Arabic/English ternaries in
+  `controls.tsx` and `auth.tsx` moved to `i18n/` keys (new `controls.*`, `common.backToSite`),
+  the route loaders share one `asLang()` helper instead of repeating `params.lang === "ar" ? … : …`,
+  `LiveError` reuses the shared `stateBlock` recipe with `common.couldntLoad` / `common.goHome`,
+  and the renamed-but-not-called `.inputValidator(` helpers are now `.validator(` +
+  `validator` at every call site. Test imports use the real module paths
+  (`@/lib/supabase-env`, `@/elcinema/auth`) instead of integration stubs.
+- `src/server.ts`, `src/start.ts` and `__root.tsx` read the Supabase config through
+  `@/lib/…` aliases consistently.
+
+### Removed
+
+- 33 unused `src/components/ui/*` primitives (accordion, chart, form, calendar, drawer, …) that
+  only re-exported Radix packages nothing imports, plus the `config.server`/ cron-auth helpers in
+  `src/integrations/supabase/` that no server entry point referenced.
+- Dead exports from `primitives.tsx` (`ArtBadge`, `ToggleChip`, `Cta`, `CtaLink`, `IconButton`,
+  `StatePanel`, `OutboundLink`, `ScrapedLink`) and the orphan `cta` / `artBadge` recipes in
+  `variants.ts`; `controls.tsx` chips now use the shared `chip` recipe.
+- 29 unused dependencies from `elcinema/package.json` (command palette, drawer/datepicker,
+  form stack, carousel, resizable panels and ~20 Radix wrappers); `bun.lock` regenerated.
+
 ### Fixed
 
 - Text on brand fills: `--primary-foreground` / `--accent-foreground` now resolve to a navy
@@ -76,9 +102,9 @@ All notable changes to this repository are documented here. The format follows
   listeners no-op, and the sign-in, register and password forms report `auth.notEnabled`. Public
   catalogue pages render in both languages and both themes; only authentication is unavailable.
 - `docs/operations.md` named `SUPABASE_SECRET_KEY`, which no code reads; the service-role
-  variable is `SUPABASE_SERVICE_ROLE_KEY` (`scripts/seed-admin.mjs`, `client.server.ts`).
+  variable is `SUPABASE_SERVICE_ROLE_KEY` (`scripts/seed-admin.mjs`).
 - Phone-width pages no longer run off the screen. The bilingual shell stacks pages inside a
-  *column* flex container, where a centred `mx-auto max-w-*` section has an indefinite cross
+  _column_ flex container, where a centred `mx-auto max-w-*` section has an indefinite cross
   size and resolves to `max-content`: at 360px every section became a desktop-width page,
   `overflow-x-clip` hid the tail, rails never scrolled inside their own box, and in Arabic the
   page landed mostly off-screen (measured on `/ar` at 390px: a section spanning −920..360). The

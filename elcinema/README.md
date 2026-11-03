@@ -35,7 +35,7 @@ src/
   styles.css             entry point that imports the theme in order
   elcinema/
     components/          variants.ts (cva recipes) · primitives.tsx  ← shared UI
-    i18n.ts              every UI string, typed keys
+    i18n/                every UI string, typed keys
     content.ts           merge rules: operator rows + built-in catalogue
     links.ts             the only sanctioned resolver for scraped hrefs
     pages/ dashboard/    composed from the primitives, no local style recipes
