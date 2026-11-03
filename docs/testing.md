@@ -17,6 +17,27 @@ The acceptance gate is `pnpm run check` (format check → lint → typecheck →
 build), locally via
 [`/scripts/check.sh`](../scripts/check.sh) and in CI as `Web CI`.
 
+## Production browser smoke tests
+
+`elcinema/tests/production/public-pages.test.ts` contains short, read-only
+TestDriver checks against the public production English homepage and Arabic FAQ.
+They do not sign in or submit forms. The SDK and its lockfile are isolated in
+`elcinema/tests/production/` so the app's normal install does not depend on the
+hosted browser toolchain. These tests are separate from the normal CI gate.
+
+Run the following from Linux, macOS, or WSL. The SDK archive currently contains
+a colon-named path that Windows cannot extract.
+
+```sh
+cd elcinema
+pnpm --dir tests/production --ignore-workspace install --frozen-lockfile
+TD_API_KEY="your-testdriver-api-key" pnpm run test:e2e
+```
+
+The command fails early with setup guidance when `TD_API_KEY` is missing. These
+hosted browser runs may consume TestDriver account usage; run them intentionally
+and never commit the key.
+
 ## What is covered
 
 | Suite | Protects |

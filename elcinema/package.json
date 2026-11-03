@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "test:e2e": "node scripts/check-testdriver-key.mjs && pnpm --dir tests/production --ignore-workspace run test",
     "test:watch": "vitest",
     "seed:admin": "node scripts/seed-admin.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
