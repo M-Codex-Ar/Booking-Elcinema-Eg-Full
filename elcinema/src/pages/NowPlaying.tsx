@@ -55,11 +55,13 @@ function Row({ movie, lang }: { movie: Movie; lang: Lang }) {
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span>{fmtDate(movie.release, lang)}</span>
           <span>· {movie.cert}</span>
-          {knownGenreKeys(movie.genres).slice(0, 3).map((g) => (
-            <span key={g} className={pill()}>
-              {t(GENRES[g], lang)}
-            </span>
-          ))}
+          {knownGenreKeys(movie.genres)
+            .slice(0, 3)
+            .map((g) => (
+              <span key={g} className={pill()}>
+                {t(GENRES[g], lang)}
+              </span>
+            ))}
         </div>
       </div>
       <span className="flex shrink-0 items-center gap-1 text-sm font-bold">
