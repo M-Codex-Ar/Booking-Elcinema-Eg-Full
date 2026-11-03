@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <!-- elCinema iconic rounded diamond badge -->
+  <rect x="52" y="52" width="196" height="196" rx="42" transform="rotate(45 150 150)" fill="#000000" />
+  <!-- elCinema sky-blue petal/cinema eye glyph -->
+  <path d="M 105 194 L 105 150 C 105 125 125 105 150 105 L 194 105 L 194 149 C 194 174 174 194 150 194 Z" fill="#25a9df" />
+</svg>
+

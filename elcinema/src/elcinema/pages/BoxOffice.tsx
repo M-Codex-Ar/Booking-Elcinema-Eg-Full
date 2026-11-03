@@ -9,7 +9,7 @@ import { FilterInput, ListToolbar, SortSelect, matches } from "../controls";
 const L = {
   en: {
     title: "Cinema Revenue",
-    sub: "Weekly Egypt box office, top 20",
+    sub: "Weekly Egypt box office, top 7",
     rank: "#",
     movie: "Movie",
     revenue: "Weekly revenue",
@@ -17,7 +17,7 @@ const L = {
   },
   ar: {
     title: "إيرادات السينما",
-    sub: "بوكس أوفيس مصر الأسبوعي، أفضل 20",
+    sub: "بوكس أوفيس مصر الأسبوعي، أفضل 7",
     rank: "#",
     movie: "الفيلم",
     revenue: "إيراد الأسبوع",
@@ -45,7 +45,8 @@ export function BoxOfficePage({ lang, entries }: { lang: Lang; entries: Boxoffic
           : sort === "title"
             ? a.row.title[lang].localeCompare(b.row.title[lang], lang)
             : a.rank - b.rank,
-    );
+    )
+    .slice(0, 7);
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
       <h1 className="flex items-center gap-2 text-2xl font-black md:text-3xl">

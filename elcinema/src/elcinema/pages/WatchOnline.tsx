@@ -10,7 +10,7 @@ import { ImgWithFallback, LogoImage } from "../components/primitives";
 import { getElcinemaHomeFn } from "../home.functions";
 import type { Lang } from "../home.shared";
 import type { LiveVodGuide } from "../live.shared";
-import { LiveError, LivePoster } from "../live-ui";
+import { LiveError, LivePoster, VodBadge } from "../live-ui";
 import { Na, Row } from "../ui";
 import {
   FilterInput,
@@ -80,18 +80,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
                 title={w.title}
                 img={w.img}
                 sub={w.meta}
-                badge={
-                  w.vod && (
-                    <span className="rounded-md bg-background/80 px-2 py-1 text-micro font-bold backdrop-blur-sm">
-                      <LogoImage
-                        src={w.vod.img}
-                        text={w.vod.label}
-                        imgClassName="h-4"
-                        textClassName="text-micro font-bold"
-                      />
-                    </span>
-                  )
-                }
+                badge={<VodBadge vod={w.vod} />}
               />
             ) : null;
           })}

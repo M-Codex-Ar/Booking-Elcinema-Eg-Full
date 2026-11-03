@@ -596,7 +596,7 @@ export function LogoImage({
       decoding="async"
       referrerPolicy="no-referrer"
       onError={art.onError}
-      className={imgClassName}
+      className={cn("w-auto shrink-0 object-contain", imgClassName)}
     />
   );
 }

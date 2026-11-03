@@ -6,7 +6,7 @@
  */
 import { ArrowRight, Clapperboard, Star, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
-import { artworkSrc, useArtwork } from "./components/primitives";
+import { artworkSrc, useArtwork, LogoImage } from "./components/primitives";
 import type { Lang } from "./home.shared";
 import { Na } from "./ui";
 
@@ -168,5 +168,27 @@ export function LiveError({ message, lang }: { message: string; lang: Lang }) {
         {lang === "ar" ? "الصفحة الرئيسية" : "Go home"}
       </Na>
     </div>
+  );
+}
+
+/** Streaming / VOD badge displayed in the corner of cards (YouTube, Netflix, etc.). */
+export function VodBadge({
+  vod,
+}: {
+  vod: { img?: string | null; label: string } | null | undefined;
+}) {
+  if (!vod) return null;
+  return (
+    <span className="inline-flex max-w-[90%] items-center gap-1.5 rounded-full border border-border/50 bg-background/90 px-2 py-0.5 text-micro font-bold shadow-sm backdrop-blur-md">
+      {vod.img ? (
+        <LogoImage
+          src={vod.img}
+          text={vod.label}
+          imgClassName="h-3.5 w-auto shrink-0 object-contain"
+          textClassName="text-micro font-bold"
+        />
+      ) : null}
+      {vod.label ? <span className="truncate">{vod.label}</span> : null}
+    </span>
   );
 }

@@ -265,24 +265,6 @@ function layoutSlots(slots: EcTvSlot[]): { s: EcTvSlot; left: number; width: num
   return placed;
 }
 
-function VodBadge({ vod }: { vod: EcVod | null }) {
-  if (!vod) return null;
-  return (
-    <span className="rounded-md bg-background/80 px-2 py-1 text-micro font-bold backdrop-blur-sm">
-      {vod.img ? (
-        <LogoImage
-          src={vod.img}
-          text={vod.label}
-          imgClassName="h-4"
-          textClassName="text-micro font-bold"
-        />
-      ) : (
-        vod.label
-      )}
-    </span>
-  );
-}
-
 /**
  * The caption under a "Born Today" card: what the person is known for, where
  * they are from, their birth year and, when they have died, the date. Each part
