@@ -18,6 +18,7 @@
 
   body {
     background-color: var(--color-background);
+    background-image: var(--page-background-image);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;

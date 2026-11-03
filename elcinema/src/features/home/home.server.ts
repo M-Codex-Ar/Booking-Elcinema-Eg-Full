@@ -41,22 +41,45 @@ const HOME_PATH = "/en/";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 const CACHE_TTL_MS = 10 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 8_000;
+const STALE_TTL_MS = 60 * 60 * 1000;
 
-const cache = new Map<string, { data: unknown; expires: number }>();
+const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
+const inFlight = new Map<string, Promise<string>>();
 
 async function fetchPage(path: string): Promise<string> {
   const key = `page:${path}`;
   const hit = cache.get(key);
   if (hit && hit.expires > Date.now()) return hit.data as string;
+  // Serve recently cached HTML immediately while refreshing it in the
+  // background. This keeps navigation responsive when the source is slow.
+  if (hit && hit.staleUntil > Date.now()) {
+    void refreshPage(key, path).catch(() => undefined);
+    return hit.data as string;
+  }
+  return refreshPage(key, path);
+}
 
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "User-Agent": UA, Accept: "text/html" },
-    signal: AbortSignal.timeout(20000),
-  });
-  if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
-  const html = await res.text();
-  cache.set(key, { data: html, expires: Date.now() + CACHE_TTL_MS });
-  return html;
+function refreshPage(key: string, path: string): Promise<string> {
+  const existing = inFlight.get(key);
+  if (existing) return existing;
+  const request = (async () => {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: { "User-Agent": UA, Accept: "text/html" },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
+    const html = await res.text();
+    const now = Date.now();
+    cache.set(key, {
+      data: html,
+      expires: now + CACHE_TTL_MS,
+      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+    });
+    return html;
+  })().finally(() => inFlight.delete(key));
+  inFlight.set(key, request);
+  return request;
 }
 
 /**
@@ -451,9 +474,18 @@ export async function getHomePage(): Promise<EcHomeData> {
   const hit = cache.get(key);
   if (hit && hit.expires > Date.now()) return hit.data as EcHomeData;
   const data = parseHomePage(await fetchPage(HOME_PATH));
-  // Enrichment reads two more pages, so it degrades to the bare rail instead
-  // of failing the whole homepage when the listing is unreachable.
-  data.bornToday = await enrichBornToday(data.bornToday);
-  cache.set(key, { data, expires: Date.now() + CACHE_TTL_MS });
+  // Enrichment is useful metadata, but must not hold up the whole homepage.
+  cache.set(key, { data, expires: Date.now() + 30_000, staleUntil: Date.now() + STALE_TTL_MS });
+  void enrichBornToday(data.bornToday)
+    .then((bornToday) => {
+      const enriched = { ...data, bornToday };
+      const now = Date.now();
+      cache.set(key, {
+        data: enriched,
+        expires: now + CACHE_TTL_MS,
+        staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+      });
+    })
+    .catch(() => undefined);
   return data;
 }

@@ -71,6 +71,7 @@ export const arChrome = {
   "footer.advertise": "إعلن معنا",
   "footer.privacy": "سياسة الخصوصية",
   "footer.terms": "شروط الاستخدام",
+  "footer.faq": "الأسئلة الشائعة",
   "footer.builtBy": "صُنع بـ ❤️ بواسطة M.Said",
   "footer.paymentTitle": "وسائل الدفع",
   "footer.termsPage.title": "شروط الاستخدام",

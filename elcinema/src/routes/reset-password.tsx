@@ -64,7 +64,7 @@ function ResetPasswordPage() {
       };
 
   return (
-    <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="page-background flex min-h-screen items-center justify-center px-4">
       <div className="glass-card w-full max-w-md rounded-3xl border border-border p-8 text-center">
         <ShieldCheck className="mx-auto h-10 w-10 text-primary" />
         <h1 className="mt-4 text-2xl font-black">{x.title}</h1>

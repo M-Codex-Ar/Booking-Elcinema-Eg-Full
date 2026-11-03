@@ -71,7 +71,47 @@ export const enPages = {
   "search.in": "in",
   "search.results": "{count} results",
   "box.sortRank": "Rank",
-  "booking.ticketNote": "Opens the real ticket service in a new tab.",
+  "booking.ticketNote":
+    "Choose a cinema and showtime here. Online ticket purchase is not available in this app yet.",
+  "faq.metaTitle": "Frequently Asked Questions | elCinema",
+  "faq.metaDescription":
+    "Answers about finding movies, showtimes, the TV guide, streaming links and elCinema accounts.",
+  "faq.label": "Help desk · Egypt cinema guide",
+  "faq.title": "Good questions, filed for your next show.",
+  "faq.lead":
+    "Pull a card for clear answers about movies, cinema times, online viewing and using elCinema.",
+  "faq.drawer": "elCinema · Quick answers",
+  "faq.cardCount": "{count} answers",
+  "faq.categoryBooking": "Movies & tickets",
+  "faq.categoryGuide": "TV & online",
+  "faq.categoryAccount": "Your account",
+  "faq.q1": "How do I find a movie’s cinemas and showtimes?",
+  "faq.a1":
+    "Browse Now Playing or search for a title, open its movie page, then choose Book tickets to see the cinemas and showtimes listed for it.",
+  "faq.q2": "Can I buy cinema tickets in the app?",
+  "faq.a2":
+    "You can browse cinema listings and showtimes here. Online checkout and ticket purchase are not available in the app yet.",
+  "faq.q3": "Are cinema showtimes guaranteed to stay the same?",
+  "faq.a3":
+    "Cinema schedules can change. Please confirm the time with the cinema before you travel.",
+  "faq.q4": "Where can I find films and series to watch online?",
+  "faq.a4":
+    "Open Watch Online to browse titles and their listed streaming services. Availability can change, and playback links open the provider’s service.",
+  "faq.q5": "What can I see in the TV Guide?",
+  "faq.a5":
+    "The TV Guide shows programs and scheduled airtimes across Arab satellite channels. Channel schedules may change, so check with the broadcaster for the latest details.",
+  "faq.q6": "Can I use elCinema in Arabic and English?",
+  "faq.a6":
+    "Yes. Use the language control in the site header to switch editions. The Arabic edition also switches the page layout to right-to-left.",
+  "faq.q7": "Do I need an account, and can I sign up?",
+  "faq.a7":
+    "You can browse the public movie and TV guide without signing in. Public registration is disabled; staff accounts are created by the site administrator.",
+  "faq.contactTitle": "Still looking for an answer?",
+  "faq.contactLead": "Send the elCinema team a message through the contact page.",
+  "faq.contactAction": "Contact us",
+  "contact.getInTouch": "Get in touch",
+  "contact.intro": "Have a question or suggestion? We'd love to hear from you!",
+  "contact.formTitle": "Send us a Message",
   "soon.release": "Releases",
   "vod.watchOn": "Watch on",
   "vod.playbackNote": "Opens the real play link in a new tab.",

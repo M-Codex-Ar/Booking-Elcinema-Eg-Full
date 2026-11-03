@@ -1,10 +1,8 @@
 /**
  * Live movie detail — mirrors the real elcinema.com /work/<id>/ page with the
  * app's dark cinema design system. Data is scraped server-side (live.server.ts)
- * from the English or Arabic edition. Every internal link stays inside the
- * app: cast/director -> person pages, videos -> video pages, booking -> the
- * internal booking page. Only true playback/purchase actions (watch buttons,
- * cinema ticket buttons) open the real destination in a new tab.
+ * from the English or Arabic edition. Every elCinema link stays inside the
+ * app; only true playback actions open their streaming destination.
  */
 import {
   ArrowRight,
@@ -32,51 +30,6 @@ import {
 } from "@/features/live/live-ui";
 import { makeT } from "@/i18n";
 
-const L = {
-  en: {
-    book: "Book tickets",
-    director: "Director:",
-    writer: "Writer:",
-    cast: "Cast:",
-    showtimes: "Playing in Egypt Cinemas",
-    runtime: "minutes",
-    language: "Language:",
-    story: "Story",
-    photos: "Photos",
-    videos: "elCinema TV",
-    watchOnline: "Watch Online",
-    watchOn: "Watch on",
-    rating: "User score",
-    released: "Released",
-    getTickets: "tickets",
-    related: "Now Playing In Egypt Cinemas",
-    notAvailable: "Movie not found",
-    playbackNote: "Opens the real play link in a new tab.",
-    ticketNote: "Opens the real ticket service in a new tab.",
-  },
-  ar: {
-    book: "احجز تذاكر",
-    director: "المخرج:",
-    writer: "الكاتب:",
-    cast: "طاقم التمثيل:",
-    showtimes: "معروض في سينمات مصر",
-    runtime: "دقيقة",
-    language: "اللغة:",
-    story: "القصة",
-    photos: "صور",
-    videos: "إل سينما TV",
-    watchOnline: "شاهد أونلاين",
-    watchOn: "شاهد على",
-    rating: "تقييم المستخدمين",
-    released: "تم العرض",
-    getTickets: "تذاكر",
-    related: "معروض الآن في سينمات مصر",
-    notAvailable: "الفيلم غير موجود",
-    playbackNote: "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",
-    ticketNote: "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
-  },
-} as const;
-
 const DAY_COUNT = 5;
 
 export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
@@ -85,12 +38,6 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
   const showtimes = data.showtimes.slice(0, DAY_COUNT);
   const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
   const current = showtimes[dayIndex];
-  // The real cinema ticket service for this work: the first scraped cinema
-  // that carries a booking href (e.g. https://elcinema.com/en/booking/<work>/<cinema>/).
-  const ticketHref = current
-    ? (current.cinemas.map((c) => c.bookingHref).find((href) => href) ?? null)
-    : null;
-
   return (
     <div>
       {/* Backdrop + poster header, elCinema style */}
@@ -161,23 +108,12 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             </div>
           </div>
           <div className="flex flex-col gap-2 pb-2">
-            {ticketHref ? (
-              <a
-                href={ticketHref}
-                target="_blank"
-                rel="noreferrer"
-                className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
-              >
-                <Ticket className="h-4 w-4" /> {t("booking.title")}
-              </a>
-            ) : (
-              <Na
-                href={bookingPath(lang, data.id)}
-                className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
-              >
-                <Ticket className="h-4 w-4" /> {t("booking.title")}
-              </Na>
-            )}
+            <Na
+              href={bookingPath(lang, data.id)}
+              className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Ticket className="h-4 w-4" /> {t("booking.title")}
+            </Na>
             {data.rating !== null && (
               <div className="text-center text-xs text-muted-foreground">
                 {t("work.rating")}
@@ -337,23 +273,12 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               <h2 className="flex items-center gap-2 text-xl font-black">
                 <Ticket className="h-5 w-5 text-primary" /> {t("work.showtimes")}
               </h2>
-              {ticketHref ? (
-                <a
-                  href={ticketHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-                >
-                  {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-                </a>
-              ) : (
-                <Na
-                  href={bookingPath(lang, data.id)}
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-                >
-                  {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-                </Na>
-              )}
+              <Na
+                href={bookingPath(lang, data.id)}
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+              </Na>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {showtimes.map((d, i) => (

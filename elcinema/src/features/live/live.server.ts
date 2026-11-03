@@ -31,21 +31,43 @@ const BASE = "https://elcinema.com";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 const CACHE_TTL_MS = 10 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 8_000;
+const STALE_TTL_MS = 60 * 60 * 1000;
 
-const cache = new Map<string, { data: unknown; expires: number }>();
+const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
+const inFlight = new Map<string, Promise<string>>();
 
 async function fetchPage(path: string): Promise<string> {
   const key = `live:${path}`;
   const hit = cache.get(key);
   if (hit && hit.expires > Date.now()) return hit.data as string;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "User-Agent": UA, Accept: "text/html" },
-    signal: AbortSignal.timeout(20000),
-  });
-  if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
-  const html = await res.text();
-  cache.set(key, { data: html, expires: Date.now() + CACHE_TTL_MS });
-  return html;
+  if (hit && hit.staleUntil > Date.now()) {
+    void refreshPage(key, path).catch(() => undefined);
+    return hit.data as string;
+  }
+  return refreshPage(key, path);
+}
+
+function refreshPage(key: string, path: string): Promise<string> {
+  const existing = inFlight.get(key);
+  if (existing) return existing;
+  const request = (async () => {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: { "User-Agent": UA, Accept: "text/html" },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
+    const html = await res.text();
+    const now = Date.now();
+    cache.set(key, {
+      data: html,
+      expires: now + CACHE_TTL_MS,
+      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+    });
+    return html;
+  })().finally(() => inFlight.delete(key));
+  inFlight.set(key, request);
+  return request;
 }
 
 type $Html = cheerio.CheerioAPI;
@@ -634,21 +656,27 @@ function staticHeadingText($heading: $El): string {
 function staticBlocks($: $Html, $heading: $El): LiveStaticBlock[] {
   const blocks: LiveStaticBlock[] = [];
   const $content = $heading.nextUntil(STATIC_HEADING_SELECTOR);
-  $content.each((_, el) => {
-    const $el = $(el);
-    const tag = String((el as { tagName?: string }).tagName ?? "").toLowerCase();
-    if (tag === "p") {
-      const text = clean($el.text());
-      if (text) blocks.push({ type: "p", text });
-    } else if (tag === "ul" || tag === "ol") {
-      const items: string[] = [];
-      $el.find("li").each((___, li) => {
-        const text = clean($(li).text());
-        if (text && !items.includes(text)) items.push(text);
-      });
-      if (items.length) blocks.push({ type: "list", items });
-    }
-  });
+  const walk = ($scope: $El) => {
+    $scope.each((_, el) => {
+      const $el = $(el);
+      const tag = String((el as { tagName?: string }).tagName ?? "").toLowerCase();
+      if (/^h[1-6]$/.test(tag)) return;
+      if (tag === "p") {
+        const text = clean($el.text());
+        if (text) blocks.push({ type: "p", text });
+      } else if (tag === "ul" || tag === "ol") {
+        const items: string[] = [];
+        $el.find("li").each((___, li) => {
+          const text = clean($(li).text());
+          if (text && !items.includes(text)) items.push(text);
+        });
+        if (items.length) blocks.push({ type: "list", items });
+      } else {
+        walk($el.children());
+      }
+    });
+  };
+  walk($content);
   return blocks;
 }
 
@@ -660,15 +688,26 @@ export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
   const $ = cheerio.load(html);
   const $h1 = $("h1").first();
   const title = clean($h1.clone().children().remove().end().text()) || clean($h1.text());
-  const scope = $h1.parent();
+  const $root = $h1.parent().length ? $h1.parent() : $("body");
+  const headings = $root.find("h2, h3, h4, h5, h6");
+  const titleHeading = headings.first();
+  const resolvedTitle =
+    title ||
+    clean(titleHeading.clone().children().remove().end().text()) ||
+    clean(titleHeading.text());
+
+  // Extract first image from the page (sidebar or featured image)
+  const $img = $root.find("img").first();
+  const image = $img.attr("src") || null;
+
   const sections: LiveStaticSection[] = [];
-  scope.find(STATIC_HEADING_SELECTOR).each((_, el) => {
+  headings.each((_, el) => {
     const $heading = $(el);
     const heading = staticHeadingText($heading);
     if (!heading) return;
     sections.push({ heading, blocks: staticBlocks($, $heading) });
   });
-  return { title, sections };
+  return { title: resolvedTitle, sections, image };
 }
 
 export async function getStaticPage(lang: Lang, path: string): Promise<LiveStaticPage> {

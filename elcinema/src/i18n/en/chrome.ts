@@ -71,6 +71,7 @@ export const enChrome = {
   "footer.advertise": "Advertise",
   "footer.privacy": "Privacy Policy",
   "footer.terms": "Terms of Use",
+  "footer.faq": "Frequently Asked Questions",
   "footer.builtBy": "Built with ❤️ by M.Said",
   "footer.paymentTitle": "Payment methods",
   "footer.termsPage.title": "Terms of Use",

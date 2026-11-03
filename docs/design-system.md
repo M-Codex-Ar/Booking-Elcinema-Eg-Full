@@ -43,7 +43,7 @@ computed with `color-mix(in oklab, …)` so both palettes share one definition:
 
 ```css
 --spotlight-brand: color-mix(in oklab, var(--primary) 18%, transparent);
---pulse-core:      color-mix(in oklab, var(--primary) 55%, transparent);
+--pulse-core: color-mix(in oklab, var(--primary) 55%, transparent);
 ```
 
 Changing `--primary` therefore re-derives the glow, the spotlight and the pulse
@@ -61,7 +61,7 @@ legible. Two rules make that survivable:
   the opposite colour (near-white on a darkened blue, 5.35:1), which is why
   components say `text-primary-foreground` and never pick a white.
 - **Semantic colours are tuned per role, not copied between themes.** `--gold` and
-  `--success` are bright in the dark theme because they sit *on* navy (10.54:1,
+  `--success` are bright in the dark theme because they sit _on_ navy (10.54:1,
   8.61:1); as text on a white card the identical values fall to 1.89:1 and 2.31:1,
   so the light theme carries deeper versions (4.71:1, 4.93:1).
 
@@ -74,16 +74,16 @@ anchored on a single `--radius: 0.75rem` with `±4/8/12/16px` steps up to
 
 Custom utilities the tokens add:
 
-| Token family | Utilities it enables |
-| --- | --- |
-| `--text-micro`, `--text-meta` | `text-micro`, `text-meta` (no more `text-[10px]`) |
-| `--font-sans`, `--font-display` | `font-sans`, `font-display` (headings inherit `font-display`) |
-| `--radius` + `--radius-sm…4xl` | `rounded-sm…4xl`, all derived from one number |
-| `--shadow-glass`, `-card-hover`, `-glow-sm/md/lg`, `-focus` | `shadow-*` |
-| `--container-site` | `max-w-site` |
-| `--container-guide-compact/medium/wide/channel` | TV-guide widths |
-| `--color-scrim` | `bg-scrim` |
-| `--glass-blur`, `--header-height`, `--scrollbar-size`, `--ease-*`, `--duration-*` | consumed by utilities and `base.css` via `var()` |
+| Token family                                                                      | Utilities it enables                                          |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `--text-micro`, `--text-meta`                                                     | `text-micro`, `text-meta` (no more `text-[10px]`)             |
+| `--font-sans`, `--font-display`                                                   | `font-sans`, `font-display` (headings inherit `font-display`) |
+| `--radius` + `--radius-sm…4xl`                                                    | `rounded-sm…4xl`, all derived from one number                 |
+| `--shadow-glass`, `-card-hover`, `-glow-sm/md/lg`, `-focus`                       | `shadow-*`                                                    |
+| `--container-site`                                                                | `max-w-site`                                                  |
+| `--container-guide-compact/medium/wide/channel`                                   | TV-guide widths                                               |
+| `--color-scrim`                                                                   | `bg-scrim`                                                    |
+| `--glass-blur`, `--header-height`, `--scrollbar-size`, `--ease-*`, `--duration-*` | consumed by utilities and `base.css` via `var()`              |
 
 ## Utilities
 
@@ -92,14 +92,20 @@ difference matters: `@utility` definitions participate in Tailwind's variant
 system, so `hover:glass-card` and `dark:glass-card` compose, and unused ones are
 dropped from the build.
 
-`glass-card`, `glass-card-brand`, `cinema-gradient`, `hover-lift`, `poster-shade`,
+`glass-card`, `glass-card-brand`, `cinema-gradient`, `page-background`, `hover-lift`, `poster-shade`,
 `poster-shade-deep`, `scrim-start`, `poster-fallback`, `poster-spot`, `animate-theme-icon`,
 `animate-pulse-neon`, `scrollbar-hide`, `page-flow`, `dialog-scroll`.
+
+`page-background` is the shared app canvas for public pages, account screens,
+error states, and the dashboard. Its brand and gold washes are derived from the
+active palette in `tokens.css`, so light and dark mode keep the same subtle
+cinematic depth without hard-coded page colours. The body also uses the same
+background image as a fallback beneath route shells.
 
 Three of them exist because of a measured breakage, not a preference:
 
 - `page-flow` pins every direct child of the page shell to `max-inline-size: 100%`.
-  `$lang.tsx` stacks pages inside a *column* flex container, and a flex item in a column
+  `$lang.tsx` stacks pages inside a _column_ flex container, and a flex item in a column
   has an indefinite cross size, so a centred `mx-auto max-w-*` section resolves to
   `max-content` instead of the viewport. At 360px that turned every section into a
   desktop-width page whose tail was clipped by `overflow-x-clip`, and in Arabic the whole
@@ -176,13 +182,13 @@ Rules that live here and nowhere else:
 `booking.*`, `guide.*`, `video.*`, `vod.*`, `lineup.*`, `search.*`, `auth.*`,
 `theme.*`) and the helpers:
 
-| Helper | Use |
-| --- | --- |
-| `makeT(lang)` → `t(key, vars?)` | Component-level strings, with `{name}` interpolation |
-| `text(lang, key, vars?)` | One-off, outside a component |
-| `bi(value, lang)` | A `Bi` **data** value (a movie title) |
-| `pair(lang, en, ar)` | Two literals that never earn a key (rare) |
-| `isRtl(lang)`, `dir(lang)`, `otherLang(lang)` | Direction and language switching |
+| Helper                                        | Use                                                  |
+| --------------------------------------------- | ---------------------------------------------------- |
+| `makeT(lang)` → `t(key, vars?)`               | Component-level strings, with `{name}` interpolation |
+| `text(lang, key, vars?)`                      | One-off, outside a component                         |
+| `bi(value, lang)`                             | A `Bi` **data** value (a movie title)                |
+| `pair(lang, en, ar)`                          | Two literals that never earn a key (rare)            |
+| `isRtl(lang)`, `dir(lang)`, `otherLang(lang)` | Direction and language switching                     |
 
 The line that matters: **strings are UI copy (`COPY`) or domain data (`Bi`), and
 the two never mix.** A film title travels as `{ en, ar }`; a "Book tickets" label
@@ -227,14 +233,14 @@ The layer exists; the call sites are moving to it page by page, because a
 big-bang swap of 384 lines of `HomePage` and 713 lines of `editor.tsx` cannot be
 reviewed honestly.
 
-| Layer | Status |
-| --- | --- |
-| Tokens (`theme/tokens.css`) | **Done.** Both palettes, all derived effects, all custom utilities mapped. |
-| Utilities (`theme/utilities.css`) | **Done.** `@layer components` converted to `@utility`; `hover-lift` kept its name for the 11 existing call sites. |
-| Base (`theme/base.css`) | **Done.** Focus ring, scrollbar, reduced motion, view transitions, Radix scroll-lock fix. |
-| Recipes (`components/variants.ts`) | **Done** — 20 recipes; not yet used everywhere they could be. |
-| Primitives (`components/primitives.tsx`) | **Live, adoption partial.** New code must use them; `ui.tsx` is now a delegating shorthand (`Na` → `AppLink`, `PosterArt` → `Artwork`) plus rail/poster helpers, not a second implementation. |
-| Copy (`i18n/`) | **Live, adoption partial.** ~170 keys migrated into `COPY`; the local dictionaries in `controls.tsx`/`live-ui.tsx`/the auth flow are gone. The dashboard's local `L()` helper and a few chrome ternaries remain in pages and chrome. |
+| Layer                                    | Status                                                                                                                                                                                                                               |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Tokens (`theme/tokens.css`)              | **Done.** Both palettes, all derived effects, all custom utilities mapped.                                                                                                                                                           |
+| Utilities (`theme/utilities.css`)        | **Done.** `@layer components` converted to `@utility`; `hover-lift` kept its name for the 11 existing call sites.                                                                                                                    |
+| Base (`theme/base.css`)                  | **Done.** Focus ring, scrollbar, reduced motion, view transitions, Radix scroll-lock fix.                                                                                                                                            |
+| Recipes (`components/variants.ts`)       | **Done** — 20 recipes; not yet used everywhere they could be.                                                                                                                                                                        |
+| Primitives (`components/primitives.tsx`) | **Live, adoption partial.** New code must use them; `ui.tsx` is now a delegating shorthand (`Na` → `AppLink`, `PosterArt` → `Artwork`) plus rail/poster helpers, not a second implementation.                                        |
+| Copy (`i18n/`)                           | **Live, adoption partial.** ~170 keys migrated into `COPY`; the local dictionaries in `controls.tsx`/`live-ui.tsx`/the auth flow are gone. The dashboard's local `L()` helper and a few chrome ternaries remain in pages and chrome. |
 
 Order of migration, one pull request per line: rails and card chrome → `Section`
 headers and CTAs → the search, booking and lineup pages → `SiteChrome` and

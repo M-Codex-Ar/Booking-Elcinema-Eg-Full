@@ -13,12 +13,12 @@ it("loads the public English homepage", async (context) => {
   expect(homepageIsReady).toBeTruthy();
 });
 
-it("loads the public Arabic About page", async (context) => {
+it("loads the public Arabic FAQ page", async (context) => {
   const testdriver = TestDriver(context, { newSandbox: true });
-  await testdriver.provision.chrome({ url: `${productionOrigin}/ar/about` });
+  await testdriver.provision.chrome({ url: `${productionOrigin}/ar/faq` });
 
-  const aboutPageIsReady = await testdriver.assert(
-    "The elCinema About page is loaded in Arabic, with its information visible and readable right-to-left.",
+  const faqIsReady = await testdriver.assert(
+    "The elCinema FAQ page is loaded in Arabic, with its questions and answers visible and readable right-to-left.",
   );
-  expect(aboutPageIsReady).toBeTruthy();
+  expect(faqIsReady).toBeTruthy();
 });

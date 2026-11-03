@@ -29,6 +29,12 @@
     radial-gradient(ellipse at 90% 100%, var(--spotlight-gold), transparent 50%);
 }
 
+/* Persistent app canvas shared by every route, with theme-aware soft spotlights. */
+@utility page-background {
+  background-color: var(--background);
+  background-image: var(--page-background-image);
+}
+
 /* Card lift: the one hover treatment for every poster/tile. */
 @utility hover-lift {
   transition:
