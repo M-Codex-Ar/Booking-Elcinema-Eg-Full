@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getHomePage } from "@/elcinema/home.server";
+import { getHomePage } from "@/home.server";
 
 export const getElcinemaHomeFn = createServerFn({ method: "GET" }).handler(async () => {
   try {

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoonPage } from "@/elcinema/pages/ComingSoon";
-import { managedContentOptions, mergedComingSoon } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
-import type { ViewMode } from "@/elcinema/controls";
+import { ComingSoonPage } from "@/pages/ComingSoon";
+import { managedContentOptions, mergedComingSoon } from "@/content";
+import { asLang } from "@/i18n";
+import type { ViewMode } from "@/controls";
 
 export const Route = createFileRoute("/$lang/soon")({
   validateSearch: (search: Record<string, unknown>) => ({

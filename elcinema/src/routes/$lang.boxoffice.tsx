@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BoxOfficePage } from "@/elcinema/pages/BoxOffice";
-import { managedContentOptions, mergedBoxoffice } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
+import { BoxOfficePage } from "@/pages/BoxOffice";
+import { managedContentOptions, mergedBoxoffice } from "@/content";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/boxoffice")({
   loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),

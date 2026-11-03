@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchPage } from "@/elcinema/pages/SearchPage";
-import { managedContentOptions, mergedSearch } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
+import { SearchPage } from "@/pages/SearchPage";
+import { managedContentOptions, mergedSearch } from "@/content";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/search")({
   validateSearch: (search: Record<string, unknown>) => ({

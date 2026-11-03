@@ -6,7 +6,7 @@
  * playing and coming soon in Egypt, the weekly box office, the industry
  * people behind them and a snapshot of the live TV guide grid. Posters,
  * headshots and channel logos resolve through the local asset manifest
- * (src/elcinema/images.ts). To refresh the dataset, re-run the two scripts
+ * (src/images.ts). To refresh the dataset, re-run the two scripts
  * and re-upload the artwork.
  */
 import moviesData from "./data/movies.json";

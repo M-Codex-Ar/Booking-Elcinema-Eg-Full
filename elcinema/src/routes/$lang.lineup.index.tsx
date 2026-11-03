@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupIndexFn } from "@/elcinema/live.functions";
-import { managedContentOptions, managedLists, managedRef } from "@/elcinema/content";
-import type { Lang } from "@/elcinema/home.shared";
-import { asLang } from "@/elcinema/i18n";
-import { LineupIndexRoute } from "@/elcinema/pages/Lineup";
+import { getLineupIndexFn } from "@/live.functions";
+import { managedContentOptions, managedLists, managedRef } from "@/content";
+import type { Lang } from "@/home.shared";
+import { asLang } from "@/i18n";
+import { LineupIndexRoute } from "@/pages/Lineup";
 
 const lineupOptions = (lang: Lang) =>
   queryOptions({

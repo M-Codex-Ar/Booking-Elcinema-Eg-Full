@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  parsePersonPage,
-  parseVideoGallery,
-  parseVideoPage,
-  parseWorkPage,
-} from "@/elcinema/live.server";
+import { parsePersonPage, parseVideoGallery, parseVideoPage, parseWorkPage } from "@/live.server";
 
 /**
  * Fixture shaped like a real elcinema.com work page (Foundation-grid markup):

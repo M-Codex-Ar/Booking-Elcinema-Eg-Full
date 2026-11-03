@@ -1,20 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLivePersonFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { LivePersonPage } from "@/elcinema/pages/LivePerson";
-import { PersonPage } from "@/elcinema/pages/Person";
-import { ManagedPersonPage } from "@/elcinema/Managed";
-import {
-  managedContentOptions,
-  managedPeople,
-  managedPersonById,
-  managedRef,
-} from "@/elcinema/content";
-import type { ManagedContent } from "@/elcinema/content.functions";
-import { personById, personBySlug, personId } from "@/elcinema/build";
-import { asLang } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
+import { getLivePersonFn } from "@/live.functions";
+import { LiveError } from "@/live-ui";
+import { LivePersonPage } from "@/pages/LivePerson";
+import { PersonPage } from "@/pages/Person";
+import { ManagedPersonPage } from "@/Managed";
+import { managedContentOptions, managedPeople, managedPersonById, managedRef } from "@/content";
+import type { ManagedContent } from "@/content.functions";
+import { personById, personBySlug, personId } from "@/build";
+import { asLang } from "@/i18n";
+import type { Lang } from "@/home.shared";
 
 const livePersonOptions = (lang: Lang, id: string) =>
   queryOptions({

@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLiveWorkFn } from "@/elcinema/live.functions";
-import { movieById } from "@/elcinema/build";
-import type { Lang } from "@/elcinema/home.shared";
-import { asLang } from "@/elcinema/i18n";
-import { BookingMovieRoute } from "@/elcinema/pages/Booking";
+import { getLiveWorkFn } from "@/live.functions";
+import { movieById } from "@/build";
+import type { Lang } from "@/home.shared";
+import { asLang } from "@/i18n";
+import { BookingMovieRoute } from "@/pages/Booking";
 
 const liveWorkOptions = (lang: Lang, id: string) =>
   queryOptions({

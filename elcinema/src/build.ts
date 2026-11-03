@@ -1,7 +1,7 @@
 /**
  * Derived data for the elCinema experience: TV guide, showtimes, search
  * index and detail extras. Derived deterministically from the local dataset
- * (src/elcinema/data), so SSR and the client always agree.
+ * (src/data), so SSR and the client always agree.
  */
 import { BOXOFFICE, boxofficeDate, CHANNELS, GENRES, MOVIES, PEOPLE, TV_GUIDE_DATA } from "./data";
 import { img } from "./images";

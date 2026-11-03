@@ -1,15 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLiveWorkFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { LiveWorkPage } from "@/elcinema/pages/LiveWork";
-import { WorkPage } from "@/elcinema/pages/Work";
-import { ManagedWorkPage } from "@/elcinema/Managed";
-import { managedContentOptions, managedMovieById } from "@/elcinema/content";
-import type { ManagedContent } from "@/elcinema/content.functions";
-import { movieById, movieBySlug, workId } from "@/elcinema/build";
-import { asLang } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
+import { getLiveWorkFn } from "@/live.functions";
+import { LiveError } from "@/live-ui";
+import { LiveWorkPage } from "@/pages/LiveWork";
+import { WorkPage } from "@/pages/Work";
+import { ManagedWorkPage } from "@/Managed";
+import { managedContentOptions, managedMovieById } from "@/content";
+import type { ManagedContent } from "@/content.functions";
+import { movieById, movieBySlug, workId } from "@/build";
+import { asLang } from "@/i18n";
+import type { Lang } from "@/home.shared";
 
 const liveWorkOptions = (lang: Lang, id: string) =>
   queryOptions({

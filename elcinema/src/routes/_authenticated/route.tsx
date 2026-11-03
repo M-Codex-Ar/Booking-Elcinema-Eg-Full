@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { isAdmin } from "@/elcinema/auth";
+import { isAdmin } from "@/auth";
 
 /**
  * Protected layout for the staff dashboard. Client-only (the session lives

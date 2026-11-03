@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cardLink } from "@/elcinema/links";
+import { cardLink } from "@/links";
 
 /**
  * The user's routing rule: no elcinema.com click may ever leave the app.

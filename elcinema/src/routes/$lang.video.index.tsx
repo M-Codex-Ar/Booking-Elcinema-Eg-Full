@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoGalleryFn } from "@/elcinema/live.functions";
-import { managedContentOptions, managedVideos } from "@/elcinema/content";
-import type { Lang } from "@/elcinema/home.shared";
-import { asLang } from "@/elcinema/i18n";
-import { VideoGalleryRoute } from "@/elcinema/pages/Videos";
+import { getVideoGalleryFn } from "@/live.functions";
+import { managedContentOptions, managedVideos } from "@/content";
+import type { Lang } from "@/home.shared";
+import { asLang } from "@/i18n";
+import { VideoGalleryRoute } from "@/pages/Videos";
 
 const galleryOptions = (lang: Lang) =>
   queryOptions({

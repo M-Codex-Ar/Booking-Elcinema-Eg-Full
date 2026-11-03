@@ -15,9 +15,9 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import type { Lang } from "@/elcinema/home.shared";
-import { makeT } from "@/elcinema/i18n";
-import { isAdmin } from "@/elcinema/auth";
+import type { Lang } from "@/home.shared";
+import { makeT } from "@/i18n";
+import { isAdmin } from "@/auth";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({

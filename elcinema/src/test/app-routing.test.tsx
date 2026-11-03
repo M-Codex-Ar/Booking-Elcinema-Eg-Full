@@ -3,8 +3,8 @@ import { createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
-import { movieBySlug, personId, workId } from "@/elcinema/build";
-import { MOVIES, PEOPLE } from "@/elcinema/data";
+import { movieBySlug, personId, workId } from "@/build";
+import { MOVIES, PEOPLE } from "@/data";
 
 // Match routes without running loaders or rendering: loaders may need a server or
 // network the test run lacks, and jsdom never loads the stylesheets React waits on.

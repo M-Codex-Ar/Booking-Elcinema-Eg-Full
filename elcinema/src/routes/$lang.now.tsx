@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NowPlayingPage } from "@/elcinema/pages/NowPlaying";
-import { managedContentOptions, mergedNowPlaying } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
-import type { ViewMode } from "@/elcinema/controls";
+import { NowPlayingPage } from "@/pages/NowPlaying";
+import { managedContentOptions, mergedNowPlaying } from "@/content";
+import { asLang } from "@/i18n";
+import type { ViewMode } from "@/controls";
 
 export const Route = createFileRoute("/$lang/now")({
   validateSearch: (search: Record<string, unknown>) => ({

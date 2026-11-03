@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import { BookingIndexRoute } from "@/elcinema/pages/Booking";
-import { asLang } from "@/elcinema/i18n";
+import { getElcinemaHomeFn } from "@/home.functions";
+import { BookingIndexRoute } from "@/pages/Booking";
+import { asLang } from "@/i18n";
 
 const homeOptions = queryOptions({
   queryKey: ["elcinema-home"],

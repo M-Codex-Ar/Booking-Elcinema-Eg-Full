@@ -109,7 +109,7 @@ const SEED_GENRES: Record<string, Bi> = {
   thriller: { en: "Thriller", ar: "تشويق وإثارة" },
 };
 for (const [k, v] of Object.entries(SEED_GENRES)) if (!genres[k]) genres[k] = v;
-await writeFile("src/elcinema/data/genres.json", JSON.stringify(genres, null, 1) + "\n");
+await writeFile("src/data/genres.json", JSON.stringify(genres, null, 1) + "\n");
 
 // --------------------------------------------------------------- movies
 const roleAr: Record<string, string> = {
@@ -217,7 +217,7 @@ const movies = (stage.works as RawWork[]).map((w) => {
     showtimes,
   };
 });
-await writeFile("src/elcinema/data/movies.json", JSON.stringify(movies, null, 1) + "\n");
+await writeFile("src/data/movies.json", JSON.stringify(movies, null, 1) + "\n");
 
 // --------------------------------------------------------------- people
 const people = (
@@ -248,7 +248,7 @@ const people = (
     photo: p.photo,
   };
 });
-await writeFile("src/elcinema/data/people.json", JSON.stringify(people, null, 1) + "\n");
+await writeFile("src/data/people.json", JSON.stringify(people, null, 1) + "\n");
 
 // --------------------------------------------------------------- box office
 const MONTHS_EN: Record<string, number> = {
@@ -289,7 +289,7 @@ const boxoffice = {
     totalEgp: r.totalEgp,
   })),
 };
-await writeFile("src/elcinema/data/boxoffice.json", JSON.stringify(boxoffice, null, 1) + "\n");
+await writeFile("src/data/boxoffice.json", JSON.stringify(boxoffice, null, 1) + "\n");
 
 // --------------------------------------------------------------- TV guide
 const catOf = (meta: string, category: number | null): string => {
@@ -369,8 +369,8 @@ const to = Math.ceil(Math.max(...allSlots.map((s) => s.end)) / 60) * 60;
 const times: number[] = [];
 for (let t = from; t < to; t += 30) times.push(t % 1440);
 const tvguide = { from, to, times, lines: guideLines };
-await mkdir("src/elcinema/data", { recursive: true });
-await writeFile("src/elcinema/data/tvguide.json", JSON.stringify(tvguide, null, 1) + "\n");
+await mkdir("src/data", { recursive: true });
+await writeFile("src/data/tvguide.json", JSON.stringify(tvguide, null, 1) + "\n");
 
 console.log(
   `dataset written: ${movies.length} movies, ${people.length} people, ${boxoffice.rows.length} boxoffice rows, ${guideLines.length} channels, slots ${allSlots.length}, window ${from}-${to}`,

@@ -12,10 +12,10 @@ import {
   mergedHomeData,
   matchesBuiltinMovie,
   matchesBuiltinPerson,
-} from "@/elcinema/content";
-import { tvGuide } from "@/elcinema/build";
-import type { EcHomeData } from "@/elcinema/home.shared";
-import type { ManagedContent } from "@/elcinema/content.functions";
+} from "@/content";
+import { tvGuide } from "@/build";
+import type { EcHomeData } from "@/home.shared";
+import type { ManagedContent } from "@/content.functions";
 
 const empty: ManagedContent = {
   movies: [],

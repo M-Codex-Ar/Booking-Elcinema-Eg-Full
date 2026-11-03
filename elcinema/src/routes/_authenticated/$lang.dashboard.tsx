@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DashboardPage } from "@/elcinema/pages/Dashboard";
+import { DashboardPage } from "@/pages/Dashboard";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/_authenticated/$lang/dashboard")({
   component: DashboardRoute,
@@ -24,5 +25,5 @@ export const Route = createFileRoute("/_authenticated/$lang/dashboard")({
 
 function DashboardRoute() {
   const { lang } = Route.useParams();
-  return <DashboardPage lang={lang === "ar" ? "ar" : "en"} />;
+  return <DashboardPage lang={asLang(lang)} />;
 }

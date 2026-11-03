@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVodGuideFn } from "@/elcinema/live.functions";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import type { Lang } from "@/elcinema/home.shared";
-import { asLang } from "@/elcinema/i18n";
-import { WatchOnlineRoute } from "@/elcinema/pages/WatchOnline";
+import { getVodGuideFn } from "@/live.functions";
+import { getElcinemaHomeFn } from "@/home.functions";
+import type { Lang } from "@/home.shared";
+import { asLang } from "@/i18n";
+import { WatchOnlineRoute } from "@/pages/WatchOnline";
 
 const vodOptions = (lang: Lang) =>
   queryOptions({

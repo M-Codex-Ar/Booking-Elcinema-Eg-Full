@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { makeT } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
+import { makeT } from "@/i18n";
+import type { Lang } from "@/home.shared";
 import { Mail } from "lucide-react";
 
 export const Route = createFileRoute("/$lang/contact")({

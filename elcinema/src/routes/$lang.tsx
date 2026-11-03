@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { SiteFooter, SiteHeader } from "@/elcinema/SiteChrome";
-import type { Lang } from "@/elcinema/home.shared";
+import { SiteFooter, SiteHeader } from "@/SiteChrome";
+import type { Lang } from "@/home.shared";
 
 export const Route = createFileRoute("/$lang")({
   beforeLoad: ({ params }) => {

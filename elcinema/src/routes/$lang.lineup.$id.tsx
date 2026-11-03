@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupDetailFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { LineupDetailRoute } from "@/elcinema/pages/Lineup";
-import { managedContentOptions, allMovies, managedLists, movieArt } from "@/elcinema/content";
-import type { ManagedContent } from "@/elcinema/content.functions";
-import type { LiveLineupDetail } from "@/elcinema/live.shared";
-import type { Lang } from "@/elcinema/home.shared";
-import { makeT, rowTitle, asLang } from "@/elcinema/i18n";
+import { getLineupDetailFn } from "@/live.functions";
+import { LiveError } from "@/live-ui";
+import { LineupDetailRoute } from "@/pages/Lineup";
+import { managedContentOptions, allMovies, managedLists, movieArt } from "@/content";
+import type { ManagedContent } from "@/content.functions";
+import type { LiveLineupDetail } from "@/live.shared";
+import type { Lang } from "@/home.shared";
+import { makeT, rowTitle, asLang } from "@/i18n";
 
 const lineupDetailOptions = (lang: Lang, id: string) =>
   queryOptions({

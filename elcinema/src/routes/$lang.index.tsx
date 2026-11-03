@@ -1,10 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import { HomePage } from "@/elcinema/HomePage";
-import type { EcHomeData } from "@/elcinema/home.shared";
-import { managedContentOptions, mergedHomeData } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
+import { getElcinemaHomeFn } from "@/home.functions";
+import { HomePage } from "@/HomePage";
+import type { EcHomeData } from "@/home.shared";
+import { managedContentOptions, mergedHomeData } from "@/content";
+import { asLang } from "@/i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],

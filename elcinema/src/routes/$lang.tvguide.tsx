@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TvGuidePage } from "@/elcinema/pages/TvGuidePage";
-import { managedContentOptions, mergedTvGuide } from "@/elcinema/content";
-import { asLang } from "@/elcinema/i18n";
+import { TvGuidePage } from "@/pages/TvGuidePage";
+import { managedContentOptions, mergedTvGuide } from "@/content";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/tvguide")({
   validateSearch: (search: Record<string, unknown>) => ({
