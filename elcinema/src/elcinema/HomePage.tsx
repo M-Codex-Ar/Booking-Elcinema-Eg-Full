@@ -26,6 +26,7 @@ import { cardLink } from "./links";
 import { LogoImage, SmartImg } from "./components/primitives";
 import { Na, fmtMonthDay } from "./ui";
 import { bi, makeT } from "./i18n";
+import { VodBadge } from "./live-ui";
 import type { PlaceholderKind } from "./media.shared";
 import type { Lang } from "./home.shared";
 
