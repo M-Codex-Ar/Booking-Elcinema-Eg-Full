@@ -67,4 +67,5 @@ export const arCommon = {
   "common.countryColon": "البلد:",
   "common.movieType": "فيلم",
   "common.addedByEditors": "من إضافة المحررين",
+  "common.backToSite": "العودة للموقع",
 } as const;

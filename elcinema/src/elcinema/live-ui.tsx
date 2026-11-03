@@ -6,8 +6,11 @@
  */
 import { ArrowRight, Clapperboard, Star, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { artworkSrc, useArtwork, LogoImage } from "./components/primitives";
+import { stateBlock } from "./components/variants";
 import type { Lang } from "./home.shared";
+import { makeT } from "./i18n";
 import { Na } from "./ui";
 
 /** Internal path to a live (or sample) work detail page. */
@@ -155,17 +158,16 @@ export function RatingPill({ rating, votes }: { rating: number | null; votes: nu
 
 /** Friendly error panel for pages whose live scrape failed. */
 export function LiveError({ message, lang }: { message: string; lang: Lang }) {
+  const t = makeT(lang);
   return (
-    <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
-      <h1 className="text-2xl font-black">
-        {lang === "ar" ? "تعذّر التحميل" : "Couldn't load this page"}
-      </h1>
+    <div className={cn(stateBlock())}>
+      <h1 className="text-2xl font-black">{t("common.couldntLoad")}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{message}</p>
       <Na
         href={`/${lang}`}
         className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
       >
-        {lang === "ar" ? "الصفحة الرئيسية" : "Go home"}
+        {t("common.goHome")}
       </Na>
     </div>
   );

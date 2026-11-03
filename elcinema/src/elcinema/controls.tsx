@@ -14,7 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import type { Lang } from "./home.shared";
+import { dir, locale, makeT } from "./i18n";
+import { chip } from "./components/variants";
 
 export type ViewMode = "grid" | "list";
 
@@ -28,18 +31,6 @@ export interface ListParams {
 }
 
 export type SetSearch = (patch: Record<string, string | number | undefined>) => void;
-
-const T = {
-  en: {
-    sort: "Sort",
-    grid: "Grid view",
-    list: "List view",
-    prev: "Previous",
-    next: "Next",
-    page: "Page",
-  },
-  ar: { sort: "ترتيب", grid: "شبكة", list: "قائمة", prev: "السابق", next: "التالي", page: "صفحة" },
-} as const;
 
 /** Toolbar row that wraps cleanly on every screen size. */
 export function ListToolbar({ children }: { children: React.ReactNode }) {
@@ -57,10 +48,11 @@ export function SortSelect({
   onChange: (v: string) => void;
   lang: Lang;
 }) {
+  const t = makeT(lang);
   return (
-    <Select value={value} onValueChange={onChange} dir={lang === "ar" ? "rtl" : "ltr"}>
+    <Select value={value} onValueChange={onChange} dir={dir(lang)}>
       <SelectTrigger
-        aria-label={T[lang].sort}
+        aria-label={t("controls.sort")}
         className="h-9 w-auto min-w-36 gap-2 rounded-full border-border bg-secondary px-3 text-sm font-semibold"
       >
         <ArrowUpDown className="h-4 w-4 shrink-0 text-primary" />
@@ -86,6 +78,7 @@ export function ViewToggle({
   onChange: (v: ViewMode) => void;
   lang: Lang;
 }) {
+  const t = makeT(lang);
   const btn = (mode: ViewMode, Icon: typeof LayoutGrid, label: string) => (
     <button
       type="button"
@@ -103,8 +96,8 @@ export function ViewToggle({
   );
   return (
     <div className="flex items-center rounded-full border border-border bg-secondary p-1">
-      {btn("grid", LayoutGrid, T[lang].grid)}
-      {btn("list", List, T[lang].list)}
+      {btn("grid", LayoutGrid, t("controls.gridView"))}
+      {btn("list", List, t("controls.listView"))}
     </div>
   );
 }
@@ -120,6 +113,7 @@ export function Pagination({
   onChange: (p: number) => void;
   lang: Lang;
 }) {
+  const t = makeT(lang);
   if (pages <= 1) return null;
   const nums: (number | "…")[] = [];
   for (let i = 1; i <= pages; i++) {
@@ -131,14 +125,14 @@ export function Pagination({
   return (
     <nav
       className="mt-10 flex flex-wrap items-center justify-center gap-2"
-      aria-label={T[lang].page}
+      aria-label={t("controls.page")}
     >
       <button
         type="button"
         disabled={page <= 1}
         onClick={() => onChange(page - 1)}
         className={`${btn} disabled:pointer-events-none disabled:opacity-40`}
-        aria-label={T[lang].prev}
+        aria-label={t("controls.previous")}
       >
         <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
       </button>
@@ -164,7 +158,7 @@ export function Pagination({
         disabled={page >= pages}
         onClick={() => onChange(page + 1)}
         className={`${btn} disabled:pointer-events-none disabled:opacity-40`}
-        aria-label={T[lang].next}
+        aria-label={t("controls.next")}
       >
         <ChevronRight className="h-4 w-4 rtl:rotate-180" />
       </button>
@@ -188,26 +182,20 @@ export function clampPage(page: number | undefined, items: number, size: number)
   return Math.min(Math.max(1, p), pageCount(items, size));
 }
 
-const T2 = {
-  en: {
-    filter: "Filter…",
-    all: "All",
-    az: "A to Z",
-    za: "Z to A",
-    def: "Default",
-    none: "No matches.",
-  },
-  ar: {
-    filter: "فلترة…",
-    all: "الكل",
-    az: "أبجديًا",
-    za: "عكسي",
-    def: "الافتراضي",
-    none: "لا نتائج.",
-  },
-} as const;
-
-export const listText = (lang: Lang) => T2[lang];
+/** Keys into the centralised `controls.*` copy, flattened for list screens. */
+export const listText = (
+  lang: Lang,
+): { filter: string; all: string; az: string; za: string; def: string; none: string } => {
+  const t = makeT(lang);
+  return {
+    filter: t("controls.filter"),
+    all: t("controls.all"),
+    az: t("controls.az"),
+    za: t("controls.za"),
+    def: t("controls.default"),
+    none: t("controls.none"),
+  };
+};
 
 /** Text filter pill used inside a ListToolbar. */
 export function FilterInput({
@@ -221,6 +209,7 @@ export function FilterInput({
   lang: Lang;
   placeholder?: string;
 }) {
+  const t = makeT(lang);
   return (
     <label className="flex h-9 items-center gap-2 rounded-full border border-border bg-secondary px-3">
       <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -228,7 +217,7 @@ export function FilterInput({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder ?? T2[lang].filter}
+        placeholder={placeholder ?? t("controls.filter")}
         className="h-full w-36 min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-52"
       />
     </label>
@@ -246,16 +235,7 @@ export function Chip({
   children: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border hover:border-primary"
-      }`}
-    >
+    <button type="button" onClick={onClick} aria-pressed={active} className={cn(chip({ active }))}>
       {children}
     </button>
   );
@@ -264,16 +244,16 @@ export function Chip({
 /** Generic sort by a text key: "default" keeps source order. */
 export function sortByText<T>(items: T[], sort: string, key: (x: T) => string, lang: Lang): T[] {
   if (sort !== "az" && sort !== "za") return items;
-  const out = [...items].sort((a, b) => key(a).localeCompare(key(b), lang === "ar" ? "ar" : "en"));
+  const out = [...items].sort((a, b) => key(a).localeCompare(key(b), locale(lang)));
   return sort === "za" ? out.reverse() : out;
 }
 
 export function textSortOptions(lang: Lang) {
-  const x = T2[lang];
+  const t = makeT(lang);
   return [
-    { value: "default", label: x.def },
-    { value: "az", label: x.az },
-    { value: "za", label: x.za },
+    { value: "default", label: t("controls.default") },
+    { value: "az", label: t("controls.az") },
+    { value: "za", label: t("controls.za") },
   ];
 }
 

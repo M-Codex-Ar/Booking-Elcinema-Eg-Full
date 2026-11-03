@@ -8,6 +8,7 @@ import { ManagedWorkPage } from "@/elcinema/Managed";
 import { managedContentOptions, managedMovieById } from "@/elcinema/content";
 import type { ManagedContent } from "@/elcinema/content.functions";
 import { movieById, movieBySlug, workId } from "@/elcinema/build";
+import { asLang } from "@/elcinema/i18n";
 import type { Lang } from "@/elcinema/home.shared";
 
 const liveWorkOptions = (lang: Lang, id: string) =>
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/$lang/work/$id")({
       return context.queryClient.ensureQueryData(managedContentOptions);
     if (!/^\d+$/.test(params.id) || movieById.has(Number(params.id)) || movieBySlug.has(params.id))
       return null;
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return context.queryClient.ensureQueryData(liveWorkOptions(lang, params.id));
   },
   component: WorkRoute,
@@ -110,7 +111,7 @@ export const Route = createFileRoute("/$lang/work/$id")({
 
 function WorkRoute() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   // Dashboard-managed movie ("m-…" ids).
   if (id.startsWith("m-")) return <ManagedWorkLoader lang={l} id={id} />;
   // Sample catalogue page (also serves text name slugs via redirect above).

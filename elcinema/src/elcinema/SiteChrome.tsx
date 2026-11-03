@@ -306,6 +306,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
 }
 
 function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[number] }) {
+  const t = makeT(lang);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const active = group.items.some(
@@ -328,7 +329,7 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
         className="w-60 border-border bg-popover p-2"
       >
         <DropdownMenuLabel className="text-xs uppercase tracking-wider text-muted-foreground">
-          {lang === "ar" ? "أقسام" : "Sections"}
+          {t("chrome.sections")}
         </DropdownMenuLabel>
         {group.items.map((it, i) => (
           <DropdownMenuItem
@@ -346,8 +347,7 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
           onSelect={() => go("search")}
           className="cursor-pointer gap-2 rounded-lg py-2 font-semibold focus:bg-accent focus:text-primary"
         >
-          <Search className="h-4 w-4 text-primary" />{" "}
-          {lang === "ar" ? "بحث متقدم" : "Search the catalogue"}
+          <Search className="h-4 w-4 text-primary" /> {t("chrome.advancedSearch")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

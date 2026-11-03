@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchPage } from "@/elcinema/pages/SearchPage";
 import { managedContentOptions, mergedSearch } from "@/elcinema/content";
+import { asLang } from "@/elcinema/i18n";
 
 export const Route = createFileRoute("/$lang/search")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -31,7 +32,5 @@ function SearchRoute() {
   const { lang } = Route.useParams();
   const { q } = Route.useSearch();
   const managed = Route.useLoaderData();
-  return (
-    <SearchPage lang={lang === "ar" ? "ar" : "en"} q={q} extra={mergedSearch(q ?? "", managed)} />
-  );
+  return <SearchPage lang={asLang(lang)} q={q} extra={mergedSearch(q ?? "", managed)} />;
 }

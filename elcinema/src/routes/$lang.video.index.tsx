@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getVideoGalleryFn } from "@/elcinema/live.functions";
 import { managedContentOptions, managedVideos } from "@/elcinema/content";
 import type { Lang } from "@/elcinema/home.shared";
+import { asLang } from "@/elcinema/i18n";
 import { VideoGalleryRoute } from "@/elcinema/pages/Videos";
 
 const galleryOptions = (lang: Lang) =>
@@ -14,7 +15,7 @@ const galleryOptions = (lang: Lang) =>
 
 export const Route = createFileRoute("/$lang/video/")({
   loader: ({ context, params }) => {
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return Promise.all([
       context.queryClient.ensureQueryData(galleryOptions(lang)),
       context.queryClient.ensureQueryData(managedContentOptions),
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/$lang/video/")({
 
 function VideoGalleryRouteComponent() {
   const { lang } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   const result = useSuspenseQuery(galleryOptions(l)).data;
   const managed = useSuspenseQuery(managedContentOptions).data;
   return <VideoGalleryRoute result={result} lang={l} extra={managedVideos(managed)} />;

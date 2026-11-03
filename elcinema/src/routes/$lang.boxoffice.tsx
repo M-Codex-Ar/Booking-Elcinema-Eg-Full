@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BoxOfficePage } from "@/elcinema/pages/BoxOffice";
 import { managedContentOptions, mergedBoxoffice } from "@/elcinema/content";
+import { asLang } from "@/elcinema/i18n";
 
 export const Route = createFileRoute("/$lang/boxoffice")({
   loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),
@@ -27,5 +28,5 @@ export const Route = createFileRoute("/$lang/boxoffice")({
 function BoxOfficeRoute() {
   const { lang } = Route.useParams();
   const managed = Route.useLoaderData();
-  return <BoxOfficePage lang={lang === "ar" ? "ar" : "en"} entries={mergedBoxoffice(managed)} />;
+  return <BoxOfficePage lang={asLang(lang)} entries={mergedBoxoffice(managed)} />;
 }

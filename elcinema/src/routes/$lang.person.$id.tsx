@@ -13,6 +13,7 @@ import {
 } from "@/elcinema/content";
 import type { ManagedContent } from "@/elcinema/content.functions";
 import { personById, personBySlug, personId } from "@/elcinema/build";
+import { asLang } from "@/elcinema/i18n";
 import type { Lang } from "@/elcinema/home.shared";
 
 const livePersonOptions = (lang: Lang, id: string) =>
@@ -49,7 +50,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
       personBySlug.has(params.id)
     )
       return null;
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return context.queryClient.ensureQueryData(livePersonOptions(lang, params.id));
   },
   component: PersonRoute,
@@ -118,7 +119,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
 
 function PersonRoute() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   if (id.startsWith("m-")) return <ManagedPersonLoader lang={l} id={id} />;
   if (!/^\d+$/.test(id) || personById.has(Number(id)) || personBySlug.has(id)) {
     return <PersonPage lang={l} id={id} />;

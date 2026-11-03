@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TvGuidePage } from "@/elcinema/pages/TvGuidePage";
 import { managedContentOptions, mergedTvGuide } from "@/elcinema/content";
+import { asLang } from "@/elcinema/i18n";
 
 export const Route = createFileRoute("/$lang/tvguide")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -37,7 +38,7 @@ function TvGuideRoute() {
   const managed = Route.useLoaderData();
   return (
     <TvGuidePage
-      lang={lang === "ar" ? "ar" : "en"}
+      lang={asLang(lang)}
       guide={mergedTvGuide(managed)}
       cat={cat}
       q={q}

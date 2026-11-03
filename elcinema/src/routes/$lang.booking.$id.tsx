@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getLiveWorkFn } from "@/elcinema/live.functions";
 import { movieById } from "@/elcinema/build";
 import type { Lang } from "@/elcinema/home.shared";
+import { asLang } from "@/elcinema/i18n";
 import { BookingMovieRoute } from "@/elcinema/pages/Booking";
 
 const liveWorkOptions = (lang: Lang, id: string) =>
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/$lang/booking/$id")({
   // fetched from the real work page.
   loader: ({ context, params }) => {
     if (movieById.has(Number(params.id))) return null;
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return context.queryClient.ensureQueryData(liveWorkOptions(lang, params.id));
   },
   component: BookingMovieRouteComponent,
@@ -63,7 +64,7 @@ export const Route = createFileRoute("/$lang/booking/$id")({
 
 function BookingMovieRouteComponent() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   if (movieById.has(Number(id))) {
     return <BookingMovieRoute result={{ data: null, error: null }} lang={l} id={id} />;
   }

@@ -67,4 +67,5 @@ export const enCommon = {
   "common.countryColon": "Country:",
   "common.movieType": "Movie",
   "common.addedByEditors": "Added by the editors",
+  "common.backToSite": "Back to the site",
 } as const;
