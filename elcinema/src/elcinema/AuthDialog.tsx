@@ -19,7 +19,7 @@ export type AuthMode = "login" | "register";
 
 function Field({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
-    <label className="flex items-center gap-3 rounded-xl border border-input bg-secondary px-3 transition-colors focus-within:border-primary focus-within:shadow-[0_0_0_3px_var(--glow)]">
+    <label className="flex items-center gap-3 rounded-xl border border-input bg-secondary px-3 transition-colors focus-within:border-primary focus-within:shadow-focus">
       <span className="text-muted-foreground">{icon}</span>
       {children}
     </label>
@@ -193,7 +193,7 @@ export function AuthDialog({
           <div className="relative mt-5 grid grid-cols-2 rounded-full border border-border bg-secondary p-1">
             <span
               aria-hidden
-              className={`absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-[0_6px_20px_-6px_var(--glow)] transition-all duration-300 ease-out ${
+              className={`absolute inset-y-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-glow-sm transition-all duration-300 ease-out ${
                 mode === "login" ? "start-1" : "start-[calc(50%+3px)]"
               }`}
             />
@@ -304,7 +304,7 @@ export function AuthDialog({
           <button
             type="submit"
             disabled={busy}
-            className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-black text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_10px_30px_-10px_var(--glow)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
+            className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-black text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-glow-lg active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
             {busy ? t("auth.loading") : mode === "login" ? t("auth.login") : t("auth.register")}

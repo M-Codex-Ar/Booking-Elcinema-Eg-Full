@@ -12,6 +12,7 @@ import { useState } from "react";
 import { getElcinemaHomeFn } from "../home.functions";
 import { dayLabel, movieById } from "../build";
 import { getLiveWorkFn } from "../live.functions";
+import { cardLink } from "../links";
 import type { Lang } from "../home.shared";
 import type { LiveWork } from "../live.shared";
 import { LiveImg, LiveError, liveWorkPath } from "../live-ui";
@@ -252,16 +253,27 @@ export function BookingMoviePage({
             <div key={c.id} className="glass-card p-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="font-bold">{c.name}</div>
-                {c.bookingHref && (
-                  <a
-                    href={c.bookingHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
-                  >
-                    <Ticket className="h-3.5 w-3.5" /> {Lx.getTickets}
-                  </a>
-                )}
+                {c.bookingHref &&
+                  (() => {
+                    const cl = cardLink(lang, c.bookingHref);
+                    return cl.external ? (
+                      <a
+                        href={cl.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
+                      >
+                        <Ticket className="h-3.5 w-3.5" /> {Lx.getTickets}
+                      </a>
+                    ) : (
+                      <Na
+                        href={cl.href}
+                        className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
+                      >
+                        <Ticket className="h-3.5 w-3.5" /> {Lx.getTickets}
+                      </Na>
+                    );
+                  })()}
               </div>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {c.times.map((tm, j) => (

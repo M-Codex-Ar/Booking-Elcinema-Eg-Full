@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Shared list controls for every catalogue page: sort select, grid/list view
  * toggle and pagination. State lives in the URL (validateSearch per route);

@@ -218,6 +218,7 @@ export function ScrapedLink({
 }
 
 /** True when the current pathname is `href` or one of its children. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useIsActive(href: string): boolean {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return pathname === href || pathname.startsWith(href + "/");
@@ -417,6 +418,7 @@ const hueVars = (hue: number) => ({ "--poster-hue": String(hue) }) as unknown as
  * Returns "" when the reference cannot be honoured — including the
  * preview-only `/__l5e/` asset URLs, which 404 everywhere outside Lovable.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function artworkSrc(key: string | null | undefined): string {
   if (!key) return "";
   const direct = key.startsWith("/") || /^https?:\/\//.test(key) ? key : resolveImg(key);
@@ -427,6 +429,7 @@ export function artworkSrc(key: string | null | undefined): string {
  * The ordered URLs worth trying for a set of references — first-party mirror
  * first, then the source CDN — with unusable and duplicate entries removed.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function artworkSources(...refs: (string | null | undefined)[]): string[] {
   const out: string[] = [];
   for (const ref of refs) {
@@ -442,6 +445,7 @@ export function artworkSources(...refs: (string | null | undefined)[]): string[]
  * the first source, so a rail cell that gets a new poster (or a `key`-less list
  * re-render) does not stay blacked out by the previous image's failure.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useArtwork(
   src: string | null | undefined,
   fallback?: string | null | undefined,

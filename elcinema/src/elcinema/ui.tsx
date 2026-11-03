@@ -10,6 +10,7 @@ import { Artwork } from "./components/primitives";
 import { makeT } from "./i18n";
 import type { Bi, Lang } from "./home.shared";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");
 
 /**
@@ -48,16 +49,12 @@ export function Na({
 }
 
 /** Public work URL, addressed by the elCinema-style numeric ID. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const workPath = (lang: Lang, id: number | string) => `/${lang}/work/${id}`;
 
 /** Public person URL, addressed by the elCinema-style numeric ID. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const personPath = (lang: Lang, id: number | string) => `/${lang}/person/${id}`;
-
-/** Highlights the active language-prefixed section in nav chrome. */
-export function useIsActive(href: string): boolean {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  return pathname === href || pathname.startsWith(href + "/");
-}
 
 /**
  * Real artwork when available, deterministic gradient poster otherwise.
@@ -214,6 +211,7 @@ const MONTHS: Bi[] = [
 ];
 
 /** Static bilingual date formatting, stable across SSR and client. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function fmtDate(iso: string, lang: Lang): string {
   const [y, m, d] = iso.split("-").map(Number);
   const month = MONTHS[((m ?? 1) - 1) % 12] ?? { en: "", ar: "" };
@@ -221,6 +219,7 @@ export function fmtDate(iso: string, lang: Lang): string {
 }
 
 /** "11-02" -> "2 November" / "2 نوفمبر" — the same table, without the year. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function fmtMonthDay(dateKey: string, lang: Lang): string {
   const [m, d] = dateKey.split("-").map(Number);
   if (!m || !d) return "";

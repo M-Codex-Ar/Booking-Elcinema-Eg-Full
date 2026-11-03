@@ -187,7 +187,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
               trigger={
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_var(--glow)]"
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-glow-md"
                 >
                   <LogIn className="h-4 w-4" /> {c.login}
                 </button>

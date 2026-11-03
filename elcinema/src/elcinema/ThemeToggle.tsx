@@ -8,7 +8,7 @@ import { iconAction } from "./components/variants";
 
 type Theme = "dark" | "light";
 
-export function applyTheme(next: Theme) {
+function applyTheme(next: Theme) {
   document.documentElement.classList.toggle("dark", next === "dark");
   try {
     localStorage.setItem("theme", next);

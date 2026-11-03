@@ -11,14 +11,19 @@ import type { Lang } from "./home.shared";
 import { Na } from "./ui";
 
 /** Internal path to a live (or sample) work detail page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const liveWorkPath = (lang: Lang, id: string) => `/${lang}/work/${id}`;
 /** Internal path to a live (or sample) person detail page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const livePersonPath = (lang: Lang, id: string) => `/${lang}/person/${id}`;
 /** Internal path to a video page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const videoPath = (lang: Lang, id?: string) => `/${lang}/video${id ? `/${id}` : ""}`;
 /** Internal path to a featured-list page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const lineupPath = (lang: Lang, id?: string) => `/${lang}/lineup${id ? `/${id}` : ""}`;
 /** Internal path to a booking page. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const bookingPath = (lang: Lang, id?: string) => `/${lang}/booking${id ? `/${id}` : ""}`;
 
 /**
