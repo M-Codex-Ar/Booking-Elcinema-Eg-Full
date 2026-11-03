@@ -71,7 +71,8 @@ export const enPages = {
   "search.in": "in",
   "search.results": "{count} results",
   "box.sortRank": "Rank",
-  "booking.ticketNote": "Opens the real ticket service in a new tab.",
+  "booking.ticketNote":
+    "Choose a cinema and showtime here. Online ticket purchase is not available in this app yet.",
   "soon.release": "Releases",
   "vod.watchOn": "Watch on",
   "vod.playbackNote": "Opens the real play link in a new tab.",

@@ -3,8 +3,8 @@
  * playing (from the homepage scrape) and, per movie, the cinemas and
  * showtimes for the next days. For sample-catalogue movies the built-in
  * showtime generator is used; for live movies the showtimes are scraped from
- * the real work page. The final "tickets" action opens the real ticket
- * service in a new tab — browsing stays inside the app.
+ * the real work page. Ticket buttons stay inside the app and lead to these
+ * showtimes; online ticket purchase is not available in this app yet.
  */
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, CalendarClock, Ticket } from "lucide-react";
@@ -12,7 +12,6 @@ import { useState } from "react";
 import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { dayLabel, movieById } from "@/lib/build";
 import { getLiveWorkFn } from "@/features/live/live.functions";
-import { cardLink } from "@/lib/links";
 import type { Lang } from "@/types/home";
 import type { LiveWork } from "@/types/live";
 import { LiveImg, LiveError, liveWorkPath } from "@/features/live/live-ui";
@@ -228,51 +227,28 @@ export function BookingMoviePage({
       )}
 
       {current && current.cinemas.length > 0 ? (
-        <div className="mt-6 grid gap-3 md:grid-cols-2">
-          {current.cinemas.map((c) => (
-            <div key={c.id} className="glass-card p-4">
-              <div className="flex items-center justify-between gap-2">
+        <>
+          <div className="mt-6 grid gap-3 md:grid-cols-2">
+            {current.cinemas.map((c) => (
+              <div key={c.id} className="glass-card p-4">
                 <div className="font-bold">{c.name}</div>
-                {c.bookingHref &&
-                  (() => {
-                    const cl = cardLink(lang, c.bookingHref);
-                    return cl.external ? (
-                      <a
-                        href={cl.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
-                      >
-                        <Ticket className="h-3.5 w-3.5" /> {t("common.getTickets")}
-                      </a>
-                    ) : (
-                      <Na
-                        href={cl.href}
-                        className="animate-pulse-neon inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90"
-                      >
-                        <Ticket className="h-3.5 w-3.5" /> {t("common.getTickets")}
-                      </Na>
-                    );
-                  })()}
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {c.times.map((tm, j) => (
+                    <span
+                      key={j}
+                      className="rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-bold"
+                    >
+                      {tm}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {c.times.map((tm, j) => (
-                  <span
-                    key={j}
-                    className="rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-bold"
-                  >
-                    {tm}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-          {!sampleMovie && (
-            <p className="text-meta text-muted-foreground md:col-span-2">
-              {t("booking.ticketNote")}
-            </p>
-          )}
-        </div>
+            ))}
+          </div>
+          <p className="glass-card mt-4 p-4 text-sm text-muted-foreground">
+            {t("booking.ticketNote")}
+          </p>
+        </>
       ) : (
         <p className="mt-6 text-sm text-muted-foreground">{t("booking.noTimes")}</p>
       )}

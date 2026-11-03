@@ -71,7 +71,8 @@ export const arPages = {
   "search.in": "في",
   "search.results": "{count} نتيجة",
   "box.sortRank": "الترتيب",
-  "booking.ticketNote": "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
+  "booking.ticketNote":
+    "اختر السينما وموعد العرض من هنا. شراء التذاكر عبر الإنترنت غير متاح داخل التطبيق حتى الآن.",
   "soon.release": "يُعرض",
   "vod.watchOn": "شاهد على",
   "vod.playbackNote": "يفتح رابط المشاهدة الحقيقي في نافذة جديدة.",

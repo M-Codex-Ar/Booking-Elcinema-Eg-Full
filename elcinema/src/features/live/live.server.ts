@@ -31,21 +31,43 @@ const BASE = "https://elcinema.com";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 const CACHE_TTL_MS = 10 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 8_000;
+const STALE_TTL_MS = 60 * 60 * 1000;
 
-const cache = new Map<string, { data: unknown; expires: number }>();
+const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
+const inFlight = new Map<string, Promise<string>>();
 
 async function fetchPage(path: string): Promise<string> {
   const key = `live:${path}`;
   const hit = cache.get(key);
   if (hit && hit.expires > Date.now()) return hit.data as string;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "User-Agent": UA, Accept: "text/html" },
-    signal: AbortSignal.timeout(20000),
-  });
-  if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
-  const html = await res.text();
-  cache.set(key, { data: html, expires: Date.now() + CACHE_TTL_MS });
-  return html;
+  if (hit && hit.staleUntil > Date.now()) {
+    void refreshPage(key, path).catch(() => undefined);
+    return hit.data as string;
+  }
+  return refreshPage(key, path);
+}
+
+function refreshPage(key: string, path: string): Promise<string> {
+  const existing = inFlight.get(key);
+  if (existing) return existing;
+  const request = (async () => {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: { "User-Agent": UA, Accept: "text/html" },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
+    const html = await res.text();
+    const now = Date.now();
+    cache.set(key, {
+      data: html,
+      expires: now + CACHE_TTL_MS,
+      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+    });
+    return html;
+  })().finally(() => inFlight.delete(key));
+  inFlight.set(key, request);
+  return request;
 }
 
 type $Html = cheerio.CheerioAPI;
@@ -670,12 +692,14 @@ export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
   const headings = $root.find("h2, h3, h4, h5, h6");
   const titleHeading = headings.first();
   const resolvedTitle =
-    title || clean(titleHeading.clone().children().remove().end().text()) || clean(titleHeading.text());
-  
+    title ||
+    clean(titleHeading.clone().children().remove().end().text()) ||
+    clean(titleHeading.text());
+
   // Extract first image from the page (sidebar or featured image)
   const $img = $root.find("img").first();
   const image = $img.attr("src") || null;
-  
+
   const sections: LiveStaticSection[] = [];
   headings.each((_, el) => {
     const $heading = $(el);

@@ -159,3 +159,18 @@ export function cardLink(lang: Lang, rawHref: string | null | undefined, title =
   // the app: fall back to the edition's home page.
   return { href: `/${lang}`, external: false };
 }
+
+/** Resolve any ticket CTA to this app's showtimes page, including provider URLs. */
+export function bookingLink(
+  lang: Lang,
+  bookingHref: string | null | undefined,
+  workHref: string | null | undefined,
+  title = "",
+): string {
+  const booking = cardLink(lang, bookingHref, title);
+  if (!booking.external && /\/booking\/\d+$/.test(booking.href)) return booking.href;
+
+  const work = cardLink(lang, workHref, title);
+  const id = /\/work\/(\d+)$/.exec(work.href)?.[1];
+  return id ? `/${lang}/booking/${id}` : `/${lang}/booking`;
+}

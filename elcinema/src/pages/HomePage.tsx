@@ -22,7 +22,7 @@ import {
   Cake,
 } from "lucide-react";
 import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/types/home";
-import { cardLink } from "@/lib/links";
+import { bookingLink, cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay } from "@/components/shared/ui";
 import { bi, makeT } from "@/i18n";
@@ -318,10 +318,10 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               sub={
                 m.bookingHref && (
                   <CardA
-                    href={m.bookingHref}
+                    href={bookingLink(lang, m.bookingHref, m.href, m.title)}
                     title={m.title}
                     lang={lang}
-                    className="font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {t("home.bookTickets")}
                   </CardA>
