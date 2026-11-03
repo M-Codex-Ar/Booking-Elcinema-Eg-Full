@@ -120,6 +120,19 @@ export const revealOverlay = cva(
   "poster-shade absolute inset-0 flex items-end p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100",
 );
 
+/** The recessed tray that holds the FAQ index cards. */
+export const faqTray = cva("rounded-2xl border border-border bg-secondary p-3 shadow-lg md:p-4");
+
+/** Paper-like FAQ card; native `details[open]` raises the selected card. */
+export const faqCard = cva(
+  "group overflow-hidden rounded-xl border border-border bg-card text-card-foreground transition-[transform,border-color,box-shadow] duration-200 open:-translate-y-1 open:border-primary/40 open:shadow-card-hover motion-reduce:transition-none",
+);
+
+/** Keyboard-visible question edge on an FAQ index card. */
+export const faqQuestion = cva(
+  "flex w-full list-none cursor-pointer items-center gap-3 px-4 py-4 text-start marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:px-5",
+);
+
 /** The horizontal scroller inside a rail. */
 export const railTrack = cva(
   "scrollbar-hide flex snap-x gap-4 overflow-x-auto overscroll-x-contain pb-2",
