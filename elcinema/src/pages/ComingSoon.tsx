@@ -17,6 +17,7 @@ import {
   type ViewMode,
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
+import { knownGenreKeys } from "@/lib/genres";
 
 type SortKey = "soon" | "title" | "runtime";
 
@@ -36,7 +37,7 @@ function SoonCard({ movie, lang }: { movie: Movie; lang: Lang }) {
         </p>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{movie.synopsis[lang]}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          {movie.genres.map((g) => (
+          {knownGenreKeys(movie.genres).map((g) => (
             <span key={g} className="rounded-md bg-secondary px-2 py-0.5">
               {t(GENRES[g], lang)}
             </span>
@@ -71,7 +72,7 @@ export function ComingSoonPage({
   setSearch: SetSearch;
 }) {
   const copy = makeT(lang);
-  const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
+  const genres = knownGenreKeys(list.flatMap((m) => m.genres));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
   const sorted = [...filtered].sort((a, b) => {
     if (sort === "title")

@@ -4,6 +4,7 @@ import { Ticket, Star } from "lucide-react";
 import { GENRES } from "@/lib/data";
 import { movieMeta, workId } from "@/lib/build";
 import { locale, makeT } from "@/i18n";
+import { knownGenreKeys } from "@/lib/genres";
 import { fmtDate, Na, t, workPath } from "@/components/shared/ui";
 import { PosterArt } from "@/components/shared/ui";
 import { pill } from "@/components/shared/variants";
@@ -21,10 +22,6 @@ import {
 } from "@/components/shared/controls";
 
 type SortKey = "featured" | "rating" | "title" | "newest";
-
-/** Managed rows may carry a genre code the built-in catalogue never defined;
- *  an unlabelled one would render as an empty chip, so it is filtered out. */
-const hasGenreLabel = (g: string): boolean => Boolean(GENRES[g]);
 
 function sortMovies(movies: Movie[], sort: SortKey, lang: Lang): Movie[] {
   const list = [...movies];
@@ -58,14 +55,11 @@ function Row({ movie, lang }: { movie: Movie; lang: Lang }) {
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span>{fmtDate(movie.release, lang)}</span>
           <span>· {movie.cert}</span>
-          {movie.genres
-            .slice(0, 3)
-            .filter(hasGenreLabel)
-            .map((g) => (
-              <span key={g} className={pill()}>
-                {t(GENRES[g], lang)}
-              </span>
-            ))}
+          {knownGenreKeys(movie.genres).slice(0, 3).map((g) => (
+            <span key={g} className={pill()}>
+              {t(GENRES[g], lang)}
+            </span>
+          ))}
         </div>
       </div>
       <span className="flex shrink-0 items-center gap-1 text-sm font-bold">
@@ -93,7 +87,7 @@ export function NowPlayingPage({
   setSearch: SetSearch;
 }) {
   const copy = makeT(lang);
-  const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
+  const genres = knownGenreKeys(list.flatMap((m) => m.genres));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
   const validSorts: SortKey[] = ["featured", "rating", "title", "newest"];
   const currentSort: SortKey = validSorts.includes(sort as SortKey)

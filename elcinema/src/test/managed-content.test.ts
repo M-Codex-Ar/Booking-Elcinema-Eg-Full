@@ -14,6 +14,7 @@ import {
   matchesBuiltinPerson,
 } from "@/features/content/content";
 import { tvGuide } from "@/lib/build";
+import { knownGenreKeys } from "@/lib/genres";
 import type { EcHomeData } from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
 
@@ -286,5 +287,14 @@ describe("built-in duplicate warnings", () => {
   it("flags person names that exist in the built-in people", () => {
     expect(matchesBuiltinPerson("Laila Mansour")).toBe(false);
     expect(matchesBuiltinPerson("")).toBe(false);
+  });
+});
+
+describe("genre labels", () => {
+  it("omits unknown and duplicate genres from page filters and chips", () => {
+    expect(knownGenreKeys(["horror", "unknown-operator-genre", "horror", "comedy"])).toEqual([
+      "horror",
+      "comedy",
+    ]);
   });
 });
