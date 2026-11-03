@@ -23,7 +23,7 @@ export function FaqDrawer({
   items: FaqItem[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-background">
+    <section className="relative isolate overflow-x-clip bg-background">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 cinema-gradient" />
       <div className="relative mx-auto grid w-full max-w-site items-start gap-8 px-4 py-10 sm:gap-12 sm:px-6 sm:py-14 md:px-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16 lg:py-20">
         <header className="lg:sticky lg:top-8">
