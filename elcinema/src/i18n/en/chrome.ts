@@ -73,18 +73,6 @@ export const enChrome = {
   "footer.terms": "Terms of Use",
   "footer.builtBy": "Built with ❤️ by M.Said",
   "footer.paymentTitle": "Payment methods",
-  "footer.aboutPage.title": "About elCinema",
-  "footer.aboutPage.body":
-    "elCinema is Egypt's leading cinema and TV guide, covering movies in theatres, coming soon, TV schedules, box office charts, and streaming options.",
-  "footer.contactPage.title": "Contact Us",
-  "footer.contactPage.body":
-    "For press enquiries, partnership requests, or general feedback, please reach out via our social channels or send us an email.",
-  "footer.advertisePage.title": "Advertise with Us",
-  "footer.advertisePage.body":
-    "Reach Egypt's most engaged movie audience. elCinema offers display advertising, sponsored content, and premiere partnerships. Contact our commercial team to learn more.",
-  "footer.privacyPage.title": "Privacy Policy",
-  "footer.privacyPage.body":
-    "We respect your privacy. elCinema collects only the data needed to deliver your personalised cinema experience and never sells your information to third parties.",
   "footer.termsPage.title": "Terms of Use",
   "footer.termsPage.body":
     "By using elCinema you agree to use the service for lawful personal purposes only. All content is © Damlag S.A.E. Unauthorised reproduction is prohibited.",
