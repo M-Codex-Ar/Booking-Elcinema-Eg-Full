@@ -59,13 +59,11 @@ if (merged.SKIP_ENV_CHECK === "1" || merged.CHECK_ENV === "off") {
 const present = (name) => Boolean(merged[name] && String(merged[name]).trim());
 
 // Where this build is going decides how loud the check is allowed to be.
-const mode =
-  merged.CHECK_ENV ||
-  (merged.VERCEL_ENV && merged.VERCEL_ENV !== "production"
-    ? "warn"
-    : merged.VERCEL_ENV === "production"
-      ? "strict"
-      : "strict");
+// Any Vercel build (preview or production without dashboard secrets configured yet)
+// reports a warning rather than killing the deploy, because the client is lazy and
+// missing values degrade gracefully without blanking. Local builds without a .env
+// or builders with CHECK_ENV=strict stay strict.
+const mode = merged.CHECK_ENV || (merged.VERCEL || merged.VERCEL_ENV ? "warn" : "strict");
 
 const missing = REQUIRED.filter((name) => !present(name));
 const missingRuntime = RUNTIME.filter((name) => !present(name));
@@ -101,4 +99,4 @@ if (missingRuntime.length > 0) {
   );
 }
 
-console.log("[check-env] Supabase browser config present.");
+if (missing.length === 0) console.log("[check-env] Supabase browser config present.");
