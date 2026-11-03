@@ -85,6 +85,11 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
   const showtimes = data.showtimes.slice(0, DAY_COUNT);
   const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
   const current = showtimes[dayIndex];
+  // The real cinema ticket service for this work: the first scraped cinema
+  // that carries a booking href (e.g. https://elcinema.com/en/booking/<work>/<cinema>/).
+  const ticketHref = current
+    ? (current.cinemas.map((c) => c.bookingHref).find((href) => href) ?? null)
+    : null;
 
   return (
     <div>
@@ -156,12 +161,23 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             </div>
           </div>
           <div className="flex flex-col gap-2 pb-2">
-            <Na
-              href={bookingPath(lang, data.id)}
-              className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
-            >
-              <Ticket className="h-4 w-4" /> {t("booking.title")}
-            </Na>
+            {ticketHref ? (
+              <a
+                href={ticketHref}
+                target="_blank"
+                rel="noreferrer"
+                className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
+              >
+                <Ticket className="h-4 w-4" /> {t("booking.title")}
+              </a>
+            ) : (
+              <Na
+                href={bookingPath(lang, data.id)}
+                className="animate-pulse-neon inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
+              >
+                <Ticket className="h-4 w-4" /> {t("booking.title")}
+              </Na>
+            )}
             {data.rating !== null && (
               <div className="text-center text-xs text-muted-foreground">
                 {t("work.rating")}
@@ -321,12 +337,23 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
               <h2 className="flex items-center gap-2 text-xl font-black">
                 <Ticket className="h-5 w-5 text-primary" /> {t("work.showtimes")}
               </h2>
-              <Na
-                href={bookingPath(lang, data.id)}
-                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-              >
-                {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-              </Na>
+              {ticketHref ? (
+                <a
+                  href={ticketHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                >
+                  {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                </a>
+              ) : (
+                <Na
+                  href={bookingPath(lang, data.id)}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                >
+                  {t("booking.title")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                </Na>
+              )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {showtimes.map((d, i) => (
