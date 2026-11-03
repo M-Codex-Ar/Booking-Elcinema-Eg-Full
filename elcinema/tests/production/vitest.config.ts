@@ -3,7 +3,7 @@ import TestDriver from "testdriverai/vitest";
 
 export default defineConfig({
   test: {
-    include: ["tests/production/**/*.test.ts"],
+    include: ["*.test.ts"],
     testTimeout: 900_000,
     hookTimeout: 900_000,
     reporters: ["default", TestDriver()],

@@ -21,17 +21,16 @@ build), locally via
 
 `elcinema/tests/production/public-pages.test.ts` contains short, read-only
 TestDriver checks against the public production English homepage and Arabic FAQ.
-They do not sign in or submit forms. These tests use TestDriver's hosted browser
-service and are deliberately separate from `pnpm run test` and the normal CI gate.
+They do not sign in or submit forms. The SDK and its lockfile are isolated in
+`elcinema/tests/production/` so the app's normal install does not depend on the
+hosted browser toolchain. These tests are separate from the normal CI gate.
 
-Set a TestDriver API key in your shell, then run the dedicated command:
-
-```powershell
-$env:TD_API_KEY = "your-testdriver-api-key"
-pnpm run test:e2e
-```
+Run the following from Linux, macOS, or WSL. The SDK archive currently contains
+a colon-named path that Windows cannot extract.
 
 ```sh
+cd elcinema
+pnpm --dir tests/production --ignore-workspace install --frozen-lockfile
 TD_API_KEY="your-testdriver-api-key" pnpm run test:e2e
 ```
 
