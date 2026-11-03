@@ -1,9 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import { HomePage } from "@/elcinema/HomePage";
-import type { EcHomeData } from "@/elcinema/home.shared";
-import { managedContentOptions, mergedHomeData } from "@/elcinema/content";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { HomePage } from "@/pages/HomePage";
+import type { EcHomeData } from "@/types/home";
+import { managedContentOptions, mergedHomeData } from "@/features/content/content";
+import { asLang } from "@/i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],
@@ -68,12 +69,7 @@ function HomeRoute() {
     );
   }
   const data: EcHomeData = result.data;
-  return (
-    <HomePage
-      data={mergedHomeData(data, managed, lang === "ar" ? "ar" : "en")}
-      lang={lang === "ar" ? "ar" : "en"}
-    />
-  );
+  return <HomePage data={mergedHomeData(data, managed, asLang(lang))} lang={asLang(lang)} />;
 }
 
 // Keep notFound referenced for the $lang guard's thrown errors to resolve to

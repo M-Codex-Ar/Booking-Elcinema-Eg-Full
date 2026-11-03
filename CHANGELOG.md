@@ -8,6 +8,13 @@ All notable changes to this repository are documented here. The format follows
 
 ### Added
 
+- Scraped static content pages from the live site: `parseStaticPage` / `getStaticPage` in
+  `src/features/live/` (new `LiveStaticPage` / `LiveStaticSection` / `LiveStaticBlock` DTOs in
+  `src/types/live.ts`), a cached `staticPageOptions` query and the generic `StaticPage` component
+  now render the real About, Contact, Advertise and Privacy Policy copy from elcinema.com
+  (About → `/<edition>/about_us/`, Contact → `/<edition>/contact/`, Advertise →
+  `/<edition>/advertise/`, Privacy → `/<edition>/privacy_policy/`), with the shared section/list
+  structure; the Terms route keeps the edition's own copy (the real site ships no Terms page).
 - Repository scaffold for the full-stack layout: root `README`, `AGENTS`, `CONTRIBUTING`,
   `SECURITY`, `CHANGELOG`, `.editorconfig`, root ignore rules, root `package.json` task runner.
 - `.github/`: frontend CI workflow, backend CI template (disabled until code exists), issue and
@@ -18,9 +25,9 @@ All notable changes to this repository are documented here. The format follows
 - Frontend design-token layer: `src/theme/tokens.css`, `src/theme/utilities.css`,
   `src/theme/base.css`, with `src/styles.css` reduced to an ordered entry point
   (`source(none)` plus an explicit `@source`).
-- UI primitive layer: `src/elcinema/components/variants.ts` (cva recipes) and
-  `src/elcinema/components/primitives.tsx` (layout, links, panels, pills, CTAs, artwork).
-- Central bilingual copy: `src/elcinema/i18n.ts` with typed keys and `{placeholder}` interpolation.
+- UI primitive layer: `src/components/shared/variants.ts` (cva recipes) and
+  `src/components/shared/primitives.tsx` (layout, links, panels, pills, CTAs, artwork).
+- Central bilingual copy: `src/i18n/` with typed keys and `{placeholder}` interpolation.
 - Token layer extended to match the supplied theme: `--radius` anchored at `0.75rem` with a
   `rounded-4xl` step, `--font-display` (`Exo` → `Cairo`), `--color-success` / `--color-gold`
   utilities and the `--sidebar-*` mappings.
@@ -53,6 +60,42 @@ All notable changes to this repository are documented here. The format follows
   only; the "Copyright © Damlag S.A.E — sample replica for demo purposes" sentence and its
   now-unused `chrome.copyright` key were removed from both editions.
 
+- Source architecture consolidated under the documented layering: a single `src/` tree with
+  `src/app/` (TanStack Start entry points), `src/components/`, `src/features/`, `src/pages/`,
+  `src/i18n/`, `src/lib/`, `src/services/`, `src/utils/` and the existing `src/theme/`,
+  `src/routes/`, `src/hooks/`. The duplicate `i18n.ts` (shadowing `i18n/`) and the unused
+  `RouteState.tsx` state machine were deleted; `components/shared/ui.tsx` `Na` now delegates to
+  `AppLink` so there is one link implementation, and `PosterArt` delegates to `Artwork`.
+- Live code brought in line with the house rules: the inline Arabic/English ternaries in
+  `controls.tsx` and `auth.tsx` moved to `i18n/` keys (new `controls.*`, `common.backToSite`),
+  the route loaders share one `asLang()` helper instead of repeating `params.lang === "ar" ? … : …`,
+  `LiveError` reuses the shared `stateBlock` recipe with `common.couldntLoad` / `common.goHome`,
+  and the renamed-but-not-called `.inputValidator(` helpers are now `.validator(` +
+  `validator` at every call site. Test imports use the real module paths
+  (`@/lib/supabase-env`, `@/elcinema/auth`) instead of integration stubs.
+- `src/server.ts`, `src/start.ts` and `__root.tsx` read the Supabase config through
+  `@/lib/…` aliases consistently.
+- The live movie detail's "Book tickets" action now opens the real cinema ticket service in a
+  new tab (the scraped per-cinema booking href, e.g. `https://elcinema.com/en/booking/<work>/<cinema>/`),
+  falling back to the internal booking page when the scrape carries no cinema link. The work
+  page's showtimes section reuses the same destination.
+
+### Removed
+
+- 33 unused `src/components/ui/*` primitives (accordion, chart, form, calendar, drawer, …) that
+  only re-exported Radix packages nothing imports, plus the `config.server`/ cron-auth helpers in
+  `src/integrations/supabase/` that no server entry point referenced.
+- Dead exports from `primitives.tsx` (`ArtBadge`, `ToggleChip`, `Cta`, `CtaLink`, `IconButton`,
+  `StatePanel`, `OutboundLink`, `ScrapedLink`) and the orphan `cta` / `artBadge` recipes in
+  `variants.ts`; `controls.tsx` chips now use the shared `chip` recipe.
+- 29 unused dependencies from `elcinema/package.json` (command palette, drawer/datepicker,
+  form stack, carousel, resizable panels and ~20 Radix wrappers); `bun.lock` regenerated.
+- Dead bilingual page copy for the static content pages (`footer.aboutPage.*`,
+  `footer.contactPage.*`, `footer.advertisePage.*`, `footer.privacyPage.*` in both editions) now
+  that the About / Contact / Advertise / Privacy pages render the scraped live copy through the
+  generic `StaticPage`; the stale `box.sub7` ("top 7") key was replaced by the `box.sub` ("top 20")
+  key the box office subtitle now reads.
+
 ### Fixed
 
 - Text on brand fills: `--primary-foreground` / `--accent-foreground` now resolve to a navy
@@ -76,9 +119,9 @@ All notable changes to this repository are documented here. The format follows
   listeners no-op, and the sign-in, register and password forms report `auth.notEnabled`. Public
   catalogue pages render in both languages and both themes; only authentication is unavailable.
 - `docs/operations.md` named `SUPABASE_SECRET_KEY`, which no code reads; the service-role
-  variable is `SUPABASE_SERVICE_ROLE_KEY` (`scripts/seed-admin.mjs`, `client.server.ts`).
+  variable is `SUPABASE_SERVICE_ROLE_KEY` (`scripts/seed-admin.mjs`).
 - Phone-width pages no longer run off the screen. The bilingual shell stacks pages inside a
-  *column* flex container, where a centred `mx-auto max-w-*` section has an indefinite cross
+  _column_ flex container, where a centred `mx-auto max-w-*` section has an indefinite cross
   size and resolves to `max-content`: at 360px every section became a desktop-width page,
   `overflow-x-clip` hid the tail, rails never scrolled inside their own box, and in Arabic the
   page landed mostly off-screen (measured on `/ar` at 390px: a section spanning −920..360). The

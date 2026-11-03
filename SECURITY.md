@@ -23,7 +23,7 @@ days; fixes ship as a patch release with an entry in [CHANGELOG.md](CHANGELOG.md
 | --- | --- | --- |
 | Public read of `managed_*` | Postgres RLS, `select` granted to `anon` | Read-only, publishable rows |
 | Dashboard CRUD | `requireSupabaseAuth` on the server function + `_authenticated/` route gate | Session must exist; no self-serve sign-up |
-| Cron/scrape endpoints | `cron-auth` shared secret | Unused until the backend phase |
+| Cron/scrape endpoints | `LOVABLE_CRON_SECRET` shared secret | Secret reserved for the backend phase; the frontend carries no cron module |
 
 ## Known hardening backlog
 

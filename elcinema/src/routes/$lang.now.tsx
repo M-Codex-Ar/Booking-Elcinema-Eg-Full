@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NowPlayingPage } from "@/elcinema/pages/NowPlaying";
-import { managedContentOptions, mergedNowPlaying } from "@/elcinema/content";
-import type { ViewMode } from "@/elcinema/controls";
+import { NowPlayingPage } from "@/pages/NowPlaying";
+import { managedContentOptions, mergedNowPlaying } from "@/features/content/content";
+import { asLang } from "@/i18n";
+import type { ViewMode } from "@/components/shared/controls";
 
 export const Route = createFileRoute("/$lang/now")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -48,7 +49,7 @@ function NowRoute() {
   const managed = Route.useLoaderData();
   return (
     <NowPlayingPage
-      lang={lang === "ar" ? "ar" : "en"}
+      lang={asLang(lang)}
       list={mergedNowPlaying(managed)}
       genre={genre}
       sort={sort}

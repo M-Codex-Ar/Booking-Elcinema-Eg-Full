@@ -2,8 +2,8 @@
 /**
  * Mirror the artwork elCinema depends on into this repository.
  *
- * Why this exists: the offline sample dataset (`src/elcinema/data/*.json`)
- * references artwork by manifest key (`w-001.jpg`), and `src/elcinema/images.ts`
+ * Why this exists: the offline sample dataset (`src/data/*.json`)
+ * references artwork by manifest key (`w-001.jpg`), and `src/lib/images.ts`
  * resolves those keys to `/__l5e/assets-v1/...` URLs. Those are served only by
  * the Lovable preview — on the dev server and in production every one of them is
  * a 404, which is why sample mode shows a wall of broken images.
@@ -111,14 +111,14 @@ const extFor = (type) =>
 
 const records = [];
 if (kinds.includes("posters")) {
-  const movies = JSON.parse(readFileSync(join(appRoot, "src/elcinema/data/movies.json"), "utf8"));
+  const movies = JSON.parse(readFileSync(join(appRoot, "src/data/movies.json"), "utf8"));
   for (const m of Array.isArray(movies) ? movies : movies.items) {
     if (m?.id && m?.poster)
       records.push({ key: m.poster, id: m.id, path: `/en/work/${m.id}/`, dir: "posters" });
   }
 }
 if (kinds.includes("people")) {
-  const people = JSON.parse(readFileSync(join(appRoot, "src/elcinema/data/people.json"), "utf8"));
+  const people = JSON.parse(readFileSync(join(appRoot, "src/data/people.json"), "utf8"));
   for (const p of Array.isArray(people) ? people : people.items) {
     if (p?.id && p?.photo)
       records.push({ key: p.photo, id: p.id, path: `/en/person/${p.id}/`, dir: "people" });
@@ -178,7 +178,7 @@ if (kinds.includes("born")) {
 }
 
 if (limit) records.length = Math.min(records.length, limit);
-const manifestPath = join(appRoot, "src/elcinema/images.ts");
+const manifestPath = join(appRoot, "src/lib/images.ts");
 let manifest = readFileSync(manifestPath, "utf8");
 const updates = new Map();
 let mirrored = 0;
@@ -242,7 +242,7 @@ const blanked =
   (next.match(/"([^"]+)":\s*"\/__l5e\/[^"]*"/g) || []).length;
 
 /**
- * Rebuild `src/elcinema/data/artwork.json` from the files actually on disk: the
+ * Rebuild `src/data/artwork.json` from the files actually on disk: the
  * scraper's map from elcinema record id to first-party URL, so the homepage rails
  * can serve `/images/people/<id>.jpg` instead of hotlinking the CDN. Rebuilt
  * rather than appended so a deleted file never leaves a stale entry pointing at
@@ -261,7 +261,7 @@ function writeArtworkRegistry() {
     }
     registry[dirName] = byId;
   }
-  const out = join(appRoot, "src/elcinema/data/artwork.json");
+  const out = join(appRoot, "src/data/artwork.json");
   const body = `${JSON.stringify(registry, null, 2)}\n`;
   const current = existsSync(out) ? readFileSync(out, "utf8") : "";
   if (dryRun) {

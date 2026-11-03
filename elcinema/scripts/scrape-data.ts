@@ -6,14 +6,14 @@
  * guide grid (en + ar) and the box-office table, then writes staged JSON
  * files and downloads the poster/photo artwork to /tmp/scrape/imgs.
  *
- * The staged output is turned into src/elcinema/data/*.json plus the images
+ * The staged output is turned into src/data/*.json plus the images
  * manifest by scripts/build-dataset.ts after the artwork has been uploaded
  * as local assets.
  */
 import * as cheerio from "cheerio";
 import { mkdir, writeFile, access } from "node:fs/promises";
-import { parseHomePage, parseTvGuide } from "../src/elcinema/home.server";
-import { parseWorkPage } from "../src/elcinema/live.server";
+import { parseHomePage, parseTvGuide } from "../src/features/home/home.server";
+import { parseWorkPage } from "../src/features/live/live.server";
 import type { Element } from "domhandler";
 
 const UA =

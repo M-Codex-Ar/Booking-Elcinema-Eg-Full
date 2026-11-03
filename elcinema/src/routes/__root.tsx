@@ -12,10 +12,9 @@ import { useEffect, type ReactNode } from "react";
 import { Clapperboard } from "lucide-react";
 
 import { Toaster } from "@/components/ui/sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
 function NotFoundComponent() {
@@ -46,9 +45,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">

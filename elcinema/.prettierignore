@@ -6,19 +6,17 @@ dist
 .output
 .vinxi
 .wrangler
-.lovable
 pnpm-lock.yaml
 package-lock.json
-bun.lock
 
 # Tool-generated source
 routeTree.gen.ts
 src/routeTree.gen.ts
-src/integrations/supabase          # Lovable/Supabase generated ("do not edit" headers)
+src/services/clients/supabase      # Supabase generated ("do not edit" headers)
 
 # Authored data: written by scripts/build-dataset.ts and reviewed as content, not code.
 # Re-indenting it buries real dataset edits in thousands of formatting lines.
-src/elcinema/data
+src/data
 
 # Hand-written SQL, kept in migration order; a formatter must not re-flow it.
 drizzle

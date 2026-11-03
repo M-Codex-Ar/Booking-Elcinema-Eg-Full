@@ -13,7 +13,7 @@ if (-not (Test-Path elcinema/node_modules)) {
   exit 1
 }
 
-$pm = if (Get-Command bun -ErrorAction SilentlyContinue) { "bun" } else { "npm" }
+$pm = if (Get-Command pnpm -ErrorAction SilentlyContinue) { "pnpm" } else { "npm" }
 
 function Invoke-Step {
   param([string]$Label, [string]$Dir, [string]$Exe, [string[]]$Params)

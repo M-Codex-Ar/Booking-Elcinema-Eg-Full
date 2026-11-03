@@ -1,19 +1,20 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLivePersonFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { LivePersonPage } from "@/elcinema/pages/LivePerson";
-import { PersonPage } from "@/elcinema/pages/Person";
-import { ManagedPersonPage } from "@/elcinema/Managed";
+import { getLivePersonFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
+import { LivePersonPage } from "@/pages/LivePerson";
+import { PersonPage } from "@/pages/Person";
+import { ManagedPersonPage } from "@/pages/Managed";
 import {
   managedContentOptions,
   managedPeople,
   managedPersonById,
   managedRef,
-} from "@/elcinema/content";
-import type { ManagedContent } from "@/elcinema/content.functions";
-import { personById, personBySlug, personId } from "@/elcinema/build";
-import type { Lang } from "@/elcinema/home.shared";
+} from "@/features/content/content";
+import type { ManagedContent } from "@/features/content/content.functions";
+import { personById, personBySlug, personId } from "@/lib/build";
+import { asLang } from "@/i18n";
+import type { Lang } from "@/types/home";
 
 const livePersonOptions = (lang: Lang, id: string) =>
   queryOptions({
@@ -49,7 +50,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
       personBySlug.has(params.id)
     )
       return null;
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return context.queryClient.ensureQueryData(livePersonOptions(lang, params.id));
   },
   component: PersonRoute,
@@ -118,7 +119,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
 
 function PersonRoute() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   if (id.startsWith("m-")) return <ManagedPersonLoader lang={l} id={id} />;
   if (!/^\d+$/.test(id) || personById.has(Number(id)) || personBySlug.has(id)) {
     return <PersonPage lang={l} id={id} />;

@@ -1,4 +1,4 @@
-/** Regenerates src/elcinema/images.ts from the uploaded asset pointers. */
+/** Regenerates src/lib/images.ts from the uploaded asset pointers. */
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -24,5 +24,5 @@ export function img(key: string | null | undefined): string {
   return (key && IMAGES[key]) || "";
 }
 `;
-await writeFile("src/elcinema/images.ts", body);
-console.log(`wrote src/elcinema/images.ts with ${entries.length} entries`);
+await writeFile("src/lib/images.ts", body);
+console.log(`wrote src/lib/images.ts with ${entries.length} entries`);

@@ -1,12 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupDetailFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { LineupDetailRoute } from "@/elcinema/pages/Lineup";
-import { managedContentOptions, allMovies, managedLists, movieArt } from "@/elcinema/content";
-import type { ManagedContent } from "@/elcinema/content.functions";
-import type { LiveLineupDetail } from "@/elcinema/live.shared";
-import type { Lang } from "@/elcinema/home.shared";
+import { getLineupDetailFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
+import { LineupDetailRoute } from "@/pages/Lineup";
+import {
+  managedContentOptions,
+  allMovies,
+  managedLists,
+  movieArt,
+} from "@/features/content/content";
+import type { ManagedContent } from "@/features/content/content.functions";
+import type { LiveLineupDetail } from "@/types/live";
+import type { Lang } from "@/types/home";
+import { makeT, rowTitle, asLang } from "@/i18n";
 
 const lineupDetailOptions = (lang: Lang, id: string) =>
   queryOptions({
@@ -19,9 +25,7 @@ export const Route = createFileRoute("/$lang/lineup/$id")({
   loader: ({ context, params }) => {
     if (params.id.startsWith("m-"))
       return context.queryClient.ensureQueryData(managedContentOptions);
-    return context.queryClient.ensureQueryData(
-      lineupDetailOptions(params.lang === "ar" ? "ar" : "en", params.id),
-    );
+    return context.queryClient.ensureQueryData(lineupDetailOptions(asLang(params.lang), params.id));
   },
   component: LineupDetailRouteComponent,
   errorComponent: ({ error }) => (
@@ -77,7 +81,7 @@ export const Route = createFileRoute("/$lang/lineup/$id")({
 
 function LineupDetailRouteComponent() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   // Two loader components instead of one with a conditional hook: each calls its
   // own query unconditionally, which is what the rules of hooks require. `m-`
   // prefixed ids are dashboard lists (see content.ts managedRef).
@@ -99,24 +103,25 @@ function ScrapedLineupLoader({ lang, id }: { lang: Lang; id: string }) {
 
 /** Dashboard-curated list: items resolve against the merged catalogue. */
 function ManagedLineupLoader({ lang, id }: { lang: Lang; id: string }) {
+  const t = makeT(lang);
   const managed = useSuspenseQuery(managedContentOptions).data;
   const row = managedLists(managed).find((r) => `m-${r.id}` === id);
   if (!row) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-        <p className="text-lg font-bold">List not found</p>
+        <p className="text-lg font-bold">{t("common.notFoundList")}</p>
       </div>
     );
   }
   const byRef = new Map(allMovies(managed).map((m) => [m.id, m]));
   const data: LiveLineupDetail = {
     id,
-    title: lang === "ar" ? row.title_ar || row.title_en : row.title_en,
+    title: rowTitle(row, lang),
     items: row.items.map((it) => {
       const movie = byRef.get(it.ref);
       return {
         id: it.ref,
-        title: movie ? movie.title[lang] : lang === "ar" ? it.title_ar || it.title_en : it.title_en,
+        title: movie ? movie.title[lang] : rowTitle(it, lang),
         img: movie ? movieArt(movie) : null,
         meta: movie ? movie.year : "",
         cast: [],

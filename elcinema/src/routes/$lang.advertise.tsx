@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { makeT } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Megaphone } from "lucide-react";
+import { LiveError } from "@/features/live/live-ui";
+import { staticPageOptions } from "@/features/live/live.options";
+import { StaticPage } from "@/pages/StaticPage";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/advertise")({
+  loader: ({ context, params }) => {
+    const lang = asLang(params.lang);
+    return context.queryClient.ensureQueryData(staticPageOptions(lang, `/${lang}/advertise/`));
+  },
   component: AdvertisePage,
   head: () => ({
     meta: [
@@ -18,15 +25,10 @@ export const Route = createFileRoute("/$lang/advertise")({
 
 function AdvertisePage() {
   const { lang } = Route.useParams();
-  const l = lang as Lang;
-  const t = makeT(l);
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-16 md:px-8">
-      <div className="mb-6 flex items-center gap-3">
-        <Megaphone className="h-7 w-7 text-primary" />
-        <h1 className="text-3xl font-black">{t("footer.advertisePage.title")}</h1>
-      </div>
-      <p className="leading-relaxed text-muted-foreground">{t("footer.advertisePage.body")}</p>
-    </div>
-  );
+  const l = asLang(lang);
+  const result = useSuspenseQuery(staticPageOptions(l, `/${l}/advertise/`)).data;
+  if (result.error || !result.data) {
+    return <LiveError message={result.error ?? ""} lang={l} />;
+  }
+  return <StaticPage icon={Megaphone} page={result.data} />;
 }

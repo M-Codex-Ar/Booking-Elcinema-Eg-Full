@@ -5,7 +5,7 @@ source of bugs in this codebase, so the distinction is stated first.
 
 | Kind | Where it lives | How it changes | Read by |
 | --- | --- | --- | --- |
-| **Catalogue** | `elcinema/src/elcinema/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app |
+| **Catalogue** | `elcinema/src/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app |
 | **Operator content** | Supabase Postgres, `managed_*` tables | By an operator in the dashboard | `getManagedContent` server function, once per page tree |
 | **Live elCinema content** | Nowhere durable — parsed per request from elcinema.com | Whenever elcinema.com changes | `*.server.ts` behind `*.functions.ts` |
 
@@ -27,7 +27,7 @@ unit-tested.
 Created by
 [`drizzle/migrations/0001_create_managed_content_tables.sql`](../elcinema/drizzle/migrations/0001_create_managed_content_tables.sql);
 `MANAGED_TABLES` in
-[`content.functions.ts`](../elcinema/src/elcinema/content.functions.ts) is the
+[`content.functions.ts`](../elcinema/src/features/content/content.functions.ts) is the
 authoritative list the read endpoint iterates.
 
 | Table | Columns that matter | Constraints |
@@ -46,7 +46,7 @@ is **not** auto-maintained; a write path must set it, or the value lies.
 ### Row → domain mapping
 
 `managedMovieToMovie()` and `managedPersonToPerson()` in
-[`content.ts`](../elcinema/src/elcinema/content.ts) turn a row into a `Movie` /
+[`content.ts`](../elcinema/src/features/content/content.ts) turn a row into a `Movie` /
 `Person`. Rules: an empty `*_ar` falls back to the English value; numeric strings
 are coerced with a default; `genre` splits into `genres[]`; a poster of `null`
 falls back to the deterministic gradient (`hue`), never a broken image;
@@ -56,12 +56,12 @@ operator id can never shadow a catalogue slug on a detail route.
 ## Merge rules
 
 The single place operator and catalogue content combine is
-[`elcinema/src/elcinema/content.ts`](../elcinema/src/elcinema/content.ts). Pages
+[`elcinema/src/features/content/content.ts`](../elcinema/src/features/content/content.ts). Pages
 must not query `managed_*` themselves.
 
 | Function | Precedence | Dedupe key |
 | --- | --- | --- |
-| `allMovies` | Catalogue first; a managed movie whose title matches a built-in one is **dropped**, keeping one detail page per film | normalised `title.en` |
+| `allMovies` | Managed (DB) first; a managed movie whose title matches a built-in one **wins**, keeping one detail page per film (catalogue is the offline floor) | normalised `title.en` |
 | `mergedNowPlaying` | **Managed `now` entries lead**, then built-in — an operator addition appears immediately | first wins |
 | `mergedComingSoon` | Managed `soon` lead for duplicate precedence, then re-sorted by release date | first wins, then `release` asc |
 | `mergedBoxoffice` | **Managed rows lead** so a corrected figure overrides the scraped one | `title.en` |

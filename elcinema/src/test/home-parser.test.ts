@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseHomePage } from "@/elcinema/home.server";
+import { parseHomePage } from "@/features/home/home.server";
 
 // Minimal fixture shaped like the live elcinema.com/en/ homepage, exercising
 // the selectors the replica depends on: promo carousel, cinema movies panel,

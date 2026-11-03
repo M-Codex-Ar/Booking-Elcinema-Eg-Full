@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVodGuideFn } from "@/elcinema/live.functions";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import type { Lang } from "@/elcinema/home.shared";
-import { WatchOnlineRoute } from "@/elcinema/pages/WatchOnline";
+import { getVodGuideFn } from "@/features/live/live.functions";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import type { Lang } from "@/types/home";
+import { asLang } from "@/i18n";
+import { WatchOnlineRoute } from "@/pages/WatchOnline";
 
 const vodOptions = (lang: Lang) =>
   queryOptions({
@@ -20,7 +21,7 @@ const homeOptions = queryOptions({
 
 export const Route = createFileRoute("/$lang/vod")({
   loader: ({ context, params }) => {
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return Promise.all([
       context.queryClient.ensureQueryData(vodOptions(lang)),
       context.queryClient.ensureQueryData(homeOptions),
@@ -61,7 +62,7 @@ export const Route = createFileRoute("/$lang/vod")({
 
 function VodRouteComponent() {
   const { lang } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   const result = useSuspenseQuery(vodOptions(l)).data;
   return <WatchOnlineRoute result={result} lang={l} />;
 }

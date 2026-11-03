@@ -13,11 +13,11 @@ import {
   Clapperboard,
 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import type { Lang } from "@/elcinema/home.shared";
-import { makeT } from "@/elcinema/i18n";
-import { isAdmin } from "@/elcinema/auth";
+import type { Lang } from "@/types/home";
+import { makeT } from "@/i18n";
+import { isAdmin } from "@/features/auth/auth";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -189,7 +189,7 @@ function AuthPage() {
             onClick={() => setLang((l) => (l === "ar" ? "en" : "ar"))}
             className="ms-auto text-sm font-semibold text-muted-foreground hover:text-primary"
           >
-            {lang === "ar" ? "English" : "عربي"}
+            {t("chrome.switchTo")}
           </button>
         </div>
 
@@ -332,7 +332,7 @@ function AuthPage() {
           params={{ lang }}
           className="mt-4 block text-center text-xs font-semibold text-primary hover:underline"
         >
-          ← {lang === "ar" ? "العودة للموقع" : "Back to the site"}
+          ← {t("common.backToSite")}
         </Link>
       </div>
     </div>

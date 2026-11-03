@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupIndexFn } from "@/elcinema/live.functions";
-import { managedContentOptions, managedLists, managedRef } from "@/elcinema/content";
-import type { Lang } from "@/elcinema/home.shared";
-import { LineupIndexRoute } from "@/elcinema/pages/Lineup";
+import { getLineupIndexFn } from "@/features/live/live.functions";
+import { managedContentOptions, managedLists, managedRef } from "@/features/content/content";
+import type { Lang } from "@/types/home";
+import { asLang } from "@/i18n";
+import { LineupIndexRoute } from "@/pages/Lineup";
 
 const lineupOptions = (lang: Lang) =>
   queryOptions({
@@ -14,7 +15,7 @@ const lineupOptions = (lang: Lang) =>
 
 export const Route = createFileRoute("/$lang/lineup/")({
   loader: ({ context, params }) => {
-    const lang: Lang = params.lang === "ar" ? "ar" : "en";
+    const lang = asLang(params.lang);
     return Promise.all([
       context.queryClient.ensureQueryData(lineupOptions(lang)),
       context.queryClient.ensureQueryData(managedContentOptions),
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/$lang/lineup/")({
 
 function LineupRouteComponent() {
   const { lang } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   const result = useSuspenseQuery(lineupOptions(l)).data;
   const managed = useSuspenseQuery(managedContentOptions).data;
   const extra = managedLists(managed).map((r) => ({

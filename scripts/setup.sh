@@ -10,12 +10,12 @@ say() { printf '\n\033[1m==> %s\033[0m\n' "$1"; }
 warn() { printf '    \033[33m%s\033[0m\n' "$1"; }
 
 say "Checking the toolchain"
-if command -v bun >/dev/null 2>&1; then
-  echo "    bun  $(bun --version)"
+if command -v pnpm >/dev/null 2>&1; then
+  echo "    pnpm  $(pnpm --version)"
 elif command -v node >/dev/null 2>&1; then
-  warn "bun not found; falling back to npm ($(node --version)). The lockfile is bun.lock, so npm resolves fresh."
+  warn "pnpm not found; falling back to npm ($(node --version)). The lockfile is pnpm-lock.yaml, so npm resolves fresh."
 else
-  echo "    Neither bun nor node is on PATH. Install Node.js >= 20 or bun 1.x first." >&2
+  echo "    Neither pnpm nor node is on PATH. Install Node.js >= 20 or pnpm 9+ first." >&2
   exit 1
 fi
 
@@ -27,8 +27,8 @@ else
 fi
 
 say "Installing frontend dependencies (elcinema/)"
-if command -v bun >/dev/null 2>&1; then
-  (cd elcinema && bun install)
+if command -v pnpm >/dev/null 2>&1; then
+  (cd elcinema && pnpm install)
 else
   (cd elcinema && npm install)
 fi

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/elcinema/home.functions";
-import { BookingIndexRoute } from "@/elcinema/pages/Booking";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { BookingIndexRoute } from "@/pages/Booking";
+import { asLang } from "@/i18n";
 
 const homeOptions = queryOptions({
   queryKey: ["elcinema-home"],
@@ -32,5 +33,5 @@ export const Route = createFileRoute("/$lang/booking/")({
 
 function BookingRouteComponent() {
   const { lang } = Route.useParams();
-  return <BookingIndexRoute lang={lang === "ar" ? "ar" : "en"} />;
+  return <BookingIndexRoute lang={asLang(lang)} />;
 }

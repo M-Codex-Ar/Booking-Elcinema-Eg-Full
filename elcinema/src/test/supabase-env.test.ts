@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { isSupabaseConfigured, supabasePublishableKey, supabaseUrl } from "../lib/supabase-env";
+import { isSupabaseConfigured, supabasePublishableKey, supabaseUrl } from "@/lib/supabase-env";
 
 /**
  * A build without the publishable env must be detectable before anything reads

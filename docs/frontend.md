@@ -10,15 +10,15 @@ Run from `elcinema/` (or `npm run <script>:web` from the repository root):
 
 | Command | What it does |
 | --- | --- |
-| `bun install` | Install dependencies (`bun.lock`; `bunfig.toml` enforces a 24-hour supply-chain age guard). |
-| `bun run dev` | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort). |
-| `bun run build` | Type-free production build through Nitro, output in `.output/`. |
-| `bun run preview` | Serve the built output locally. |
-| `bun run lint` | ESLint over the whole project. |
-| `bun run format` / `format:check` | Prettier write / verify. |
-| `bun run typecheck` | `tsc -p tsconfig.json --noEmit`. |
-| `bun run test` | Vitest once; `test:watch` for the loop. |
-| `bun run check` | The gate: format check, lint, typecheck, tests, build. |
+| `pnpm install` | Install dependencies (`pnpm-lock.yaml`; `pnpm-workspace.yaml` enforces a 24-hour supply-chain age guard). |
+| `pnpm run dev` | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort). |
+| `pnpm run build` | Type-free production build through Nitro, output in `.output/`. |
+| `pnpm run preview` | Serve the built output locally. |
+| `pnpm run lint` | ESLint over the whole project. |
+| `pnpm run format` / `format:check` | Prettier write / verify. |
+| `pnpm run typecheck` | `tsc -p tsconfig.json --noEmit`. |
+| `pnpm run test` | Vitest once; `test:watch` for the loop. |
+| `pnpm run check` | The gate: format check, lint, typecheck, tests, build. |
 
 [`/scripts/check.sh`](../scripts/check.sh) wraps the same gate and adds the
 committed route-tree freshness check that CI enforces.
@@ -27,6 +27,7 @@ committed route-tree freshness check that CI enforces.
 
 ```
 src/
+├── app/                    TanStack Start entry points (server, start, router)
 ├── theme/                  tokens.css, utilities.css, base.css (the design system)
 ├── routes/                 file-based routes; thin wiring only
 │   ├── __root.tsx          <html>, document head, theme flash guard, QueryClientProvider
@@ -36,26 +37,26 @@ src/
 │   ├── auth.tsx            operator sign-in (self sign-up is disabled on purpose)
 │   ├── reset-password.tsx
 │   └── _authenticated/    dashboard, guarded by the auth route
-├── elcinema/
-│   ├── pages/              one file per screen
-│   ├── components/         primitives.tsx + variants.ts
-│   ├── dashboard/          DataTable, Sections, editor
-│   ├── data/*.json         built-in catalogue
-│   ├── i18n.ts             every UI string, both languages
-│   ├── content.ts          merge rules for operator + built-in content
-│   ├── build.ts            catalogue indexes + formatters
-│   ├── data.ts             typed access to data/*.json
-│   ├── links.ts            cardLink(): the only sanctioned scraped href
-│   ├── images.ts           local asset registry (img())
-│   ├── SiteChrome.tsx      header, footer, nav
-│   ├── *.shared.ts         types crossing a server boundary
-│   ├── *.server.ts         cheerio parsers + fetch, server only
-│   └── *.functions.ts      createServerFn wrappers
-├── components/ui/          shadcn-generated primitives (app shell only)
-├── integrations/supabase/  client, client.server, auth-middleware, generated types
-├── lib/                    cn(), error capture/reporting
-├── test/                   Vitest suites + setup
-└── router.tsx, server.ts, start.ts, routeTree.gen.ts
+├── components/
+│   ├── ui/                shadcn primitives consumed by the app shell + dashboard
+│   ├── shared/            primitives.tsx (markup) + variants.ts (class recipes) + controls, ui facade, TvGuide
+│   └── layout/            SiteChrome, SiteMenu, ThemeToggle
+├── features/
+│   ├── auth/              auth.ts helpers + AuthDialog
+│   ├── content/           content.ts merge rules + content.functions.ts
+│   ├── home/              home.server.ts (parsers), home.functions.ts, home.shared.ts
+│   ├── live/              live.server.ts, live.functions.ts, live.shared.ts, live-ui.tsx
+│   └── dashboard/         DataTable, Sections, editor
+├── pages/                 one file per screen
+├── i18n/                  every UI string, both languages (index.ts + en/ + ar/)
+├── data/*.json            built-in catalogue
+├── lib/                   build.ts, data.ts, images.ts, links.ts, media.shared.ts, cn(), error capture/reporting, supabase-env
+├── utils/                 slug.ts (and other small helpers)
+├── services/clients/supabase/  client, auth-attacher, auth-middleware, generated types
+├── hooks/                 use-mobile.tsx
+├── test/                  Vitest suites + setup
+├── assets/                bundled images
+└── router.tsx is now under app/; routeTree.gen.ts stays at src root
 ```
 
 ## Route conventions
@@ -70,7 +71,7 @@ a query or server function, render a page component. Anything that looks like a
 filter, a sort, a merge, or a class string belongs one layer down.
 
 `src/routeTree.gen.ts` is committed and imported directly. Adding, renaming or
-deleting a route file means regenerating it (`bun run build` does) and committing
+deleting a route file means regenerating it (`pnpm run build` does) and committing
 the result, otherwise production breaks while dev looks fine — that is exactly the
 drift `Web CI` fails on.
 
@@ -116,10 +117,14 @@ is tracked as a task, not a rumour.
   one module.
 - `dashboard/editor.tsx` (713 lines) is one component doing form state, validation
   and writes; writes currently bypass the guarded server function.
-- `ui.tsx` duplicates primitives that now live in `components/primitives.tsx` and
-  should be deleted once call sites migrate.
-- Roughly eighteen local string dictionaries and ~44 inline `lang === "ar"`
-  ternaries remain; `i18n.ts` exists and they have not all moved to it.
+- `ui.tsx` remains the page-facing shorthand layer (`Na` delegates to
+  `AppLink`, `PosterArt` to `Artwork`, plus rail/poster/date helpers); the
+  second implementations are gone — only the aliasing remains.
+- Local string dictionaries are gone from `controls.tsx`, `live-ui.tsx`,
+  `SiteChrome.tsx` and the `auth`/lineup routes; route-level language
+  coercion now funnels through `asLang()` / `rowTitle()`. The dashboard's
+  local copy helper (`pages/Dashboard.tsx` `L()`) and a handful of chrome
+  ternaries remain; `i18n/` exists and they have not all moved to it.
 - The `search` route ignores `q` when merging results (correctness bug).
 
 See [../CHANGELOG.md](../CHANGELOG.md) for what changed most recently.

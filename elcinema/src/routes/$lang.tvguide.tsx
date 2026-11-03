@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TvGuidePage } from "@/elcinema/pages/TvGuidePage";
-import { managedContentOptions, mergedTvGuide } from "@/elcinema/content";
+import { TvGuidePage } from "@/pages/TvGuidePage";
+import { managedContentOptions, mergedTvGuide } from "@/features/content/content";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/tvguide")({
   validateSearch: (search: Record<string, unknown>) => ({
     cat: typeof search["cat"] === "string" ? search["cat"] : undefined,
     q: typeof search["q"] === "string" ? search["q"] : undefined,
+    page: typeof search["page"] === "number" ? search["page"] : undefined,
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),
   component: TvGuideRoute,
@@ -30,17 +32,18 @@ export const Route = createFileRoute("/$lang/tvguide")({
 
 function TvGuideRoute() {
   const { lang } = Route.useParams();
-  const { cat, q } = Route.useSearch();
+  const { cat, q, page } = Route.useSearch();
   const navigate = Route.useNavigate();
   const setSearch = (patch: Record<string, string | number | undefined>) =>
     void navigate({ search: (prev) => ({ ...prev, ...patch }) });
   const managed = Route.useLoaderData();
   return (
     <TvGuidePage
-      lang={lang === "ar" ? "ar" : "en"}
+      lang={asLang(lang)}
       guide={mergedTvGuide(managed)}
       cat={cat}
       q={q}
+      page={page}
       setSearch={setSearch}
     />
   );

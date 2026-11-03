@@ -4,7 +4,7 @@
   "private": true,
   "description": "Bilingual elCinema-style public site with an operator dashboard; ASP.NET Core API planned.",
   "scripts": {
-    "setup:web": "cd elcinema && (bun install || npm install)",
+    "setup:web": "cd elcinema && (pnpm install || npm install)",
     "dev:web": "npm --prefix elcinema run dev",
     "build:web": "npm --prefix elcinema run build",
     "preview:web": "npm --prefix elcinema run preview",

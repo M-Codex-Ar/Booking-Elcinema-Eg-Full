@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { makeT } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Info } from "lucide-react";
+import { LiveError } from "@/features/live/live-ui";
+import { staticPageOptions } from "@/features/live/live.options";
+import { StaticPage } from "@/pages/StaticPage";
+import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/about")({
+  loader: ({ context, params }) => {
+    const lang = asLang(params.lang);
+    return context.queryClient.ensureQueryData(staticPageOptions(lang, `/${lang}/about_us/`));
+  },
   component: AboutPage,
   head: () => ({
     meta: [
@@ -18,15 +25,10 @@ export const Route = createFileRoute("/$lang/about")({
 
 function AboutPage() {
   const { lang } = Route.useParams();
-  const l = lang as Lang;
-  const t = makeT(l);
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-16 md:px-8">
-      <div className="mb-6 flex items-center gap-3">
-        <Info className="h-7 w-7 text-primary" />
-        <h1 className="text-3xl font-black">{t("footer.aboutPage.title")}</h1>
-      </div>
-      <p className="leading-relaxed text-muted-foreground">{t("footer.aboutPage.body")}</p>
-    </div>
-  );
+  const l = asLang(lang);
+  const result = useSuspenseQuery(staticPageOptions(l, `/${l}/about_us/`)).data;
+  if (result.error || !result.data) {
+    return <LiveError message={result.error ?? ""} lang={l} />;
+  }
+  return <StaticPage icon={Info} page={result.data} />;
 }

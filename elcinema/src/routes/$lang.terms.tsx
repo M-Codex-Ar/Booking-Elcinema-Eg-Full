@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { makeT } from "@/elcinema/i18n";
-import type { Lang } from "@/elcinema/home.shared";
 import { FileText } from "lucide-react";
+import { StaticPage } from "@/pages/StaticPage";
+import { makeT, asLang } from "@/i18n";
+import type { LiveStaticPage } from "@/types/live";
 
 export const Route = createFileRoute("/$lang/terms")({
   component: TermsPage,
@@ -15,15 +16,18 @@ export const Route = createFileRoute("/$lang/terms")({
 
 function TermsPage() {
   const { lang } = Route.useParams();
-  const l = lang as Lang;
+  const l = asLang(lang);
   const t = makeT(l);
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-16 md:px-8">
-      <div className="mb-6 flex items-center gap-3">
-        <FileText className="h-7 w-7 text-primary" />
-        <h1 className="text-3xl font-black">{t("footer.termsPage.title")}</h1>
-      </div>
-      <p className="leading-relaxed text-muted-foreground">{t("footer.termsPage.body")}</p>
-    </div>
-  );
+  // The real elcinema.com has no standalone Terms page to scrape, so the
+  // generic static structure carries the edition's own terms copy.
+  const page: LiveStaticPage = {
+    title: t("footer.termsPage.title"),
+    sections: [
+      {
+        heading: t("footer.termsPage.title"),
+        blocks: [{ type: "p", text: t("footer.termsPage.body") }],
+      },
+    ],
+  };
+  return <StaticPage icon={FileText} page={page} />;
 }

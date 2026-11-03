@@ -10,7 +10,7 @@ repeated effect  →  src/theme/utilities.css         (@utility recipes: glass-c
 document default →  src/theme/base.css              (focus ring, scrollbar, reduced motion)
 class pattern    →  elcinema/components/variants.ts (cva recipes)
 markup           →  elcinema/components/primitives.tsx
-words            →  elcinema/i18n.ts                (COPY, makeT(lang))
+words            →  elcinema/i18n/                 (COPY, makeT(lang))
 ```
 
 `src/styles.css` is only the ordered entry point:
@@ -142,7 +142,7 @@ The focus ring is global and non-negotiable:
 
 `variants.ts` is the only place a repeated class string is written. `container`,
 `section`, `sectionHeader`, `heading({level})`, `subheading`,
-`cta({tone, size})`, `iconAction`, `chip({active})`, `pill({tone})`, `artBadge`,
+`iconAction`, `chip({active})`, `pill({tone})`,
 `panel({padded, spotlight})`, `artFrame({ratio})`, `railItem({size})`,
 `cardTitle`, `cardMeta`, `revealOverlay`, `railTrack`, `guideSlot`,
 `guideChannel`, `guideHeader`, `stateBlock`.
@@ -153,17 +153,17 @@ importing each other.
 ## Primitives
 
 `primitives.tsx` turns recipes into markup: `Page`, `Section`, `SectionHeader`,
-`Subtitle`, `AppLink`, `OutboundLink`, `ScrapedLink`, `useIsActive`, `Panel`,
-`Pill`, `ArtBadge`, `ToggleChip`, `Cta`, `CtaLink`, `IconButton`, `StatePanel`,
-`Artwork`, `Photo`, `artworkSrc`.
+`Subtitle`, `AppLink`, `useIsActive`, `Panel`,
+`Pill`, `Artwork`, `Photo`, `artworkSrc`.
 
 Rules that live here and nowhere else:
 
 - TanStack route typing is strict about `to`/`params`; the casts are centralised
   in `asRoute()` / `asSearch()`. **`as never` may not appear anywhere else in the
   app.**
-- `ScrapedLink` is the only component allowed to render an elcinema.com href, and
-  it resolves it through `cardLink()`.
+- Scraped hrefs are resolved only by `cardLink()` in `links.ts`; the components
+  that wrapped it were never adopted and were removed — render link data through
+  `AppLink` / `Na` after calling `cardLink()`.
 - Optional props are declared `?: T | undefined` because `tsconfig.json` turns on
   `exactOptionalPropertyTypes`.
 - Every primitive composes as `cn(recipe({ variant }), className)` so a caller can
@@ -171,7 +171,7 @@ Rules that live here and nowhere else:
 
 ## Copy
 
-`i18n.ts` exports `COPY` (about 170 dotted keys grouped by area: `chrome.*`,
+`i18n/index.ts` exports `COPY` (about 170 dotted keys grouped by area: `chrome.*`,
 `nav.*`, `home.*`, `controls.*`, `common.*`, `now.*`, `soon.*`, `box.*`,
 `booking.*`, `guide.*`, `video.*`, `vod.*`, `lineup.*`, `search.*`, `auth.*`,
 `theme.*`) and the helpers:
@@ -216,7 +216,7 @@ bespoke class string to be thumb-sized.
 2. Repeated effect across components? `@utility` in `utilities.css`.
 3. Class pattern used more than once? A `cva` recipe in `variants.ts`.
 4. Markup with behaviour? A primitive in `primitives.tsx`.
-5. Words? Keys in `i18n.ts`, both languages, before the component ships.
+5. Words? Keys in `i18n/`, both languages, before the component ships.
 
 A feature component that reaches step 1 directly is a review-blocker, not a
 shortcut.
@@ -233,8 +233,8 @@ reviewed honestly.
 | Utilities (`theme/utilities.css`) | **Done.** `@layer components` converted to `@utility`; `hover-lift` kept its name for the 11 existing call sites. |
 | Base (`theme/base.css`) | **Done.** Focus ring, scrollbar, reduced motion, view transitions, Radix scroll-lock fix. |
 | Recipes (`components/variants.ts`) | **Done** — 20 recipes; not yet used everywhere they could be. |
-| Primitives (`components/primitives.tsx`) | **Live, adoption partial.** New code must use them; `ui.tsx` still holds the duplicates to delete once its call sites move. |
-| Copy (`i18n.ts`) | **Live, adoption partial.** ~170 keys migrated into `COPY`; roughly 18 local dictionaries and 44 inline `lang === "ar"` ternaries remain in pages and chrome. |
+| Primitives (`components/primitives.tsx`) | **Live, adoption partial.** New code must use them; `ui.tsx` is now a delegating shorthand (`Na` → `AppLink`, `PosterArt` → `Artwork`) plus rail/poster helpers, not a second implementation. |
+| Copy (`i18n/`) | **Live, adoption partial.** ~170 keys migrated into `COPY`; the local dictionaries in `controls.tsx`/`live-ui.tsx`/the auth flow are gone. The dashboard's local `L()` helper and a few chrome ternaries remain in pages and chrome. |
 
 Order of migration, one pull request per line: rails and card chrome → `Section`
 headers and CTAs → the search, booking and lineup pages → `SiteChrome` and

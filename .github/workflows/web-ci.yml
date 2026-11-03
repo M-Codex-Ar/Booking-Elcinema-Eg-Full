@@ -29,34 +29,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          bun-version: latest
+          version: 10
 
-      - name: Cache bun dependencies
-        uses: actions/cache@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          path: |
-            ~/.bun/install/cache
-            elcinema/node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('elcinema/bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: elcinema/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Format check
-        run: bun run format:check
+        run: pnpm run format:check
 
       - name: Lint
-        run: bun run lint
+        run: pnpm run lint
 
       - name: Typecheck
-        run: bun run typecheck
+        run: pnpm run typecheck
 
       - name: Test
-        run: bun run test
+        run: pnpm run test
 
       - name: Production build
         # CI carries no Supabase values, so the build-time env gate is opted out
@@ -65,7 +63,7 @@ jobs:
         # (locally, or Lovable Cloud, which injects its own values).
         env:
           SKIP_ENV_CHECK: "1"
-        run: bun run build
+        run: pnpm run build
 
       - name: Note on the uploaded artifact
         run: |
@@ -88,15 +86,22 @@ jobs:
         working-directory: elcinema
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
+          version: 10
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: elcinema/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
       # src/routeTree.gen.ts is committed and imported directly; a renamed route file
       # without a regenerated tree breaks the build in production only. Fail it in CI.
       - name: Regenerate route tree and assert no diff
         run: |
-          bun run build >/dev/null 2>&1 || true
+          pnpm run build >/dev/null 2>&1 || true
           git diff --exit-code src/routeTree.gen.ts \
             || { echo "::error::src/routeTree.gen.ts is stale — commit the regenerated file."; exit 1; }
         env:

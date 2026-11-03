@@ -2,9 +2,9 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lock, ShieldCheck } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { text } from "@/elcinema/i18n";
+import { text } from "@/i18n";
 
 export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,

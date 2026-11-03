@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoDetailFn } from "@/elcinema/live.functions";
-import { LiveError } from "@/elcinema/live-ui";
-import { VideoDetailPage } from "@/elcinema/pages/Videos";
-import type { Lang } from "@/elcinema/home.shared";
+import { getVideoDetailFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
+import { VideoDetailPage } from "@/pages/Videos";
+import { asLang } from "@/i18n";
+import type { Lang } from "@/types/home";
 
 const videoOptions = (lang: Lang, id: string) =>
   queryOptions({
@@ -14,9 +15,7 @@ const videoOptions = (lang: Lang, id: string) =>
 
 export const Route = createFileRoute("/$lang/video/$id")({
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      videoOptions(params.lang === "ar" ? "ar" : "en", params.id),
-    ),
+    context.queryClient.ensureQueryData(videoOptions(asLang(params.lang), params.id)),
   component: VideoDetailRouteComponent,
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-3xl px-4 py-20 text-center">
@@ -59,7 +58,7 @@ export const Route = createFileRoute("/$lang/video/$id")({
 
 function VideoDetailRouteComponent() {
   const { lang, id } = Route.useParams();
-  const l: Lang = lang === "ar" ? "ar" : "en";
+  const l = asLang(lang);
   const result = useSuspenseQuery(videoOptions(l, id)).data;
   if (result.error || !result.data) {
     return <LiveError message={result.error ?? ""} lang={l} />;
