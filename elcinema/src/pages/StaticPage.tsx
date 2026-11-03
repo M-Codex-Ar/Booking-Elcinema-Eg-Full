@@ -9,19 +9,29 @@ export function StaticPage({
   extra,
   sidebarForm,
   socialIcons,
+  leftVisual,
+  contactHeading,
+  layout = "default",
 }: {
   icon: LucideIcon;
   page: LiveStaticPage;
   extra?: ReactNode;
   sidebarForm?: ReactNode;
   socialIcons?: ReactNode;
+  leftVisual?: ReactNode;
+  contactHeading?: string;
+  layout?: "default" | "contact";
 }) {
+  const isContact = layout === "contact";
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       {/* Header Section */}
       <div className="border-b border-border bg-background/50 backdrop-blur-sm">
         <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div
+            className={`flex items-center gap-3 sm:gap-4 ${isContact ? "flex-col text-center" : ""}`}
+          >
             <div className="rounded-lg bg-primary/10 p-2 sm:p-3">
               <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             </div>
@@ -32,15 +42,26 @@ export function StaticPage({
 
       {/* Content Section with Sticky Sidebar */}
       <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-4 lg:gap-8">
+        <div className={`grid gap-6 lg:gap-8 ${isContact ? "lg:grid-cols-2" : "lg:grid-cols-4"}`}>
           {/* Main Content (Left - 50%) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className={`space-y-6 ${isContact ? "lg:col-span-1" : "lg:col-span-2"}`}>
+            {isContact && contactHeading && (
+              <h2 className="text-xl font-black sm:text-2xl">{contactHeading}</h2>
+            )}
             {page.sections.map((section, i) => (
-              <article key={i} className="space-y-3 scroll-mt-20" id={`section-${i}`}>
+              <article
+                key={i}
+                className={`scroll-mt-20 space-y-3 ${isContact ? "glass-card p-5 sm:p-6" : ""}`}
+                id={`section-${i}`}
+              >
                 {/* Section Heading */}
-                <div className="space-y-1 border-l-4 border-primary ps-3">
+                <div
+                  className={`space-y-1 ps-3 ${isContact ? "border-s-4 border-primary" : "border-l-4 border-primary"}`}
+                >
                   <h2 className="text-xl font-black sm:text-2xl">{section.heading}</h2>
-                  <div className="h-1 w-8 bg-gradient-to-r from-primary to-transparent" />
+                  <div
+                    className={`h-1 w-8 ${isContact ? "bg-primary" : "bg-gradient-to-r from-primary to-transparent"}`}
+                  />
                 </div>
 
                 {/* Section Content */}
@@ -61,26 +82,34 @@ export function StaticPage({
                           ))}
                         </ul>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </article>
             ))}
+            {isContact && socialIcons && <div className="glass-card p-4">{socialIcons}</div>}
+            {leftVisual}
           </div>
 
           {/* Sidebar (Right - 50%): Wider Image or Form */}
-          <aside className="hidden lg:block lg:col-span-2">
-            <div className={`sticky top-0 flex flex-col ${!sidebarForm && page.image ? "h-screen" : ""} ${!sidebarForm && page.image ? "justify-start gap-4" : "justify-start gap-3"}`}>
+          <aside className={`hidden lg:block ${isContact ? "lg:col-span-1" : "lg:col-span-2"}`}>
+            <div
+              className={`sticky top-0 flex flex-col ${!sidebarForm && page.image ? "h-screen" : ""} ${!sidebarForm && page.image ? "justify-start gap-4" : "justify-start gap-3"}`}
+            >
               {/* Form (Contact page) */}
               {sidebarForm && (
-                <div className="rounded-xl border border-border bg-muted/50 p-6 sm:p-8 flex-shrink-0">
+                <div
+                  className={`flex-shrink-0 p-6 sm:p-8 ${isContact ? "glass-card" : "rounded-xl border border-border bg-muted/50"}`}
+                >
                   {sidebarForm}
                 </div>
               )}
 
               {/* Social Icons - Single row below form */}
-              {socialIcons && (
-                <div className="rounded-xl border border-border bg-muted/50 p-4 flex-shrink-0">
+              {!isContact && socialIcons && (
+                <div
+                  className={`flex-shrink-0 p-4 ${isContact ? "glass-card" : "rounded-xl border border-border bg-muted/50"}`}
+                >
                   {socialIcons}
                 </div>
               )}
@@ -88,11 +117,7 @@ export function StaticPage({
               {/* Image (Other static pages) - Fill remaining space */}
               {!sidebarForm && page.image && (
                 <div className="overflow-hidden rounded-xl border border-border flex-1 min-h-0">
-                  <img
-                    src={page.image}
-                    alt={page.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={page.image} alt={page.title} className="w-full h-full object-cover" />
                 </div>
               )}
 
@@ -108,24 +133,24 @@ export function StaticPage({
           {/* Mobile Sidebar Fallback (Below on mobile, full width) */}
           <div className="lg:hidden space-y-6">
             {sidebarForm && (
-              <div className="rounded-xl border border-border bg-muted/50 p-6 sm:p-8">
+              <div
+                className={`p-6 sm:p-8 ${isContact ? "glass-card" : "rounded-xl border border-border bg-muted/50"}`}
+              >
                 {sidebarForm}
               </div>
             )}
 
-            {socialIcons && (
-              <div className="rounded-xl border border-border bg-muted/50 p-4">
+            {!isContact && socialIcons && (
+              <div
+                className={`p-4 ${isContact ? "glass-card" : "rounded-xl border border-border bg-muted/50"}`}
+              >
                 {socialIcons}
               </div>
             )}
 
             {!sidebarForm && page.image && (
               <div className="overflow-hidden rounded-xl border border-border h-96">
-                <img
-                  src={page.image}
-                  alt={page.title}
-                  className="w-full h-full object-cover"
-                />
+                <img src={page.image} alt={page.title} className="w-full h-full object-cover" />
               </div>
             )}
 

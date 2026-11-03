@@ -5,7 +5,8 @@ import { LiveError } from "@/features/live/live-ui";
 import { staticPageOptions } from "@/features/live/live.options";
 import { StaticPage } from "@/pages/StaticPage";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { asLang } from "@/i18n";
+import { ContactGlobe } from "@/components/shared/ContactGlobe";
+import { asLang, makeT } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/contact")({
   loader: ({ context, params }) => {
@@ -24,17 +25,19 @@ export const Route = createFileRoute("/$lang/contact")({
 function ContactPage() {
   const { lang } = Route.useParams();
   const l = asLang(lang);
+  const t = makeT(l);
   const result = useSuspenseQuery(staticPageOptions(l, `/${l}/contact/`)).data;
 
   // Show form even if scraping fails
   const sidebarForm = (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <h3 className="text-base font-bold">Send us a Message</h3>
+      <div aria-hidden="true" className="border-t border-dotted border-border" />
       <ContactForm lang={l} />
     </div>
   );
 
-  // Social icons below form
+  // Existing social channels accompany the left-side contact information.
   const socialIcons = (
     <div className="flex justify-center gap-3">
       <a
@@ -67,9 +70,24 @@ function ContactPage() {
         title="Instagram"
       >
         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" strokeWidth="2"/>
-          <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+          <rect
+            x="2"
+            y="2"
+            width="20"
+            height="20"
+            rx="5"
+            ry="5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <path
+            d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
         </svg>
       </a>
     </div>
@@ -85,8 +103,8 @@ function ContactPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
         <div className="border-b border-border bg-background/50 backdrop-blur-sm">
-          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-4 sm:gap-6">
+          <div className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-4 sm:gap-6">
               <div className="rounded-lg bg-primary/10 p-3 sm:p-4">
                 <Mail className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
               </div>
@@ -96,29 +114,22 @@ function ContactPage() {
         </div>
 
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
-            <div className="lg:col-span-2">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+            <div className="glass-card p-5 sm:p-6 lg:col-span-1">
+              <h2 className="mb-3 text-xl font-black sm:text-2xl">{t("contact.getInTouch")}</h2>
               <p className="mb-6 text-lg text-foreground/80">
                 Have a question or suggestion? We'd love to hear from you!
               </p>
+              <div className="mb-5">{socialIcons}</div>
+              <ContactGlobe />
             </div>
             <aside className="hidden lg:block">
               <div className="sticky top-6 space-y-6">
-                <div className="rounded-xl border border-border bg-muted/50 p-6 sm:p-8">
-                  {sidebarForm}
-                </div>
-                <div className="rounded-xl border border-border bg-muted/50 p-4">
-                  {socialIcons}
-                </div>
+                <div className="glass-card p-6 sm:p-8">{sidebarForm}</div>
               </div>
             </aside>
             <div className="lg:hidden space-y-6">
-              <div className="rounded-xl border border-border bg-muted/50 p-6 sm:p-8">
-                {sidebarForm}
-              </div>
-              <div className="rounded-xl border border-border bg-muted/50 p-4">
-                {socialIcons}
-              </div>
+              <div className="glass-card p-6 sm:p-8">{sidebarForm}</div>
             </div>
           </div>
         </div>
@@ -127,5 +138,15 @@ function ContactPage() {
   }
 
   const page = result.data;
-  return <StaticPage icon={Mail} page={page} sidebarForm={sidebarForm} socialIcons={socialIcons} />;
+  return (
+    <StaticPage
+      icon={Mail}
+      page={page}
+      sidebarForm={sidebarForm}
+      socialIcons={socialIcons}
+      leftVisual={<ContactGlobe />}
+      contactHeading={t("contact.getInTouch")}
+      layout="contact"
+    />
+  );
 }
