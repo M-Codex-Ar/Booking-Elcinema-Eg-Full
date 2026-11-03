@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/home.functions";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { BookingIndexRoute } from "@/pages/Booking";
 import { asLang } from "@/i18n";
 

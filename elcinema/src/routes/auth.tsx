@@ -13,11 +13,11 @@ import {
   Clapperboard,
 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import type { Lang } from "@/home.shared";
+import type { Lang } from "@/features/home/home.shared";
 import { makeT } from "@/i18n";
-import { isAdmin } from "@/auth";
+import { isAdmin } from "@/features/auth/auth";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({

@@ -13,7 +13,7 @@
 
 ## Architecture rules
 
-- Public pages never query the `managed_*` tables directly: all merging of dashboard-managed content with the built-in static catalogue goes through the helpers in `src/content.ts` (one why: keeps merge order/fallbacks in one testable place).
+- Public pages never query the `managed_*` tables directly: all merging of dashboard-managed content with the built-in static catalogue goes through the helpers in `src/features/content/content.ts` (one why: keeps merge order/fallbacks in one testable place).
 - Managed rows are read publicly by `getManagedContent` (publishable client, anon SELECT) and written only through `saveManagedRow`/`deleteManagedRow` (`requireSupabaseAuth`, RLS as the user); never use the admin client for these.
 - Managed rows get public refs prefixed `m-` (`managedRef`) so `/work/:id` and `/person/:id` resolve both built-in and managed entries with one route.
 - The dashboard lives under `src/routes/_authenticated/` and sign-up is disabled: staff accounts are provisioned by the site administrator, never by public registration.

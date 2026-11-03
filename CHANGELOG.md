@@ -18,9 +18,9 @@ All notable changes to this repository are documented here. The format follows
 - Frontend design-token layer: `src/theme/tokens.css`, `src/theme/utilities.css`,
   `src/theme/base.css`, with `src/styles.css` reduced to an ordered entry point
   (`source(none)` plus an explicit `@source`).
-- UI primitive layer: `src/elcinema/components/variants.ts` (cva recipes) and
-  `src/elcinema/components/primitives.tsx` (layout, links, panels, pills, CTAs, artwork).
-- Central bilingual copy: `src/elcinema/i18n/` with typed keys and `{placeholder}` interpolation.
+- UI primitive layer: `src/components/shared/variants.ts` (cva recipes) and
+  `src/components/shared/primitives.tsx` (layout, links, panels, pills, CTAs, artwork).
+- Central bilingual copy: `src/i18n/` with typed keys and `{placeholder}` interpolation.
 - Token layer extended to match the supplied theme: `--radius` anchored at `0.75rem` with a
   `rounded-4xl` step, `--font-display` (`Exo` → `Cairo`), `--color-success` / `--color-gold`
   utilities and the `--sidebar-*` mappings.
@@ -53,10 +53,11 @@ All notable changes to this repository are documented here. The format follows
   only; the "Copyright © Damlag S.A.E — sample replica for demo purposes" sentence and its
   now-unused `chrome.copyright` key were removed from both editions.
 
-- Source architecture consolidated under the documented layering (`src/theme/`, `src/routes/`,
-  `src/components/ui/`, `src/hooks/`, `src/lib/`, `src/integrations/` at the `src` root with the
-  app itself in `src/elcinema/`). The duplicate `src/elcinema/i18n.ts` (shadowing `i18n/`) and the
-  unused `src/elcinema/RouteState.tsx` state machine were deleted; `ui.tsx` `Na` now delegates to
+- Source architecture consolidated under the documented layering: a single `src/` tree with
+  `src/app/` (TanStack Start entry points), `src/components/`, `src/features/`, `src/pages/`,
+  `src/i18n/`, `src/lib/`, `src/services/`, `src/utils/` and the existing `src/theme/`,
+  `src/routes/`, `src/hooks/`. The duplicate `i18n.ts` (shadowing `i18n/`) and the unused
+  `RouteState.tsx` state machine were deleted; `components/shared/ui.tsx` `Na` now delegates to
   `AppLink` so there is one link implementation, and `PosterArt` delegates to `Artwork`.
 - Live code brought in line with the house rules: the inline Arabic/English ternaries in
   `controls.tsx` and `auth.tsx` moved to `i18n/` keys (new `controls.*`, `common.backToSite`),

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BoxOfficePage } from "@/pages/BoxOffice";
-import { managedContentOptions, mergedBoxoffice } from "@/content";
+import { managedContentOptions, mergedBoxoffice } from "@/features/content/content";
 import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/boxoffice")({

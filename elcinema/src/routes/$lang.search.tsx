@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchPage } from "@/pages/SearchPage";
-import { managedContentOptions, mergedSearch } from "@/content";
+import { managedContentOptions, mergedSearch } from "@/features/content/content";
 import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/search")({

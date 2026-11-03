@@ -4,10 +4,10 @@
  * are known for, each addressed by the elCinema-style numeric ID.
  */
 import { Film, UserRound } from "lucide-react";
-import { movieBySlug, personById, personBySlug, workId } from "../build";
-import { Na, PosterArt, fmtDate, workPath } from "../ui";
-import type { Lang, Movie, Person } from "../home.shared";
-import { makeT } from "../i18n";
+import { movieBySlug, personById, personBySlug, workId } from "@/lib/build";
+import { Na, PosterArt, fmtDate, workPath } from "@/components/shared/ui";
+import type { Lang, Movie, Person } from "@/features/home/home.shared";
+import { makeT } from "@/i18n";
 
 function personBySlugOrId(id: string) {
   if (/^\d+$/.test(id)) return personById.get(Number(id)) ?? personBySlug.get(id);

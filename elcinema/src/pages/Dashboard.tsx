@@ -33,14 +33,14 @@ import {
   Users,
 } from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
-import { ThemeToggle } from "../ThemeToggle";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import {
   BoxOfficeSection,
   ChannelsSection,
   LiveSection,
   MoviesSection,
   PeopleSection,
-} from "../dashboard/Sections";
+} from "@/features/dashboard/Sections";
 import {
   BoxOfficeManager,
   ChannelsManager,
@@ -48,8 +48,8 @@ import {
   MoviesManager,
   PeopleManager,
   VideosManager,
-} from "../dashboard/editor";
-import { Na } from "../ui";
+} from "@/features/dashboard/editor";
+import { Na } from "@/components/shared/ui";
 import {
   Sidebar,
   SidebarContent,
@@ -68,9 +68,9 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { managedContentOptions } from "../content";
+import { managedContentOptions } from "@/features/content/content";
 import {
   allMovies,
   managedBoxofficeRows,
@@ -81,9 +81,9 @@ import {
   mergedBoxoffice,
   mergedTvGuide,
   managedVideos,
-} from "../content";
-import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE } from "../data";
-import type { Lang } from "../home.shared";
+} from "@/features/content/content";
+import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE } from "@/lib/data";
+import type { Lang } from "@/features/home/home.shared";
 
 const L = (lang: Lang, en: string, ar: string) => (lang === "ar" ? ar : en);
 const COLORS = [

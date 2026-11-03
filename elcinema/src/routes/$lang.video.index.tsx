@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoGalleryFn } from "@/live.functions";
-import { managedContentOptions, managedVideos } from "@/content";
-import type { Lang } from "@/home.shared";
+import { getVideoGalleryFn } from "@/features/live/live.functions";
+import { managedContentOptions, managedVideos } from "@/features/content/content";
+import type { Lang } from "@/features/home/home.shared";
 import { asLang } from "@/i18n";
 import { VideoGalleryRoute } from "@/pages/Videos";
 

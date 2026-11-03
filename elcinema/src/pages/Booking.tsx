@@ -9,14 +9,14 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, CalendarClock, Ticket } from "lucide-react";
 import { useState } from "react";
-import { getElcinemaHomeFn } from "../home.functions";
-import { dayLabel, movieById } from "../build";
-import { getLiveWorkFn } from "../live.functions";
-import { cardLink } from "../links";
-import type { Lang } from "../home.shared";
-import type { LiveWork } from "../live.shared";
-import { LiveImg, LiveError, liveWorkPath } from "../live-ui";
-import { Na } from "../ui";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { dayLabel, movieById } from "@/lib/build";
+import { getLiveWorkFn } from "@/features/live/live.functions";
+import { cardLink } from "@/lib/links";
+import type { Lang } from "@/features/home/home.shared";
+import type { LiveWork } from "@/features/live/live.shared";
+import { LiveImg, LiveError, liveWorkPath } from "@/features/live/live-ui";
+import { Na } from "@/components/shared/ui";
 import {
   FilterInput,
   ListToolbar,
@@ -29,8 +29,8 @@ import {
   sortByText,
   textSortOptions,
   useListState,
-} from "../controls";
-import { makeT } from "../i18n";
+} from "@/components/shared/controls";
+import { makeT } from "@/i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],

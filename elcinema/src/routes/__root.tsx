@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { Clapperboard } from "lucide-react";
 
 import { Toaster } from "@/components/ui/sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";

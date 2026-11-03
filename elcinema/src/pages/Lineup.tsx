@@ -4,9 +4,9 @@
  * plus one list's contents. Items link to internal work/person pages.
  */
 import { ArrowLeft, ListVideo } from "lucide-react";
-import type { Lang } from "../home.shared";
-import type { LiveLineupDetail, LiveLineupIndex } from "../live.shared";
-import { Na } from "../ui";
+import type { Lang } from "@/features/home/home.shared";
+import type { LiveLineupDetail, LiveLineupIndex } from "@/features/live/live.shared";
+import { Na } from "@/components/shared/ui";
 import {
   FilterInput,
   ListToolbar,
@@ -19,9 +19,9 @@ import {
   sortByText,
   textSortOptions,
   useListState,
-} from "../controls";
-import { LiveImg, LiveError, LivePoster, lineupPath, liveWorkPath } from "../live-ui";
-import { makeT } from "../i18n";
+} from "@/components/shared/controls";
+import { LiveImg, LiveError, LivePoster, lineupPath, liveWorkPath } from "@/features/live/live-ui";
+import { makeT } from "@/i18n";
 
 export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: Lang }) {
   const t = makeT(lang);

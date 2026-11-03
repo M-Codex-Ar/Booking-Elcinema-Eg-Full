@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoDetailFn } from "@/live.functions";
-import { LiveError } from "@/live-ui";
+import { getVideoDetailFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
 import { VideoDetailPage } from "@/pages/Videos";
 import { asLang } from "@/i18n";
-import type { Lang } from "@/home.shared";
+import type { Lang } from "@/features/home/home.shared";
 
 const videoOptions = (lang: Lang, id: string) =>
   queryOptions({

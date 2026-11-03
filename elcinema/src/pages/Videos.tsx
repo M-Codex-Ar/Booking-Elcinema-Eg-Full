@@ -5,11 +5,11 @@
  * embed.
  */
 import { ArrowLeft, Play } from "lucide-react";
-import { ImgWithFallback } from "../components/primitives";
-import type { Lang } from "../home.shared";
+import { ImgWithFallback } from "@/components/shared/primitives";
+import type { Lang } from "@/features/home/home.shared";
 import { useState } from "react";
-import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "../live.shared";
-import type { ManagedVideoRow } from "../content";
+import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "@/features/live/live.shared";
+import type { ManagedVideoRow } from "@/features/content/content";
 import {
   Chip,
   FilterInput,
@@ -23,10 +23,10 @@ import {
   sortByText,
   textSortOptions,
   useListState,
-} from "../controls";
-import { Na } from "../ui";
-import { makeT, rowTitle } from "../i18n";
-import { LiveImg, LiveError, videoPath } from "../live-ui";
+} from "@/components/shared/controls";
+import { Na } from "@/components/shared/ui";
+import { makeT, rowTitle } from "@/i18n";
+import { LiveImg, LiveError, videoPath } from "@/features/live/live-ui";
 
 const L = {
   en: {

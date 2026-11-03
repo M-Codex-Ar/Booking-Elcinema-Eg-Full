@@ -6,7 +6,7 @@
  */
 import { CalendarClock, Clock, Film, Play, Star, Ticket } from "lucide-react";
 import { useState } from "react";
-import { MOVIES, GENRES } from "../data";
+import { MOVIES, GENRES } from "@/lib/data";
 import {
   dayLabel,
   movieById,
@@ -17,10 +17,10 @@ import {
   showtimesFor,
   watchOnlineFor,
   workId,
-} from "../build";
-import { Na, PosterArt, fmtDate, t, workPath } from "../ui";
-import type { Lang, Movie } from "../home.shared";
-import { makeT } from "../i18n";
+} from "@/lib/build";
+import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
+import type { Lang, Movie } from "@/features/home/home.shared";
+import { makeT } from "@/i18n";
 
 const L = {
   en: {

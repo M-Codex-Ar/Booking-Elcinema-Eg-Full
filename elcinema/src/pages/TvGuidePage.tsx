@@ -1,10 +1,10 @@
 /** TV Guide — full evening grid across all channels, filterable by
  * category and by channel name (URL-driven). */
 import { Tv } from "lucide-react";
-import { TvGuideView } from "../TvGuide";
-import type { ChannelCategory, Lang, TvGuide } from "../home.shared";
-import { FilterInput, ListToolbar, type SetSearch } from "../controls";
-import { bi, makeT } from "../i18n";
+import { TvGuideView } from "@/components/shared/TvGuide";
+import type { ChannelCategory, Lang, TvGuide } from "@/features/home/home.shared";
+import { FilterInput, ListToolbar, type SetSearch } from "@/components/shared/controls";
+import { bi, makeT } from "@/i18n";
 
 const CATS: { id: ChannelCategory | "all"; en: string; ar: string }[] = [
   { id: "all", en: "All", ar: "الكل" },

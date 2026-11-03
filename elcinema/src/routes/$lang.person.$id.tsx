@@ -1,15 +1,20 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLivePersonFn } from "@/live.functions";
-import { LiveError } from "@/live-ui";
+import { getLivePersonFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
 import { LivePersonPage } from "@/pages/LivePerson";
 import { PersonPage } from "@/pages/Person";
-import { ManagedPersonPage } from "@/Managed";
-import { managedContentOptions, managedPeople, managedPersonById, managedRef } from "@/content";
-import type { ManagedContent } from "@/content.functions";
-import { personById, personBySlug, personId } from "@/build";
+import { ManagedPersonPage } from "@/pages/Managed";
+import {
+  managedContentOptions,
+  managedPeople,
+  managedPersonById,
+  managedRef,
+} from "@/features/content/content";
+import type { ManagedContent } from "@/features/content/content.functions";
+import { personById, personBySlug, personId } from "@/lib/build";
 import { asLang } from "@/i18n";
-import type { Lang } from "@/home.shared";
+import type { Lang } from "@/features/home/home.shared";
 
 const livePersonOptions = (lang: Lang, id: string) =>
   queryOptions({

@@ -1,11 +1,11 @@
 /** Box Office — weekly Egypt cinema revenue table. */
 import { TrendingUp } from "lucide-react";
-import { boxofficeDate, fmtRevenue, movieBySlug, workId } from "../build";
-import { Na, workPath } from "../ui";
-import type { BoxofficeEntry, Lang } from "../home.shared";
+import { boxofficeDate, fmtRevenue, movieBySlug, workId } from "@/lib/build";
+import { Na, workPath } from "@/components/shared/ui";
+import type { BoxofficeEntry, Lang } from "@/features/home/home.shared";
 import { useState } from "react";
-import { FilterInput, ListToolbar, SortSelect, matches } from "../controls";
-import { makeT } from "../i18n";
+import { FilterInput, ListToolbar, SortSelect, matches } from "@/components/shared/controls";
+import { makeT } from "@/i18n";
 
 type SortKey = "rank" | "weekly" | "total" | "title";
 

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupIndexFn } from "@/live.functions";
-import { managedContentOptions, managedLists, managedRef } from "@/content";
-import type { Lang } from "@/home.shared";
+import { getLineupIndexFn } from "@/features/live/live.functions";
+import { managedContentOptions, managedLists, managedRef } from "@/features/content/content";
+import type { Lang } from "@/features/home/home.shared";
 import { asLang } from "@/i18n";
 import { LineupIndexRoute } from "@/pages/Lineup";
 

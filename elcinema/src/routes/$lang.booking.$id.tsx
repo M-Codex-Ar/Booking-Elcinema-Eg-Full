@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLiveWorkFn } from "@/live.functions";
-import { movieById } from "@/build";
-import type { Lang } from "@/home.shared";
+import { getLiveWorkFn } from "@/features/live/live.functions";
+import { movieById } from "@/lib/build";
+import type { Lang } from "@/features/home/home.shared";
 import { asLang } from "@/i18n";
 import { BookingMovieRoute } from "@/pages/Booking";
 

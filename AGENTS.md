@@ -8,11 +8,13 @@ These rules apply to the whole repository. Area-specific rules live in
 | Path | Owns | Never put here |
 | --- | --- | --- |
 | `elcinema/src/theme/` | Design tokens and CSS utilities | Component markup, feature copy |
-| `elcinema/src/elcinema/components/` | UI primitives + `cva` recipes | Data fetching, page-specific business rules |
-| `elcinema/src/elcinema/pages/` | Page composition | Re-usable visual recipes |
-| `elcinema/src/elcinema/i18n/` | All UI copy | Domain data (movie titles travel as `Bi` values) |
-| `elcinema/src/elcinema/content.ts` | Merge rules for operator + built-in content | Direct table queries from pages |
+| `elcinema/src/components/` | UI primitives + `cva` recipes + layout shell | Data fetching, page-specific business rules |
+| `elcinema/src/features/` | Feature modules (auth, content, home, live, dashboard) | Cross-feature coupling, direct table queries |
+| `elcinema/src/pages/` | Page composition | Re-usable visual recipes |
+| `elcinema/src/i18n/` | All UI copy | Domain data (movie titles travel as `Bi` values) |
+| `elcinema/src/lib/` | Data access, merge rules, shared helpers | Component markup |
 | `elcinema/src/routes/` | Thin route wiring: params → data → component | Formatting, filtering, merge logic |
+| `elcinema/src/app/` | TanStack Start entry points (server, start, router) | Feature logic |
 | `server-api/` | ASP.NET Core API (spec first, code when approved) | Frontend code, secrets |
 | `docs/` | Architecture, contracts, ADRs | Duplicated README boilerplate |
 | `scripts/` | Repeatable developer commands | One-off experiments |

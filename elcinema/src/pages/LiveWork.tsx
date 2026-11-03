@@ -18,12 +18,19 @@ import {
   Tv,
 } from "lucide-react";
 import { useState } from "react";
-import { ImgWithFallback } from "../components/primitives";
-import type { Lang } from "../home.shared";
-import type { LiveWork } from "../live.shared";
-import { Na, Row } from "../ui";
-import { LiveImg, LivePoster, PersonChip, RatingPill, bookingPath, videoPath } from "../live-ui";
-import { makeT } from "../i18n";
+import { ImgWithFallback } from "@/components/shared/primitives";
+import type { Lang } from "@/features/home/home.shared";
+import type { LiveWork } from "@/features/live/live.shared";
+import { Na, Row } from "@/components/shared/ui";
+import {
+  LiveImg,
+  LivePoster,
+  PersonChip,
+  RatingPill,
+  bookingPath,
+  videoPath,
+} from "@/features/live/live-ui";
+import { makeT } from "@/i18n";
 
 const L = {
   en: {

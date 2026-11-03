@@ -3,7 +3,7 @@
  * Mirror the artwork elCinema depends on into this repository.
  *
  * Why this exists: the offline sample dataset (`src/data/*.json`)
- * references artwork by manifest key (`w-001.jpg`), and `src/images.ts`
+ * references artwork by manifest key (`w-001.jpg`), and `src/lib/images.ts`
  * resolves those keys to `/__l5e/assets-v1/...` URLs. Those are served only by
  * the Lovable preview — on the dev server and in production every one of them is
  * a 404, which is why sample mode shows a wall of broken images.
@@ -178,7 +178,7 @@ if (kinds.includes("born")) {
 }
 
 if (limit) records.length = Math.min(records.length, limit);
-const manifestPath = join(appRoot, "src/images.ts");
+const manifestPath = join(appRoot, "src/lib/images.ts");
 let manifest = readFileSync(manifestPath, "utf8");
 const updates = new Map();
 let mirrored = 0;

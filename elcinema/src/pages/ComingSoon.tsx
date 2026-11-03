@@ -1,10 +1,10 @@
 /** Coming Soon — upcoming releases with genre filter, sorting, grid/list
  * view toggle and pagination (all URL-driven). */
 import { CalendarClock, Star } from "lucide-react";
-import { GENRES } from "../data";
-import { movieMeta, workId } from "../build";
-import { Na, PosterArt, fmtDate, t, workPath } from "../ui";
-import type { Lang, Movie } from "../home.shared";
+import { GENRES } from "@/lib/data";
+import { movieMeta, workId } from "@/lib/build";
+import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
+import type { Lang, Movie } from "@/features/home/home.shared";
 import {
   ListToolbar,
   Pagination,
@@ -15,8 +15,8 @@ import {
   pageSlice,
   type SetSearch,
   type ViewMode,
-} from "../controls";
-import { makeT } from "../i18n";
+} from "@/components/shared/controls";
+import { makeT } from "@/i18n";
 
 type SortKey = "soon" | "title" | "runtime";
 

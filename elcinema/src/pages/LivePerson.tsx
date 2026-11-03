@@ -4,11 +4,11 @@
  * English or Arabic edition; filmography works link to internal work pages.
  */
 import { Film, UserRound } from "lucide-react";
-import type { Lang } from "../home.shared";
-import type { LivePerson } from "../live.shared";
-import { Na } from "../ui";
-import { LiveImg, LivePoster, bookingPath } from "../live-ui";
-import { makeT } from "../i18n";
+import type { Lang } from "@/features/home/home.shared";
+import type { LivePerson } from "@/features/live/live.shared";
+import { Na } from "@/components/shared/ui";
+import { LiveImg, LivePoster, bookingPath } from "@/features/live/live-ui";
+import { makeT } from "@/i18n";
 
 export function LivePersonPage({ data, lang }: { data: LivePerson; lang: Lang }) {
   const t = makeT(lang);

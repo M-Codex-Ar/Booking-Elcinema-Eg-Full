@@ -1,13 +1,13 @@
 /** Now Playing — movies currently in Egyptian cinemas, with genre filter,
  * sorting, grid/list view toggle and pagination (all URL-driven). */
 import { Ticket, Star } from "lucide-react";
-import { GENRES } from "../data";
-import { movieMeta, workId } from "../build";
-import { locale, makeT } from "../i18n";
-import { fmtDate, Na, t, workPath } from "../ui";
-import { PosterArt } from "../ui";
-import { pill } from "../components/variants";
-import type { Lang, Movie } from "../home.shared";
+import { GENRES } from "@/lib/data";
+import { movieMeta, workId } from "@/lib/build";
+import { locale, makeT } from "@/i18n";
+import { fmtDate, Na, t, workPath } from "@/components/shared/ui";
+import { PosterArt } from "@/components/shared/ui";
+import { pill } from "@/components/shared/variants";
+import type { Lang, Movie } from "@/features/home/home.shared";
 import {
   ListToolbar,
   Pagination,
@@ -18,7 +18,7 @@ import {
   pageSlice,
   type SetSearch,
   type ViewMode,
-} from "../controls";
+} from "@/components/shared/controls";
 
 type SortKey = "featured" | "rating" | "title" | "newest";
 

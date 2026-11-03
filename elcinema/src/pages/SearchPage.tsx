@@ -1,12 +1,12 @@
 /** Search — filters the built-in dataset across titles, persons and channels. */
-import { makeT } from "../i18n";
+import { makeT } from "@/i18n";
 import { Search, User, Tv, Film } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { searchAll } from "../build";
-import { Na, PosterArt, personPath, workPath } from "../ui";
-import type { Lang } from "../home.shared";
-import type { SearchResult } from "../build";
-import { dedupeSearchResults } from "../content";
+import { searchAll } from "@/lib/build";
+import { Na, PosterArt, personPath, workPath } from "@/components/shared/ui";
+import type { Lang } from "@/features/home/home.shared";
+import type { SearchResult } from "@/lib/build";
+import { dedupeSearchResults } from "@/features/content/content";
 import {
   ListToolbar,
   Pagination,
@@ -14,7 +14,7 @@ import {
   paginate,
   sortByText,
   textSortOptions,
-} from "../controls";
+} from "@/components/shared/controls";
 
 const L = {
   en: {

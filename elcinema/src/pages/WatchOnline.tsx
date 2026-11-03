@@ -6,12 +6,12 @@
  */
 import { ArrowLeft, MonitorPlay } from "lucide-react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { ImgWithFallback } from "../components/primitives";
-import { getElcinemaHomeFn } from "../home.functions";
-import type { Lang } from "../home.shared";
-import type { LiveVodGuide } from "../live.shared";
-import { LiveError, LivePoster, VodBadge } from "../live-ui";
-import { Na, Row } from "../ui";
+import { ImgWithFallback } from "@/components/shared/primitives";
+import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import type { Lang } from "@/features/home/home.shared";
+import type { LiveVodGuide } from "@/features/live/live.shared";
+import { LiveError, LivePoster, VodBadge } from "@/features/live/live-ui";
+import { Na, Row } from "@/components/shared/ui";
 import {
   FilterInput,
   ListToolbar,
@@ -23,8 +23,8 @@ import {
   sortByText,
   textSortOptions,
   useListState,
-} from "../controls";
-import { makeT } from "../i18n";
+} from "@/components/shared/controls";
+import { makeT } from "@/i18n";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["elcinema-home"],

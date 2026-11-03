@@ -12,8 +12,8 @@
  */
 import * as cheerio from "cheerio";
 import { mkdir, writeFile, access } from "node:fs/promises";
-import { parseHomePage, parseTvGuide } from "../src/home.server";
-import { parseWorkPage } from "../src/live.server";
+import { parseHomePage, parseTvGuide } from "../src/features/home/home.server";
+import { parseWorkPage } from "../src/features/live/live.server";
 import type { Element } from "domhandler";
 
 const UA =

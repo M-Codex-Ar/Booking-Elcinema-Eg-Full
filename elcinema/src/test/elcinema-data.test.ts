@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { BOXOFFICE, CHANNELS, GENRES, MOVIES, PEOPLE, boxofficeDate, TV_GUIDE_DATA } from "@/data";
-import { IMAGES } from "@/images";
+import {
+  BOXOFFICE,
+  CHANNELS,
+  GENRES,
+  MOVIES,
+  PEOPLE,
+  boxofficeDate,
+  TV_GUIDE_DATA,
+} from "@/lib/data";
+import { IMAGES } from "@/lib/images";
 import {
   comingSoon,
   fmtClock12,
@@ -19,7 +27,7 @@ import {
   toSlug,
   tvGuide,
   workId,
-} from "@/build";
+} from "@/lib/build";
 
 /**
  * The dataset is scraped from elcinema.com (both editions). These checks are

@@ -1,12 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupDetailFn } from "@/live.functions";
-import { LiveError } from "@/live-ui";
+import { getLineupDetailFn } from "@/features/live/live.functions";
+import { LiveError } from "@/features/live/live-ui";
 import { LineupDetailRoute } from "@/pages/Lineup";
-import { managedContentOptions, allMovies, managedLists, movieArt } from "@/content";
-import type { ManagedContent } from "@/content.functions";
-import type { LiveLineupDetail } from "@/live.shared";
-import type { Lang } from "@/home.shared";
+import {
+  managedContentOptions,
+  allMovies,
+  managedLists,
+  movieArt,
+} from "@/features/content/content";
+import type { ManagedContent } from "@/features/content/content.functions";
+import type { LiveLineupDetail } from "@/features/live/live.shared";
+import type { Lang } from "@/features/home/home.shared";
 import { makeT, rowTitle, asLang } from "@/i18n";
 
 const lineupDetailOptions = (lang: Lang, id: string) =>

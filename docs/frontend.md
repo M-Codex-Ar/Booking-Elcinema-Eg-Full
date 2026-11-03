@@ -27,6 +27,7 @@ committed route-tree freshness check that CI enforces.
 
 ```
 src/
+├── app/                    TanStack Start entry points (server, start, router)
 ├── theme/                  tokens.css, utilities.css, base.css (the design system)
 ├── routes/                 file-based routes; thin wiring only
 │   ├── __root.tsx          <html>, document head, theme flash guard, QueryClientProvider
@@ -36,26 +37,26 @@ src/
 │   ├── auth.tsx            operator sign-in (self sign-up is disabled on purpose)
 │   ├── reset-password.tsx
 │   └── _authenticated/    dashboard, guarded by the auth route
-├── elcinema/
-│   ├── pages/              one file per screen
-│   ├── components/         primitives.tsx (markup) + variants.ts (class recipes)
-│   ├── dashboard/            DataTable, Sections, editor
-│   ├── data/*.json         built-in catalogue
-│   ├── i18n.ts             every UI string, both languages
-│   ├── content.ts          merge rules for operator + built-in content
-│   ├── build.ts            catalogue indexes + formatters
-│   ├── data.ts             typed access to data/*.json
-│   ├── links.ts            cardLink(): the only sanctioned scraped href
-│   ├── images.ts           local asset registry (img())
-│   ├── SiteChrome.tsx      header, footer, nav
-│   ├── *.shared.ts         types crossing a server boundary
-│   ├── *.server.ts         cheerio parsers + fetch, server only
-│   └── *.functions.ts      createServerFn wrappers
-├── components/ui/          shadcn primitives consumed by the app shell + dashboard
-├── integrations/supabase/  client, auth-attacher + auth-middleware, generated types
-├── lib/                    cn(), error capture/reporting
-├── test/                   Vitest suites + setup
-└── router.tsx, server.ts, start.ts, routeTree.gen.ts
+├── components/
+│   ├── ui/                shadcn primitives consumed by the app shell + dashboard
+│   ├── shared/            primitives.tsx (markup) + variants.ts (class recipes) + controls, ui facade, TvGuide
+│   └── layout/            SiteChrome, SiteMenu, ThemeToggle
+├── features/
+│   ├── auth/              auth.ts helpers + AuthDialog
+│   ├── content/           content.ts merge rules + content.functions.ts
+│   ├── home/              home.server.ts (parsers), home.functions.ts, home.shared.ts
+│   ├── live/              live.server.ts, live.functions.ts, live.shared.ts, live-ui.tsx
+│   └── dashboard/         DataTable, Sections, editor
+├── pages/                 one file per screen
+├── i18n/                  every UI string, both languages (index.ts + en/ + ar/)
+├── data/*.json            built-in catalogue
+├── lib/                   build.ts, data.ts, images.ts, links.ts, media.shared.ts, cn(), error capture/reporting, supabase-env
+├── utils/                 slug.ts (and other small helpers)
+├── services/clients/supabase/  client, auth-attacher, auth-middleware, generated types
+├── hooks/                 use-mobile.tsx
+├── test/                  Vitest suites + setup
+├── assets/                bundled images
+└── router.tsx is now under app/; routeTree.gen.ts stays at src root
 ```
 
 ## Route conventions
