@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/services/clients/supabase/types";
 import { requireSupabaseAuth } from "@/services/clients/supabase/auth-middleware";
+import { requireAdminRole } from "@/features/auth/auth";
 
 export const MANAGED_TABLES = [
   "managed_movies",
@@ -72,14 +73,7 @@ export const saveManagedRow = createServerFn({ method: "POST" })
   .validator((input: { table: ManagedTable; row: ManagedRow } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
-    const claims = context.claims as Record<string, unknown> | undefined;
-    const role =
-      claims?.["role"] ||
-      (claims?.["app_metadata"] as Record<string, unknown> | undefined)?.["role"] ||
-      (claims?.["user_metadata"] as Record<string, unknown> | undefined)?.["role"];
-    if (role !== "admin") {
-      throw new Error("Forbidden: Admin privileges required");
-    }
+    requireAdminRole(context.claims as Record<string, unknown> | undefined);
     const row: Record<string, unknown> = { ...data.row };
     delete row["created_at"];
     row["updated_at"] = new Date().toISOString();
@@ -99,14 +93,7 @@ export const deleteManagedRow = createServerFn({ method: "POST" })
   .validator((input: { table: ManagedTable; id: string } | null) => input)
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
-    const claims = context.claims as Record<string, unknown> | undefined;
-    const role =
-      claims?.["role"] ||
-      (claims?.["app_metadata"] as Record<string, unknown> | undefined)?.["role"] ||
-      (claims?.["user_metadata"] as Record<string, unknown> | undefined)?.["role"];
-    if (role !== "admin") {
-      throw new Error("Forbidden: Admin privileges required");
-    }
+    requireAdminRole(context.claims as Record<string, unknown> | undefined);
     const { error } = await context.supabase
       .from(data.table as never)
       .delete()

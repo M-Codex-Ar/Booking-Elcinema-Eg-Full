@@ -38,3 +38,31 @@ export function getUserDisplayName(user: User | null | undefined): string {
   if (user.email) return user.email.split("@")[0] || user.email;
   return "";
 }
+
+/**
+ * Extract role from JWT claims object (used in server functions).
+ * Priority same as getUserRole but works with claims object instead of User.
+ */
+export function getRoleFromClaims(
+  claims: Record<string, unknown> | undefined
+): string | null {
+  if (!claims) return null;
+  
+  const role =
+    (claims["role"] as string | undefined) ||
+    ((claims["app_metadata"] as Record<string, unknown>)?.["role"] as string | undefined) ||
+    ((claims["user_metadata"] as Record<string, unknown>)?.["role"] as string | undefined);
+  
+  return role || null;
+}
+
+/**
+ * Require admin role from JWT claims, throw if not admin.
+ * Used in protected server functions (saveManagedRow, deleteManagedRow, etc).
+ */
+export function requireAdminRole(claims: Record<string, unknown> | undefined): void {
+  const role = getRoleFromClaims(claims);
+  if (role !== "admin") {
+    throw new Error("Forbidden: Admin privileges required");
+  }
+}

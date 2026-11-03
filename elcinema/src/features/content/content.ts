@@ -164,10 +164,12 @@ export function managedPersonToPerson(row: ManagedPersonRow): Person {
   };
 }
 
+import { normalizeTitleForComparison } from "@/lib/normalize";
+
 const rows = <T>(list: Record<string, unknown>[] | undefined) => (list ?? []) as unknown as T[];
 
 /** Normalized title key used for duplicate checks across sources. */
-const normTitle = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+const normTitle = normalizeTitleForComparison;
 
 /** Keep the first entry for every normalized title: earlier items win, so
  * callers put the source that should override (usually managed) first. */

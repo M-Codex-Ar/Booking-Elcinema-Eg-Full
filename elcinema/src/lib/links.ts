@@ -13,6 +13,7 @@
 import { MOVIES, PEOPLE } from "@/lib/data";
 import { movieBySlug, personBySlug, personId, workId } from "@/lib/build";
 import type { Lang } from "@/types/home";
+import { normalizeLinkTitle } from "@/lib/normalize";
 
 export interface CardLink {
   href: string;
@@ -34,11 +35,7 @@ const SECTION_ROUTES = new Set([
   "booking",
 ]);
 
-const normalize = (s: string) =>
-  s
-    .replace(/\s*\([^)]*\)\s*$/, "")
-    .trim()
-    .toLowerCase();
+const normalize = normalizeLinkTitle;
 
 function movieForTitle(title: string) {
   const t = normalize(title);

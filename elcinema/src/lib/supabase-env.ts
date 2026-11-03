@@ -49,3 +49,26 @@ export function supabasePublishableKey(): string | undefined {
 export function isSupabaseConfigured(): boolean {
   return Boolean(supabaseUrl() && supabasePublishableKey());
 }
+
+/** Require both Supabase URL and publishable key; throw if missing. */
+export interface SupabaseConfig {
+  url: string;
+  publishableKey: string;
+}
+
+export function requireSupabaseEnv(): SupabaseConfig {
+  const url = supabaseUrl();
+  const publishableKey = supabasePublishableKey();
+
+  if (!url || !publishableKey) {
+    const missing = [
+      ...(!url ? ["SUPABASE_URL"] : []),
+      ...(!publishableKey ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+    ];
+    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Connect Supabase in Lovable Cloud.`;
+    console.error(`[Supabase] ${message}`);
+    throw new Error(message);
+  }
+
+  return { url, publishableKey };
+}
