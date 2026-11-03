@@ -8,6 +8,13 @@ All notable changes to this repository are documented here. The format follows
 
 ### Added
 
+- Scraped static content pages from the live site: `parseStaticPage` / `getStaticPage` in
+  `src/features/live/` (new `LiveStaticPage` / `LiveStaticSection` / `LiveStaticBlock` DTOs in
+  `src/types/live.ts`), a cached `staticPageOptions` query and the generic `StaticPage` component
+  now render the real About, Contact, Advertise and Privacy Policy copy from elcinema.com
+  (About → `/<edition>/about_us/`, Contact → `/<edition>/contact/`, Advertise →
+  `/<edition>/advertise/`, Privacy → `/<edition>/privacy_policy/`), with the shared section/list
+  structure; the Terms route keeps the edition's own copy (the real site ships no Terms page).
 - Repository scaffold for the full-stack layout: root `README`, `AGENTS`, `CONTRIBUTING`,
   `SECURITY`, `CHANGELOG`, `.editorconfig`, root ignore rules, root `package.json` task runner.
 - `.github/`: frontend CI workflow, backend CI template (disabled until code exists), issue and
@@ -68,6 +75,10 @@ All notable changes to this repository are documented here. The format follows
   (`@/lib/supabase-env`, `@/elcinema/auth`) instead of integration stubs.
 - `src/server.ts`, `src/start.ts` and `__root.tsx` read the Supabase config through
   `@/lib/…` aliases consistently.
+- The live movie detail's "Book tickets" action now opens the real cinema ticket service in a
+  new tab (the scraped per-cinema booking href, e.g. `https://elcinema.com/en/booking/<work>/<cinema>/`),
+  falling back to the internal booking page when the scrape carries no cinema link. The work
+  page's showtimes section reuses the same destination.
 
 ### Removed
 
@@ -79,6 +90,11 @@ All notable changes to this repository are documented here. The format follows
   `variants.ts`; `controls.tsx` chips now use the shared `chip` recipe.
 - 29 unused dependencies from `elcinema/package.json` (command palette, drawer/datepicker,
   form stack, carousel, resizable panels and ~20 Radix wrappers); `bun.lock` regenerated.
+- Dead bilingual page copy for the static content pages (`footer.aboutPage.*`,
+  `footer.contactPage.*`, `footer.advertisePage.*`, `footer.privacyPage.*` in both editions) now
+  that the About / Contact / Advertise / Privacy pages render the scraped live copy through the
+  generic `StaticPage`; the stale `box.sub7` ("top 7") key was replaced by the `box.sub` ("top 20")
+  key the box office subtitle now reads.
 
 ### Fixed
 

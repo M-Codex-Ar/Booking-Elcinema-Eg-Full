@@ -32,8 +32,7 @@ export function BoxOfficePage({ lang, entries }: { lang: Lang; entries: Boxoffic
           : sort === "title"
             ? a.row.title[lang].localeCompare(b.row.title[lang], lang)
             : a.rank - b.rank,
-    )
-    .slice(0, 7);
+    );
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
@@ -41,7 +40,7 @@ export function BoxOfficePage({ lang, entries }: { lang: Lang; entries: Boxoffic
         <TrendingUp className="h-6 w-6 text-primary" /> {t("box.title")}
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        {boxofficeDate[lang]} · {t("box.sub7")}
+        {boxofficeDate[lang]} · {t("box.sub")}
       </p>
 
       <ListToolbar>

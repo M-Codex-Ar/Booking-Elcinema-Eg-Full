@@ -70,7 +70,6 @@ export const enPages = {
   "search.noneFor": "No results for {q}",
   "search.in": "in",
   "search.results": "{count} results",
-  "box.sub7": "Weekly Egypt box office, top 7",
   "box.sortRank": "Rank",
   "booking.ticketNote": "Opens the real ticket service in a new tab.",
   "soon.release": "Releases",

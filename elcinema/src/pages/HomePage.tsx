@@ -560,7 +560,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
             </div>
             <p className="mb-4 text-xs text-muted-foreground">{data.boxofficeDate}</p>
             <ol className="space-y-3">
-              {data.boxoffice.map((b, i) => (
+              {data.boxoffice.slice(0, 5).map((b, i) => (
                 <li key={i}>
                   <CardA
                     href={b.href}

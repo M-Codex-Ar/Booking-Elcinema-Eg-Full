@@ -70,7 +70,6 @@ export const arPages = {
   "search.noneFor": "لا نتائج عن {q}",
   "search.in": "في",
   "search.results": "{count} نتيجة",
-  "box.sub7": "بوكس أوفيس مصر الأسبوعي، أفضل 7",
   "box.sortRank": "الترتيب",
   "booking.ticketNote": "يفتح خدمة التذاكر الحقيقية في نافذة جديدة.",
   "soon.release": "يُعرض",
