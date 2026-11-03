@@ -658,6 +658,7 @@ export function getFallbackPage(path: string, lang: Lang): LiveStaticPage | null
   if (!match) return null;
 
   const pageType = match[1];
+  if (!pageType) return null;
   const fallback = FALLBACK_PAGES[pageType];
 
   if (!fallback) return null;

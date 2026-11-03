@@ -28,13 +28,14 @@ function PrivacyPage() {
 
   // Use fallback if scraping fails or returns incomplete data
   const fallback = getFallbackPage(`/${l}/privacy_policy/`, l);
-  
+
   // Use fallback if:
   // 1. No scraped data
   // 2. Scraped data has less than 2 sections (incomplete)
-  const page = !result.data || result.data.sections?.length < 2
-    ? fallback
-    : { ...result.data, image: fallback?.image || result.data.image };
+  const page =
+    !result.data || result.data.sections?.length < 2
+      ? fallback
+      : { ...result.data, ...(fallback?.image ? { image: fallback.image } : {}) };
 
   if (!page) {
     return <LiveError message={result.error ?? ""} lang={l} />;

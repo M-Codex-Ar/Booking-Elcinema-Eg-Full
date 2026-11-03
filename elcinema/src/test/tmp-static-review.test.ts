@@ -15,7 +15,10 @@ describe("tmp live static content review", () => {
       out.push(`===== ${path} -> ${res.status} =====\n${JSON.stringify(page, null, 2)}`);
       writeFileSync(`C:\\Users\\mosta\\AppData\\Local\\Temp\\opencode\\${file}`, html);
     }
-    writeFileSync("C:\\Users\\mosta\\AppData\\Local\\Temp\\opencode\\static-pages.json", out.join("\n"));
+    writeFileSync(
+      "C:\\Users\\mosta\\AppData\\Local\\Temp\\opencode\\static-pages.json",
+      out.join("\n"),
+    );
     expect(true).toBe(true);
   });
 });

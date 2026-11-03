@@ -707,7 +707,7 @@ export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
     if (!heading) return;
     sections.push({ heading, blocks: staticBlocks($, $heading) });
   });
-  return { title: resolvedTitle, sections, image: image ?? undefined };
+  return { title: resolvedTitle, sections, image };
 }
 
 export async function getStaticPage(lang: Lang, path: string): Promise<LiveStaticPage> {

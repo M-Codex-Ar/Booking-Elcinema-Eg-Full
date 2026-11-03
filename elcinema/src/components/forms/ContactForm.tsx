@@ -97,9 +97,7 @@ export function ContactForm({ lang }: ContactFormProps) {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field
@@ -212,7 +210,7 @@ export function ContactForm({ lang }: ContactFormProps) {
             "w-full rounded-lg border border-border bg-background px-4 py-2 font-sans text-base",
             "transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
             "resize-none",
-            errors.message && "border-red-500 focus:ring-red-500"
+            errors.message && "border-red-500 focus:ring-red-500",
           )}
           aria-describedby={errors.message ? "message-error" : undefined}
         />
