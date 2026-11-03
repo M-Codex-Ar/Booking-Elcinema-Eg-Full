@@ -106,7 +106,7 @@ function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="page-background min-h-screen">
       <div className="mx-auto w-full max-w-site px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <header className="mx-auto mb-10 max-w-2xl text-center sm:mb-14">
           <p className="mb-3 inline-flex rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">

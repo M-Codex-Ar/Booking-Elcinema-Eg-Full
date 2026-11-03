@@ -177,7 +177,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="page-background flex min-h-screen items-center justify-center px-4">
       <div
         className="glass-card w-full max-w-md rounded-3xl border border-border p-8"
         dir={lang === "ar" ? "rtl" : "ltr"}

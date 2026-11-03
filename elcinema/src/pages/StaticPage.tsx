@@ -25,7 +25,7 @@ export function StaticPage({
   const isContact = layout === "contact";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="page-background min-h-screen">
       {/* Header Section */}
       <div className="border-b border-border bg-background/50 backdrop-blur-sm">
         <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

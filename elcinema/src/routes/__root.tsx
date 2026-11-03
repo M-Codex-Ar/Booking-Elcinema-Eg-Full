@@ -19,7 +19,7 @@ import appCss from "../styles.css?url";
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
 function NotFoundComponent() {
   return (
-    <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="page-background flex min-h-screen items-center justify-center px-4">
       <div className="glass-card max-w-md p-10 text-center">
         <Clapperboard className="mx-auto h-12 w-12 text-primary" />
         <h1 className="mt-4 text-7xl font-black text-foreground">404</h1>
@@ -47,7 +47,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
 
   return (
-    <div className="cinema-gradient flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="page-background flex min-h-screen items-center justify-center px-4">
       <div className="glass-card max-w-md p-10 text-center">
         <Clapperboard className="mx-auto h-10 w-10 text-primary" />
         <h1 className="mt-4 text-xl font-semibold tracking-tight text-foreground">
