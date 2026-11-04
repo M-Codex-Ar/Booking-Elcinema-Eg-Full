@@ -46,6 +46,13 @@ Merging that release pull request creates the version tag and GitHub release;
 the workflow does not publish a deployment or merge a release pull request
 automatically.
 
+The organization Actions setting **Allow GitHub Actions to create and approve
+pull requests** must be enabled for the `GITHUB_TOKEN` to open that release
+pull request (Organization Settings → Actions → General → Workflow permissions).
+This organization currently blocks repositories from enabling the setting
+themselves. The release workflow grants `contents: write`, `issues: write`, and
+`pull-requests: write`.
+
 ## Environment variables
 
 Frontend server side — `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and
