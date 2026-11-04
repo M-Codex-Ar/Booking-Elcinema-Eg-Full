@@ -2,10 +2,12 @@
  * view toggle and pagination (all URL-driven). */
 import { CalendarClock, Star } from "lucide-react";
 import { GENRES } from "@/lib/data";
+import { knownGenreKeys } from "@/lib/genres";
 import { movieMeta, workId } from "@/lib/build";
 import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
 import type { Lang, Movie } from "@/types/home";
 import {
+  ActiveFilters,
   ListToolbar,
   Pagination,
   SortSelect,
@@ -17,6 +19,7 @@ import {
   type ViewMode,
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
+import { chip } from "@/components/shared/variants";
 
 type SortKey = "soon" | "title" | "runtime";
 
@@ -36,11 +39,13 @@ function SoonCard({ movie, lang }: { movie: Movie; lang: Lang }) {
         </p>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{movie.synopsis[lang]}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          {movie.genres.map((g) => (
-            <span key={g} className="rounded-md bg-secondary px-2 py-0.5">
-              {t(GENRES[g], lang)}
-            </span>
-          ))}
+          {movie.genres
+            .filter((g) => Boolean(GENRES[g]))
+            .map((g) => (
+              <span key={g} className="rounded-md bg-secondary px-2 py-0.5">
+                {t(GENRES[g], lang)}
+              </span>
+            ))}
           <span>
             {copy("common.director")}: {movie.director[lang]}
           </span>
@@ -71,7 +76,7 @@ export function ComingSoonPage({
   setSearch: SetSearch;
 }) {
   const copy = makeT(lang);
-  const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
+  const genres = knownGenreKeys(list.flatMap((m) => m.genres));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
   const sorted = [...filtered].sort((a, b) => {
     if (sort === "title")
@@ -97,14 +102,7 @@ export function ComingSoonPage({
       <p className="mt-1 text-sm text-muted-foreground">{copy("soon.sub")}</p>
 
       <ListToolbar>
-        <Na
-          href={`/${lang}/soon`}
-          className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-            !genre
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border hover:border-primary"
-          }`}
-        >
+        <Na href={`/${lang}/soon`} className={chip({ active: !genre })}>
           {copy("controls.all")}
         </Na>
         {genres.map((g) => (
@@ -112,15 +110,16 @@ export function ComingSoonPage({
             key={g}
             href={`/${lang}/soon`}
             search={{ genre: g }}
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-              genre === g
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary"
-            }`}
+            className={chip({ active: genre === g })}
           >
             {t(GENRES[g], lang)}
           </Na>
         ))}
+        <ActiveFilters
+          count={genre ? 1 : 0}
+          lang={lang}
+          onClear={() => setSearch({ genre: undefined, page: undefined })}
+        />
         <span className="grow" />
         <SortSelect
           lang={lang}

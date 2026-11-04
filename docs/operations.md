@@ -2,13 +2,13 @@
 
 ## What is deployed where
 
-| Piece | Runtime | Notes |
-| --- | --- | --- |
-| `elcinema/` (SSR + server functions) | Cloudflare via Nitro | `pnpm run build` → `.output/`; `.wrangler/` holds local deploy state |
-| Postgres + auth | Supabase, project `twuzevyzjvmvufoutbny` | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
-| Static assets | Same origin, `public/` | `favicon.ico`, `robots.txt` (all crawlers allowed) |
-| Artwork | Bundled under `src/assets/img` via the `images.ts` manifest, plus external elcinema URLs | Catalogue posters resolve locally; scraped posters point at elcinema's CDN |
-| `server-api/` | — | Not deployed: no code yet ([backend.md](backend.md)) |
+| Piece                                | Runtime                                                                                  | Notes                                                                                        |
+| ------------------------------------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `elcinema/` (SSR + server functions) | Cloudflare via Nitro                                                                     | `pnpm run build` → `.output/`; `.wrangler/` holds local deploy state                         |
+| Postgres + auth                      | Supabase, project `twuzevyzjvmvufoutbny`                                                 | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
+| Static assets                        | Same origin, `public/`                                                                   | `favicon.ico`, `robots.txt` (all crawlers allowed)                                           |
+| Artwork                              | Bundled under `src/assets/img` via the `images.ts` manifest, plus external elcinema URLs | Catalogue posters resolve locally; scraped posters point at elcinema's CDN                   |
+| `server-api/`                        | —                                                                                        | Not deployed: no code yet ([backend.md](backend.md))                                         |
 
 The app is built and synced through its connected [Lovable](https://lovable.dev)
 project; `.lovable/project.json` records the template revision. Pushes to `main`
@@ -34,6 +34,17 @@ Release checklist, in order:
 4. Merge to `main` (squash the branch; do not rewrite what is already pushed).
 5. After the deploy: load a public page with the database unreachable to confirm
    the catalogue still renders, and check the server logs for parser failures.
+
+### Automated release flow
+
+Pull requests receive path based labels through `.github/labeler.yml`. New labels
+are created by the workflow when they do not exist yet. Pull request titles must
+follow Conventional Commit syntax so release automation can classify changes.
+After a change lands on `main`, Release Please opens or updates a release pull
+request using `release-please-config.json` and `.release-please-manifest.json`.
+Merging that release pull request creates the version tag and GitHub release;
+the workflow does not publish a deployment or merge a release pull request
+automatically.
 
 ## Environment variables
 
@@ -99,15 +110,15 @@ Worth adding, in order: request logging with a correlation id, an uptime check o
 
 ## Common incidents
 
-| Symptom | First look | Likely fix |
-| --- | --- | --- |
-| A rail is empty but the page renders | Server logs for a parser warning; compare a stored fixture with the live page | Fix the selector in `*.server.ts`, refresh the fixture, keep the test |
-| 404 on a route that exists in dev | `src/routeTree.gen.ts` vs `src/routes/` | `pnpm run build`, commit the regenerated tree |
-| Arabic page laid out like English | `dir` on the wrapper and `<html>`; grep for `ml-`/`left-` in the changed component | Logical properties, then `rtl:` where logic cannot reach ([design-system.md](design-system.md#direction)) |
-| Sign-in works, dashboard is blank | Token/RLS mismatch; `requireSupabaseAuth` in the server function | Check the session claim, not the query |
-| Site renders unstyled after deploy | Tailwind `@source` scan; `styles.css` import order | Restore the explicit `@source "../src"` |
-| Image 404 | `images.ts` key vs `src/assets/img` | Add the asset or the manifest entry; the fallback poster must still show |
-| Missing/broken key in a deploy | Which environment, which variable | Rotate, redeploy, record in [../SECURITY.md](../SECURITY.md) |
+| Symptom                                                              | First look                                                                                                                   | Likely fix                                                                                                     |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| A rail is empty but the page renders                                 | Server logs for a parser warning; compare a stored fixture with the live page                                                | Fix the selector in `*.server.ts`, refresh the fixture, keep the test                                          |
+| 404 on a route that exists in dev                                    | `src/routeTree.gen.ts` vs `src/routes/`                                                                                      | `pnpm run build`, commit the regenerated tree                                                                  |
+| Arabic page laid out like English                                    | `dir` on the wrapper and `<html>`; grep for `ml-`/`left-` in the changed component                                           | Logical properties, then `rtl:` where logic cannot reach ([design-system.md](design-system.md#direction))      |
+| Sign-in works, dashboard is blank                                    | Token/RLS mismatch; `requireSupabaseAuth` in the server function                                                             | Check the session claim, not the query                                                                         |
+| Site renders unstyled after deploy                                   | Tailwind `@source` scan; `styles.css` import order                                                                           | Restore the explicit `@source "../src"`                                                                        |
+| Image 404                                                            | `images.ts` key vs `src/assets/img`                                                                                          | Add the asset or the manifest entry; the fallback poster must still show                                       |
+| Missing/broken key in a deploy                                       | Which environment, which variable                                                                                            | Rotate, redeploy, record in [../SECURITY.md](../SECURITY.md)                                                   |
 | Console says "Missing Supabase environment variable(s)", pages blank | Was the bundle built where `elcinema/.env` exists? Compare the asset hash in the deployed HTML with a local `pnpm run build` | Rebuild with the values present and redeploy; [The build gate](#the-build-gate) now blocks the env-free bundle |
 
 ## Backup and restore

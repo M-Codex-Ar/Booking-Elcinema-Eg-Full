@@ -2,13 +2,15 @@
  * sorting, grid/list view toggle and pagination (all URL-driven). */
 import { Ticket, Star } from "lucide-react";
 import { GENRES } from "@/lib/data";
+import { knownGenreKeys } from "@/lib/genres";
 import { movieMeta, workId } from "@/lib/build";
 import { locale, makeT } from "@/i18n";
 import { fmtDate, Na, t, workPath } from "@/components/shared/ui";
 import { PosterArt } from "@/components/shared/ui";
-import { pill } from "@/components/shared/variants";
+import { chip, pill } from "@/components/shared/variants";
 import type { Lang, Movie } from "@/types/home";
 import {
+  ActiveFilters,
   ListToolbar,
   Pagination,
   SortSelect,
@@ -93,7 +95,7 @@ export function NowPlayingPage({
   setSearch: SetSearch;
 }) {
   const copy = makeT(lang);
-  const genres = Array.from(new Set(list.flatMap((m) => m.genres)));
+  const genres = knownGenreKeys(list.flatMap((m) => m.genres));
   const filtered = genre ? list.filter((m) => m.genres.includes(genre)) : list;
   const validSorts: SortKey[] = ["featured", "rating", "title", "newest"];
   const currentSort: SortKey = validSorts.includes(sort as SortKey)
@@ -119,14 +121,7 @@ export function NowPlayingPage({
       <p className="mt-1 text-sm text-muted-foreground">{copy("now.sub")}</p>
 
       <ListToolbar>
-        <Na
-          href={`/${lang}/now`}
-          className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-            !genre
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border hover:border-primary"
-          }`}
-        >
+        <Na href={`/${lang}/now`} className={chip({ active: !genre })}>
           {copy("controls.all")}
         </Na>
         {genres.map((g) => (
@@ -134,15 +129,16 @@ export function NowPlayingPage({
             key={g}
             href={`/${lang}/now`}
             search={{ genre: g }}
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-              genre === g
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary"
-            }`}
+            className={chip({ active: genre === g })}
           >
             {t(GENRES[g], lang)}
           </Na>
         ))}
+        <ActiveFilters
+          count={genre ? 1 : 0}
+          lang={lang}
+          onClear={() => setSearch({ genre: undefined, page: undefined })}
+        />
         <span className="grow" />
         <SortSelect
           lang={lang}

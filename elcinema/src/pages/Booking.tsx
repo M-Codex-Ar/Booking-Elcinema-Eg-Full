@@ -17,6 +17,7 @@ import type { LiveWork } from "@/types/live";
 import { LiveImg, LiveError, liveWorkPath } from "@/features/live/live-ui";
 import { Na } from "@/components/shared/ui";
 import {
+  ActiveFilters,
   FilterInput,
   ListToolbar,
   Pagination,
@@ -76,6 +77,11 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
 
       <ListToolbar>
         <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
+        <ActiveFilters
+          count={Number(Boolean(st.q.trim()))}
+          lang={lang}
+          onClear={() => st.setQ("")}
+        />
         <span className="grow" />
         <SortSelect
           lang={lang}

@@ -14,6 +14,8 @@ export const arCommon = {
   "controls.za": "عكسي",
   "controls.default": "الافتراضي",
   "controls.none": "لا نتائج.",
+  "controls.activeFilters": "عوامل التصفية النشطة: {count}",
+  "controls.clearFilters": "مسح عوامل التصفية",
   "common.director": "المخرج",
   "common.directorColon": "المخرج:",
   "common.writerColon": "الكاتب:",

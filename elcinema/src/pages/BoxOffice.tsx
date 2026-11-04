@@ -4,7 +4,13 @@ import { boxofficeDate, fmtRevenue, movieBySlug, workId } from "@/lib/build";
 import { Na, workPath } from "@/components/shared/ui";
 import type { BoxofficeEntry, Lang } from "@/types/home";
 import { useState } from "react";
-import { FilterInput, ListToolbar, SortSelect, matches } from "@/components/shared/controls";
+import {
+  ActiveFilters,
+  FilterInput,
+  ListToolbar,
+  SortSelect,
+  matches,
+} from "@/components/shared/controls";
 import { makeT } from "@/i18n";
 
 type SortKey = "rank" | "weekly" | "total" | "title";
@@ -45,6 +51,7 @@ export function BoxOfficePage({ lang, entries }: { lang: Lang; entries: Boxoffic
 
       <ListToolbar>
         <FilterInput lang={lang} value={q} onChange={setQ} />
+        <ActiveFilters count={Number(Boolean(q.trim()))} lang={lang} onClear={() => setQ("")} />
         <span className="grow" />
         <SortSelect
           lang={lang}

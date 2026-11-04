@@ -37,6 +37,32 @@ export function ListToolbar({ children }: { children: React.ReactNode }) {
   return <div className="mt-6 flex flex-wrap items-center gap-2">{children}</div>;
 }
 
+/** Visible reset control for filters applied to a list. */
+export function ActiveFilters({
+  count,
+  onClear,
+  lang,
+}: {
+  count: number;
+  onClear: () => void;
+  lang: Lang;
+}) {
+  if (count <= 0) return null;
+  const t = makeT(lang);
+  return (
+    <div className="flex items-center gap-2 text-xs text-muted-foreground" aria-live="polite">
+      <span>{t("controls.activeFilters", { count })}</span>
+      <button
+        type="button"
+        onClick={onClear}
+        className="font-semibold text-primary underline-offset-4 hover:underline"
+      >
+        {t("controls.clearFilters")}
+      </button>
+    </div>
+  );
+}
+
 export function SortSelect({
   value,
   options,
@@ -211,10 +237,11 @@ export function FilterInput({
 }) {
   const t = makeT(lang);
   return (
-    <label className="flex h-9 items-center gap-2 rounded-full border border-border bg-secondary px-3">
+    <label className="flex h-9 items-center gap-2 rounded-full border border-border bg-secondary px-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
       <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
       <input
         type="text"
+        aria-label={placeholder ?? t("controls.filter")}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder ?? t("controls.filter")}

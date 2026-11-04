@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchPage } from "@/pages/SearchPage";
 import { managedContentOptions, mergedSearch } from "@/features/content/content";
-import { asLang } from "@/i18n";
+import { asLang, text } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/search")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -10,11 +10,9 @@ export const Route = createFileRoute("/$lang/search")({
   loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),
   component: SearchRoute,
   head: ({ params }) => {
-    const en = params.lang !== "ar";
-    const title = en ? "Search | elCinema" : "بحث | إل سينما";
-    const description = en
-      ? "Search movies, industry people and TV channels across the full elCinema catalogue."
-      : "ابحث في الأفلام والأشخاص والقنوات عبر كامل كتالوج إل سينما.";
+    const lang = asLang(params.lang);
+    const title = `${text(lang, "search.title")} | elCinema`;
+    const description = text(lang, "search.metaDescription");
     return {
       meta: [
         { title },

@@ -2,14 +2,12 @@
  * Arabic UI strings: Site Chrome, Navigation, Theme, Auth, Footer
  */
 export const arChrome = {
-  "chrome.login": "تسجيل الدخول",
   "chrome.signOut": "خروج",
   "chrome.search": "ابحث",
   "chrome.dashboard": "لوحة التحكم",
   "chrome.switchTo": "English",
   "chrome.menu": "القائمة",
   "chrome.sections": "أقسام",
-  "chrome.advancedSearch": "بحث متقدم",
   "chrome.chairman": "رئيس مجلس الإدارة: خالد هشام",
   "chrome.editor": "مدير التحرير: ضياء محمد",
   "chrome.skipToContent": "الانتقال إلى المحتوى",
@@ -19,7 +17,6 @@ export const arChrome = {
   "nav.soon": "قريباً",
   "nav.booking": "احجز تذاكر",
   "nav.boxoffice": "بوكس أوفيس",
-  "nav.boxofficeFooter": "إيرادات السينما",
   "nav.tvguide": "جدول القنوات",
   "nav.vod": "شاهد أونلاين",
   "nav.video": "إل سينما TV",
@@ -53,7 +50,6 @@ export const arChrome = {
   "auth.loading": "يرجى الانتظار…",
   "auth.account": "الحساب",
   "auth.backToSite": "العودة للموقع",
-  "auth.loginOrRegister": "تسجيل الدخول / إنشاء حساب",
   "auth.unauthorized": "يتطلب الوصول إلى لوحة التحكم صلاحيات المشرف.",
   "auth.adminRole": "مشرف",
   "auth.userRole": "مستخدم",

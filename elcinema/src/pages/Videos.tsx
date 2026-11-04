@@ -11,6 +11,7 @@ import { useState } from "react";
 import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "@/types/live";
 import type { ManagedVideoRow } from "@/features/content/content";
 import {
+  ActiveFilters,
   Chip,
   FilterInput,
   ListToolbar,
@@ -27,21 +28,6 @@ import {
 import { Na } from "@/components/shared/ui";
 import { makeT, rowTitle } from "@/i18n";
 import { LiveImg, LiveError, videoPath } from "@/features/live/live-ui";
-
-const L = {
-  en: {
-    gallery: "elCinema TV — Video Gallery",
-    latest: "Latest videos",
-    related: "More videos",
-    play: "Play",
-  },
-  ar: {
-    gallery: "إل سينما TV — معرض الفيديو",
-    latest: "أحدث الفيديوهات",
-    related: "مزيد من الفيديوهات",
-    play: "تشغيل",
-  },
-} as const;
 
 function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boolean }) {
   const t = makeT(lang);
@@ -128,6 +114,15 @@ export function VideoGalleryPage({
             {s.title}
           </Chip>
         ))}
+        <ActiveFilters
+          count={Number(section !== "all") + Number(Boolean(st.q.trim()))}
+          lang={lang}
+          onClear={() => {
+            setSection("all");
+            st.setQ("");
+            st.setPage(1);
+          }}
+        />
         <span className="grow" />
         <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
         <SortSelect

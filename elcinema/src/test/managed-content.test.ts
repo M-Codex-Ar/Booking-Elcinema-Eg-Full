@@ -16,6 +16,7 @@ import {
 import { tvGuide } from "@/lib/build";
 import type { EcHomeData } from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
+import { knownGenreKeys } from "@/lib/genres";
 
 const empty: ManagedContent = {
   movies: [],
@@ -26,6 +27,12 @@ const empty: ManagedContent = {
   videos: [],
   lists: [],
 };
+
+describe("knownGenreKeys", () => {
+  it("removes duplicates and genres without translated labels", () => {
+    expect(knownGenreKeys(["drama", "drama", "unknown"])).toEqual(["drama"]);
+  });
+});
 
 const movieRow = {
   id: "abc-123",
