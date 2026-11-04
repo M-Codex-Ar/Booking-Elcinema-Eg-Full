@@ -292,9 +292,15 @@ describe("built-in duplicate warnings", () => {
 
 describe("genre labels", () => {
   it("omits unknown and duplicate genres from page filters and chips", () => {
-    expect(knownGenreKeys(["horror", "unknown-operator-genre", "horror", "comedy"])).toEqual([
-      "horror",
-      "comedy",
-    ]);
+    expect(
+      knownGenreKeys([
+        "horror",
+        "unknown-operator-genre",
+        "constructor",
+        "toString",
+        "horror",
+        "comedy",
+      ]),
+    ).toEqual(["horror", "comedy"]);
   });
 });
