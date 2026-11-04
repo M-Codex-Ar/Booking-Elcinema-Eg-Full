@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search, Send, User } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search, Send } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useRouterState } from "@tanstack/react-router";
 import type { Lang } from "@/types/home";
@@ -102,16 +102,6 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   }, []);
 
   const signedIn = !!currentUser;
-  const admin = isAdmin(currentUser);
-  const displayName = getUserDisplayName(currentUser);
-
-  const signOut = async () => {
-    if (isSupabaseConfigured()) {
-      const { supabase } = await import("@/services/clients/supabase/client");
-      await supabase.auth.signOut();
-    }
-    void navigate({ to: `/${lang}` as never });
-  };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -140,29 +130,8 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           ))}
         </nav>
         {signedIn ? (
-          <div className="ms-2 hidden items-center gap-2 sm:flex">
-            {admin ? (
-              <Na
-                href={`/${lang}/dashboard`}
-                className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90"
-              >
-                <LayoutDashboard className="h-4 w-4" /> {t("chrome.dashboard")}
-              </Na>
-            ) : (
-              <span className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/60 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
-                <User className="h-3.5 w-3.5 text-primary" />
-                <span className="max-w-[120px] truncate">{displayName}</span>
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={signOut}
-              aria-label={t("chrome.signOut")}
-              title={t("chrome.signOut")}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+          <div className="ms-2 hidden sm:flex">
+            <AccountMenu user={currentUser} lang={lang} />
           </div>
         ) : (
           <div className="ms-2 hidden sm:block">
@@ -180,33 +149,10 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           </div>
         )}
         <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-1.5 md:gap-2">
-          {/* Mobile auth button */}
+          {/* Mobile account control: the same related menu, avatar-only. */}
           {signedIn ? (
-            <div className="flex shrink-0 items-center gap-1 sm:hidden">
-              {admin ? (
-                <Na
-                  href={`/${lang}/dashboard`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  <LayoutDashboard className="h-3.5 w-3.5" />
-                </Na>
-              ) : (
-                <span
-                  title={displayName}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground"
-                >
-                  <User className="h-3.5 w-3.5 text-primary" />
-                </span>
-              )}
-              <button
-                type="button"
-                onClick={signOut}
-                aria-label={t("chrome.signOut")}
-                title={t("chrome.signOut")}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-              </button>
+            <div className="flex shrink-0 sm:hidden">
+              <AccountMenu user={currentUser} lang={lang} />
             </div>
           ) : (
             <div className="flex shrink-0 sm:hidden">
@@ -287,6 +233,88 @@ export function SiteHeader({ lang }: { lang: Lang }) {
         </div>
       </div>
     </header>
+  );
+}
+
+/**
+ * Signed-in account control: one related menu instead of a detached name chip
+ * plus a separate sign-out button. The trigger is the avatar initial (name and
+ * role badge beside it from `md`, avatar-only on phones), and its open state
+ * is visible exactly like the other openable menus — ring/border on the
+ * trigger and the chevron flipping to the open position.
+ */
+function AccountMenu({ user, lang }: { user: SupabaseUser; lang: Lang }) {
+  const t = makeT(lang);
+  const navigate = useNavigate();
+  const admin = isAdmin(user);
+  const name = getUserDisplayName(user) || t("auth.userRole");
+  const initial = (name[0] || "?").toUpperCase();
+
+  const signOut = async () => {
+    if (isSupabaseConfigured()) {
+      const { supabase } = await import("@/services/clients/supabase/client");
+      await supabase.auth.signOut();
+    }
+    void navigate({ to: `/${lang}` as never });
+  };
+
+  return (
+    <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"}>
+      <DropdownMenuTrigger
+        aria-label={t("auth.account")}
+        title={name}
+        className="group flex items-center gap-2 rounded-full border border-border bg-card p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-primary data-[state=open]:border-primary sm:pe-2"
+      >
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-black text-primary-foreground"
+          aria-hidden="true"
+        >
+          {initial}
+        </span>
+        <span className="hidden min-w-0 leading-tight md:block">
+          <span className="block max-w-[10rem] truncate text-xs font-bold">{name}</span>
+          <span
+            className={`block text-[10px] font-bold ${admin ? "text-primary" : "text-muted-foreground"}`}
+          >
+            {admin ? t("auth.adminRole") : t("auth.userRole")}
+          </span>
+        </span>
+        <ChevronDown
+          className="hidden h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 md:block"
+          aria-hidden="true"
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={10}
+        className="w-56 border-border bg-popover p-2"
+      >
+        <DropdownMenuLabel className="px-2 py-1.5">
+          <span className="block truncate text-sm font-bold">{name}</span>
+          {user.email ? (
+            <span className="block truncate text-xs font-normal text-muted-foreground">
+              {user.email}
+            </span>
+          ) : null}
+        </DropdownMenuLabel>
+        {admin && (
+          <DropdownMenuItem
+            onSelect={() => void navigate({ to: `/${lang}/dashboard` as never })}
+            className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
+          >
+            <LayoutDashboard className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />
+            {t("chrome.dashboard")}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem
+          onSelect={() => void signOut()}
+          className="cursor-pointer gap-2 rounded-lg py-2 font-semibold text-destructive"
+        >
+          <LogOut className="h-4 w-4 group-data-[highlighted]:text-primary-foreground" />
+          {t("chrome.signOut")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

@@ -7,6 +7,7 @@ export const enChrome = {
   "chrome.dashboard": "Dashboard",
   "chrome.switchTo": "عربي",
   "chrome.menu": "Menu",
+  "chrome.close": "Close",
   "chrome.sections": "Sections",
   "chrome.chairman": "Chairman: Khaled Hesham",
   "chrome.editor": "Editor-in-Chief: Doaa Mohamed",

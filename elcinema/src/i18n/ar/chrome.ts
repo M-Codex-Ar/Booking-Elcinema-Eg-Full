@@ -7,6 +7,7 @@ export const arChrome = {
   "chrome.dashboard": "لوحة التحكم",
   "chrome.switchTo": "English",
   "chrome.menu": "القائمة",
+  "chrome.close": "إغلاق",
   "chrome.sections": "أقسام",
   "chrome.chairman": "رئيس مجلس الإدارة: خالد هشام",
   "chrome.editor": "مدير التحرير: ضياء محمد",

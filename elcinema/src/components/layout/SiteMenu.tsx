@@ -1,4 +1,5 @@
 /** Compact navigation for viewports below the desktop section menus. */
+import { useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   CalendarClock,
@@ -10,6 +11,7 @@ import {
   Ticket,
   TrendingUp,
   Tv,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -51,15 +53,22 @@ export function SiteMenu({ lang }: { lang: Lang }) {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const go = (seg: string) => void navigate({ to: `/${lang}/${seg}` as never });
+  // The trigger icon belongs to the open state: hamburger while closed, the
+  // related close glyph while open — not a rotated hamburger.
+  const [open, setOpen] = useState(false);
 
   return (
-    <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"}>
+    <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
         aria-label={t("chrome.menu")}
         className="group flex h-9 items-center gap-2 rounded-full border border-border px-3 text-sm font-semibold transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=open]:border-primary data-[state=open]:text-primary lg:hidden"
       >
-        <Menu className="h-4 w-4 transition-transform duration-300 group-data-[state=open]:rotate-90" />
-        <span className="hidden sm:inline">{t("chrome.menu")}</span>
+        {open ? (
+          <X className="h-4 w-4" aria-hidden="true" />
+        ) : (
+          <Menu className="h-4 w-4" aria-hidden="true" />
+        )}
+        <span className="hidden sm:inline">{open ? t("chrome.close") : t("chrome.menu")}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
