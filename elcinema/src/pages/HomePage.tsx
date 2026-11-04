@@ -13,7 +13,6 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  Globe,
   Play,
   Ticket,
   Tv,
@@ -338,19 +337,10 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
         </Row>
       )}
 
-      {/* Cinemas of the Region: one flag card per country cinema guide. The
-          card opens an in-app preview; the full directory itself is an
-          external reference opened in a new tab from the preview. */}
-      <section className="mx-auto max-w-7xl px-4 pb-8 pt-2 md:px-8">
-        <div className="mb-2 flex min-w-0 items-center gap-2 sm:gap-3">
-          <h2 className="flex min-w-0 items-center gap-2 text-xl font-bold md:text-2xl">
-            <span className="shrink-0 text-primary">
-              <Globe className="h-5 w-5" />
-            </span>
-            <span className="truncate">{t("home.cinemasRegion")}</span>
-          </h2>
-        </div>
-        <p className="mb-4 text-sm text-muted-foreground">{t("home.cinemasRegionSub")}</p>
+      <section
+        aria-label={t("home.cinemasRegion")}
+        className="mx-auto max-w-7xl px-4 pb-8 pt-2 md:px-8"
+      >
         <CinemasRegionMarquee lang={lang} />
       </section>
 

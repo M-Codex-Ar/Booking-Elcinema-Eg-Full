@@ -19,6 +19,8 @@ export type InfiniteSliderProps = {
   gap?: number;
   duration?: number;
   durationOnHover?: number;
+  pauseOnInteraction?: boolean;
+  draggable?: boolean;
   direction?: "horizontal" | "vertical";
   reverse?: boolean;
   className?: string;
@@ -29,6 +31,8 @@ export const InfiniteSlider = memo(function InfiniteSlider({
   gap = 16,
   duration = 25,
   durationOnHover,
+  pauseOnInteraction = false,
+  draggable = false,
   direction = "horizontal",
   reverse = false,
   className,
@@ -38,6 +42,10 @@ export const InfiniteSlider = memo(function InfiniteSlider({
   const translation = useMotionValue(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [key, setKey] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const isPaused = (pauseOnInteraction && (isHovering || isFocused)) || (draggable && isDragging);
 
   useEffect(() => {
     const size = direction === "horizontal" ? width : height;
@@ -46,6 +54,8 @@ export const InfiniteSlider = memo(function InfiniteSlider({
     const to = reverse ? 0 : -contentSize / 2;
 
     let controls: { stop: () => void } | undefined;
+
+    if (isPaused) return;
 
     if (isTransitioning) {
       controls = animate(translation, [translation.get(), to], {
@@ -68,17 +78,78 @@ export const InfiniteSlider = memo(function InfiniteSlider({
     }
 
     return () => controls?.stop();
-  }, [key, translation, currentDuration, width, height, gap, isTransitioning, direction, reverse]);
+  }, [
+    key,
+    translation,
+    currentDuration,
+    width,
+    height,
+    gap,
+    isPaused,
+    isTransitioning,
+    direction,
+    reverse,
+  ]);
 
-  const hoverProps = durationOnHover
+  const pauseForInteraction = () => setIsTransitioning(true);
+  const resumeAfterInteraction = () => {
+    setCurrentDuration(duration);
+  };
+
+  const hoverProps =
+    durationOnHover || pauseOnInteraction
+      ? {
+          onHoverStart: () => {
+            if (pauseOnInteraction) {
+              setIsHovering(true);
+              pauseForInteraction();
+            } else {
+              setIsTransitioning(true);
+              setCurrentDuration(durationOnHover ?? duration);
+            }
+          },
+          onHoverEnd: () => {
+            if (pauseOnInteraction) {
+              setIsHovering(false);
+              resumeAfterInteraction();
+            } else {
+              setIsTransitioning(true);
+              setCurrentDuration(duration);
+            }
+          },
+        }
+      : {};
+
+  const focusProps = pauseOnInteraction
     ? {
-        onHoverStart: () => {
-          setIsTransitioning(true);
-          setCurrentDuration(durationOnHover);
+        onFocusCapture: () => {
+          setIsFocused(true);
+          pauseForInteraction();
         },
-        onHoverEnd: () => {
-          setIsTransitioning(true);
-          setCurrentDuration(duration);
+        onBlurCapture: (event: React.FocusEvent<HTMLDivElement>) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setIsFocused(false);
+            resumeAfterInteraction();
+          }
+        },
+      }
+    : {};
+
+  const dragProps = draggable
+    ? {
+        drag: direction === "horizontal" ? ("x" as const) : ("y" as const),
+        dragConstraints:
+          direction === "horizontal"
+            ? { left: -width / 2, right: 0 }
+            : { top: -height / 2, bottom: 0 },
+        dragElastic: 0,
+        onDragStart: () => {
+          setIsDragging(true);
+          pauseForInteraction();
+        },
+        onDragEnd: () => {
+          setIsDragging(false);
+          resumeAfterInteraction();
         },
       }
     : {};
@@ -87,13 +158,15 @@ export const InfiniteSlider = memo(function InfiniteSlider({
     <div className={cn("overflow-hidden", className)}>
       <motion.div
         ref={ref}
-        className="flex w-max"
+        className={cn("flex w-max", draggable && "cursor-grab touch-pan-y active:cursor-grabbing")}
         style={{
           ...(direction === "horizontal" ? { x: translation } : { y: translation }),
           gap: `${gap}px`,
           flexDirection: direction === "horizontal" ? "row" : "column",
         }}
         {...hoverProps}
+        {...focusProps}
+        {...dragProps}
       >
         {children}
         {children}
