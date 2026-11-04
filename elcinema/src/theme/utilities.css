@@ -142,14 +142,10 @@
   }
 }
 
-/*
- * Dialog body: a phone in landscape, or the register form with its confirm
- * fields, is taller than the viewport. The dialog layer is fixed and the page
- * behind it cannot scroll, so without this the submit button simply does not
- * exist. `overflow-y` still clips to the rounded corner, so the surface keeps
- * its shape while scrolling.
- */
-@utility dialog-scroll {
-  max-block-size: 85vh;
+/* Dialogs keep the scrollbar inside the content surface; the close button stays fixed. */
+@utility dialog-content-scroll {
+  max-block-size: calc(85vh - var(--dialog-scroll-reserve, 0px));
+  min-block-size: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }

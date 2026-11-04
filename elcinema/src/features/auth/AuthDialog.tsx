@@ -80,61 +80,63 @@ export function AuthDialog({
       return setError(t("auth.short"));
     }
 
-    if (mode === "register") {
-      const confirm = String(f.get("confirm") ?? "");
-      if (password !== confirm) {
-        return setError(t("auth.mismatch"));
-      }
-      const name = String(f.get("name") ?? "").trim();
-
-      setBusy(true);
-      const { data, error: err } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: name,
-            role: "user",
-          },
-        },
-      });
-      setBusy(false);
-
-      if (err) {
-        const msg = err.message.toLowerCase();
-        if (msg.includes("already registered") || msg.includes("already in use")) {
-          return setError(t("auth.alreadyRegistered"));
+    setBusy(true);
+    try {
+      if (mode === "register") {
+        const confirm = String(f.get("confirm") ?? "");
+        if (password !== confirm) {
+          setError(t("auth.mismatch"));
+          return;
         }
-        return setError(err.message);
+        const name = String(f.get("name") ?? "").trim();
+        const { data, error: err } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name,
+              role: "user",
+            },
+          },
+        });
+
+        if (err) {
+          const msg = err.message.toLowerCase();
+          if (msg.includes("already registered") || msg.includes("already in use")) {
+            setError(t("auth.alreadyRegistered"));
+            return;
+          }
+          setError(err.message);
+          return;
+        }
+
+        if (data.session) {
+          toast.success(t("auth.welcome"));
+        } else {
+          toast.info(t("auth.checkEmail"));
+        }
+        setOpen(false);
+        return;
       }
 
-      if (data.session) {
-        toast.success(t("auth.welcome"));
-        setOpen(false);
-      } else {
-        toast.info(t("auth.checkEmail"));
-        setOpen(false);
-      }
-    } else {
-      // Login mode
-      setBusy(true);
-      const { data, error: err } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      setBusy(false);
-
+      const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
       if (err) {
         const msg = err.message.toLowerCase();
         if (msg.includes("invalid login credentials")) {
-          return setError(t("auth.invalidCredentials"));
+          setError(t("auth.invalidCredentials"));
+          return;
         }
-        return setError(err.message);
+        setError(err.message);
+        return;
       }
 
       const admin = isAdmin(data.user);
       toast.success(admin ? `${t("auth.welcome")} (${t("auth.adminRole")})` : t("auth.welcome"));
       setOpen(false);
+    } catch {
+      setError(t("auth.requestFailed"));
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -147,15 +149,19 @@ export function AuthDialog({
     }
     setBusy(true);
     setError("");
-    const { error: err } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    setBusy(false);
-
-    if (err) {
-      setError(err.message);
-    } else {
-      toast.success(t("auth.resetSent"));
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (err) {
+        setError(err.message);
+      } else {
+        toast.success(t("auth.resetSent"));
+      }
+    } catch {
+      setError(t("auth.requestFailed"));
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -179,7 +185,7 @@ export function AuthDialog({
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
         dir={lang === "ar" ? "rtl" : "ltr"}
-        className="dialog-scroll cinema-gradient border-border bg-card p-0 sm:max-w-md"
+        className="cinema-gradient border-border bg-card p-0 [--dialog-scroll-reserve:0rem] sm:max-w-md"
       >
         <div className="p-6 pb-0">
           <DialogTitle className="text-2xl font-black">

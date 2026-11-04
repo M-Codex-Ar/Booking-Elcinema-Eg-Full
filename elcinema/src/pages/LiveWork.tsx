@@ -7,6 +7,8 @@
 import {
   ArrowRight,
   CalendarClock,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   Film,
   Images,
@@ -15,7 +17,7 @@ import {
   Ticket,
   Tv,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ImgWithFallback } from "@/components/shared/primitives";
 import type { Lang } from "@/types/home";
 import type { LiveWork } from "@/types/live";
@@ -34,10 +36,18 @@ const DAY_COUNT = 5;
 
 export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
   const t = makeT(lang);
+  const castRailRef = useRef<HTMLDivElement>(null);
+  const isRtl = lang === "ar";
   const [day, setDay] = useState(0);
   const showtimes = data.showtimes.slice(0, DAY_COUNT);
   const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
   const current = showtimes[dayIndex];
+  const scrollCast = (direction: number) => {
+    const rail = castRailRef.current;
+    if (!rail) return;
+    const factor = isRtl ? -direction : direction;
+    rail.scrollBy({ left: factor * rail.clientWidth * 0.8, behavior: "smooth" });
+  };
   return (
     <div>
       {/* Backdrop + poster header, elCinema style */}
@@ -194,9 +204,40 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
 
             {/* Cast cards */}
             {data.cast.length > 0 && (
-              <section className="mt-8">
-                <h2 className="text-lg font-black">{t("common.castColon")}</h2>
-                <div className="scrollbar-hide mt-3 flex gap-4 overflow-x-auto pb-2">
+              <section className="mt-8 min-w-0">
+                <div className="mb-3 flex min-w-0 items-center justify-between gap-2 sm:gap-3">
+                  <h2 className="min-w-0 truncate text-lg font-black">{t("common.castColon")}</h2>
+                  <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+                    <button
+                      type="button"
+                      aria-label={t("home.previous")}
+                      onClick={() => scrollCast(-1)}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                    >
+                      {isRtl ? (
+                        <ChevronRight className="h-4 w-4" />
+                      ) : (
+                        <ChevronLeft className="h-4 w-4" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t("home.next")}
+                      onClick={() => scrollCast(1)}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                    >
+                      {isRtl ? (
+                        <ChevronLeft className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div
+                  ref={castRailRef}
+                  className="scrollbar-hide flex min-w-0 snap-x gap-4 overflow-x-auto overscroll-x-contain pb-2"
+                >
                   {data.cast.map((p) => (
                     <PersonChip key={p.id} lang={lang} id={p.id} title={p.title} img={p.img} />
                   ))}

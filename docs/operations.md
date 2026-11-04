@@ -71,20 +71,22 @@ is ignored; `.env.example` never holds a real value
 
 `pnpm run build` runs `elcinema/scripts/check-env.mjs` first and refuses to emit a
 bundle when `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` cannot be
-resolved. Vite inlines silently, so an env-free build compiles green and then
-throws in the browser on every page ("Missing Supabase environment variable(s)")
-— the generated `src/integrations/supabase/client.ts` raises on first property
-access, and `src/start.ts` routed that failure into every server function.
+resolved. Vite inlines these values at build time; missing values silently
+disable sign-in, registration, password reset, and dashboard access while public
+catalogue pages still render. Set both values in every deployment environment
+that should support accounts (including Vercel Preview and Production scopes).
 
 - `SKIP_ENV_CHECK=1` builds anyway. `Web CI` sets it because CI holds no Supabase
   values, so its `web-output` artifact is compile-verified only — **not** deployable.
 - Deployable builds happen where the real `.env` lives, or on Lovable Cloud, which
-  injects its own values.
+  injects its own values. A review-only preview without account access may set
+  `CHECK_ENV=warn`; do not use that override for a deployment expected to support
+  login or registration.
 - On Cloudflare (Nitro `cloudflare-module`) the server-side variables must also be
   set on the Worker (`wrangler secret put SUPABASE_SERVICE_ROLE_KEY`, plus
   `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY`); build-time inlining covers the
   browser alone.
-- Missing values degrade instead of crashing: the auth subscription in `__root.tsx`
+- For explicitly warning-only builds, missing values degrade instead of crashing: the auth subscription in `__root.tsx`
   and the header session checks skip Supabase via `src/lib/supabase-env.ts`, the
   sign-in forms report `auth.notEnabled`, and `getManagedContent` returns empty
   lists so the built-in catalogue still renders.

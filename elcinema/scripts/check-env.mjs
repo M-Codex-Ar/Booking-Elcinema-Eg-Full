@@ -10,13 +10,10 @@
  * Usage:  node scripts/check-env.mjs        (also runs as part of `bun run build`)
  * Escape hatch for env-free builds (docs, previews): SKIP_ENV_CHECK=1
  *
- * Strictness by environment: a Vercel *preview* build usually has no secrets —
- * project environment variables are not shared with forked pull requests — and
- * a preview is exactly where a missing value should be reported, not where it
- * should stop the build. The bundle no longer blanks without Supabase (the
- * client is lazy and every auth form says `auth.notEnabled`), so a preview is
- * still reviewable. Production, local and any unknown builder stay strict.
- * Override with CHECK_ENV=strict|warn|off.
+ * Deploy builds must include the public Supabase settings so authentication is
+ * not silently shipped disabled. Review-only previews can explicitly opt into
+ * a warning with CHECK_ENV=warn; the values are publishable and safe to expose
+ * in the browser bundle. Override with CHECK_ENV=strict|warn|off.
  *
  * Never prints values — only names, so the log is safe to paste into an issue.
  */
@@ -58,12 +55,10 @@ if (merged.SKIP_ENV_CHECK === "1" || merged.CHECK_ENV === "off") {
 
 const present = (name) => Boolean(merged[name] && String(merged[name]).trim());
 
-// Where this build is going decides how loud the check is allowed to be.
-// Any Vercel build (preview or production without dashboard secrets configured yet)
-// reports a warning rather than killing the deploy, because the client is lazy and
-// missing values degrade gracefully without blanking. Local builds without a .env
-// or builders with CHECK_ENV=strict stay strict.
-const mode = merged.CHECK_ENV || (merged.VERCEL || merged.VERCEL_ENV ? "warn" : "strict");
+// The browser bundle cannot recover from missing build-time values. Fail all
+// deploy builds by default; CHECK_ENV=warn is an explicit escape hatch for
+// review-only previews that intentionally run without Supabase.
+const mode = merged.CHECK_ENV || "strict";
 
 const missing = REQUIRED.filter((name) => !present(name));
 const missingRuntime = RUNTIME.filter((name) => !present(name));
