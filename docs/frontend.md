@@ -93,9 +93,11 @@ not a sign-out.
 Managed rows are optional additions to the built-in catalogue. On the homepage,
 they load after the initial SSR response. The seven public table reads run
 concurrently under one 1.2s total deadline; a timeout aborts outstanding reads
-and returns empty additions. The shared query does not retry because every public
-page already has a built-in fallback, so a database slowdown cannot hold the
-page open for repeated attempts.
+and returns empty additions. The server caches populated results for 30 seconds
+per runtime instance and serves stale data while refreshing; empty results are
+cached for 5 seconds. Managed-content writes invalidate the local cache. The
+shared query does not retry because every public page already has a built-in
+fallback, so a database slowdown cannot hold the page open for repeated attempts.
 
 ## First load
 
