@@ -3,7 +3,7 @@
  * internal link, real poster artwork with a generated gradient fallback,
  * the scrolling poster row and bilingual helpers.
  */
-import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, LoaderCircle, type LucideIcon } from "lucide-react";
 import { useRef, type CSSProperties, type ReactNode } from "react";
 import { AppLink, Artwork } from "@/components/shared/primitives";
 import { makeT } from "@/i18n";
@@ -11,6 +11,19 @@ import type { Bi, Lang } from "@/types/home";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");
+
+/** Branded full-page pending state for route transitions (spinner, no copy). */
+export function RoutePending() {
+  return (
+    <div
+      className="page-background flex min-h-[60vh] items-center justify-center"
+      role="status"
+      aria-busy="true"
+    >
+      <LoaderCircle className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
+    </div>
+  );
+}
 
 /**
  * Internal link for dynamically built paths. Route paths are parameterised by
