@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { HomePage } from "@/pages/HomePage";
 import type { EcHomeData } from "@/types/home";
@@ -14,12 +14,9 @@ const homeQueryOptions = queryOptions({
 });
 
 export const Route = createFileRoute("/$lang/")({
-  loader: ({ context }) =>
-    Promise.all([
-      context.queryClient.ensureQueryData(homeQueryOptions),
-      // Managed content is additive: if it fails, the scraped homepage still renders.
-      context.queryClient.ensureQueryData(managedContentOptions).catch(() => null),
-    ]),
+  // Only wait for the bounded, first-party homepage result during SSR.
+  // Managed content is additive and loads in the background in HomeRoute.
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeQueryOptions),
   component: HomeRoute,
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-7xl px-4 py-24 text-center">
@@ -36,7 +33,7 @@ export const Route = createFileRoute("/$lang/")({
   ),
   head: ({ params, loaderData }) => {
     const en = params.lang !== "ar";
-    const heroImage = loaderData?.[0]?.data?.promos?.[0]?.img;
+    const heroImage = loaderData?.data?.promos?.[0]?.img;
     const title = en
       ? "elCinema — Movies, TV Guide & Box Office"
       : "إل سينما — أفلام، جدول القنوات وبوكس أوفيس";
@@ -70,9 +67,9 @@ export const Route = createFileRoute("/$lang/")({
 function HomeRoute() {
   const { lang } = Route.useParams();
   const result = useSuspenseQuery(homeQueryOptions).data;
-  // Hooks first, always: an early return above this call would make the second
-  // query conditional and break the hook order whenever the scrape fails.
-  const managed = useSuspenseQuery(managedContentOptions).data ?? null;
+  // Managed content is optional: keep its network request off the SSR critical
+  // path and merge it in when the query resolves in the background.
+  const managed = useQuery(managedContentOptions).data ?? null;
   if (result.error || !result.data) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-24 text-center">
