@@ -19,7 +19,6 @@ import {
   type ViewMode,
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
-import { knownGenreKeys } from "@/lib/genres";
 import { chip } from "@/components/shared/variants";
 
 type SortKey = "soon" | "title" | "runtime";

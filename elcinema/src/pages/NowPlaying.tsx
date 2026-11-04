@@ -5,7 +5,6 @@ import { GENRES } from "@/lib/data";
 import { knownGenreKeys } from "@/lib/genres";
 import { movieMeta, workId } from "@/lib/build";
 import { locale, makeT } from "@/i18n";
-import { knownGenreKeys } from "@/lib/genres";
 import { fmtDate, Na, t, workPath } from "@/components/shared/ui";
 import { PosterArt } from "@/components/shared/ui";
 import { chip, pill } from "@/components/shared/variants";
