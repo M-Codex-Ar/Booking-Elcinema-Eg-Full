@@ -141,13 +141,13 @@ export function VideoGalleryPage({
       {filtered.length === 0 ? (
         <p className="mt-12 text-center text-muted-foreground">{tx.none}</p>
       ) : st.view === "grid" ? (
-        <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="video-grid mt-8">
           {shown.map((v) => (
             <VideoCard key={v.id} v={v} lang={lang} />
           ))}
         </div>
       ) : (
-        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <div className="row-grid mt-8">
           {shown.map((v) => (
             <VideoCard key={v.id} v={v} lang={lang} row />
           ))}
@@ -157,7 +157,7 @@ export function VideoGalleryPage({
       {extra && extra.length > 0 && (
         <section className="mt-10">
           <h2 className="mb-4 text-xl font-black">{t("common.addedByEditors")}</h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="video-grid">
             {extra.map((v) => (
               <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="group w-full">
                 <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">

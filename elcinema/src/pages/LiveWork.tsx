@@ -342,7 +342,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                 </button>
               ))}
             </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="row-grid mt-4">
               {current.cinemas.slice(0, 6).map((c) => (
                 <div key={c.id} className="glass-card p-4">
                   <div className="font-bold">{c.name}</div>
@@ -368,7 +368,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
               <Tv className="h-5 w-5 text-primary" /> {t("video.brand")}
             </h2>
-            <div className="grid grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
+            <div className="video-grid">
               {data.videos.slice(0, 4).map((v) => (
                 <Na key={v.id} href={videoPath(lang, v.id)} className="group w-full">
                   <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">

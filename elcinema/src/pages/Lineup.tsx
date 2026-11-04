@@ -64,7 +64,7 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
       )}
 
       {st.view === "list" ? (
-        <div className="mt-8 grid gap-3 md:grid-cols-2">
+        <div className="row-grid mt-8">
           {shown.map((l) => (
             <Na
               key={l.id}
@@ -83,9 +83,9 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="poster-grid mt-8">
           {shown.map((l) => (
-            <Na key={l.id} href={lineupPath(lang, l.id)} className="group w-full max-w-56">
+            <Na key={l.id} href={lineupPath(lang, l.id)} className="group w-full">
               <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
                 <LiveImg src={l.cover} alt={l.title} className="h-full w-full" />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-background/40 to-transparent p-3">
@@ -149,7 +149,7 @@ export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang:
             <p className="mt-12 text-center text-muted-foreground">{tx.none}</p>
           )}
           {st.view === "grid" ? (
-            <div className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="poster-grid mt-8">
               {shown.map((it) => (
                 <LivePoster
                   key={it.id}
@@ -162,7 +162,7 @@ export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang:
               ))}
             </div>
           ) : (
-            <div className="mt-8 grid gap-3 md:grid-cols-2">
+            <div className="row-grid mt-8">
               {shown.map((it) => (
                 <Na
                   key={it.id}

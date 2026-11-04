@@ -69,7 +69,7 @@ export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
           <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
             <Film className="h-5 w-5 text-primary" /> {t("person.filmography")}
           </h2>
-          <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
+          <div className="poster-grid">
             {knownFor.map((m) => (
               <FilmCard key={m.slug} movie={m} lang={lang} />
             ))}
@@ -82,7 +82,7 @@ export function PersonPage({ lang, id }: { lang: Lang; id: string }) {
 
 function FilmCard({ movie, lang }: { movie: Movie; lang: Lang }) {
   return (
-    <Na href={workPath(lang, workId(movie))} className="group w-full max-w-40">
+    <Na href={workPath(lang, workId(movie))} className="group w-full">
       <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
         <PosterArt hue={movie.hue} title={movie.title[lang]} img={movie.poster} />
       </div>

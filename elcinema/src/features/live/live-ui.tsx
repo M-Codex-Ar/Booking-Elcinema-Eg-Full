@@ -120,7 +120,7 @@ export function LivePoster({
 }) {
   return (
     <div
-      className={`group ${fluid ? "w-full max-w-44" : "shrink-0 snap-start"} ${wide ? "w-64 md:w-72" : fluid ? "" : "w-36 md:w-44"}`}
+      className={`group ${fluid ? "w-full" : "shrink-0 snap-start"} ${wide ? "w-64 md:w-72" : fluid ? "" : "w-36 md:w-44"}`}
     >
       <Na href={liveWorkPath(lang, id)} className="block">
         <div

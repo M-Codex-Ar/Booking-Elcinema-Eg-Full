@@ -142,6 +142,57 @@
   }
 }
 
+/*
+ * Catalogue grid recipes — the one source for every card grid across the
+ * list pages (now playing, coming soon, booking, lineups, videos, search)
+ * and the detail-page extras (similar films, filmography, crew, showtimes).
+ * Cards fill their column fully: no `justify-items-center` + narrow
+ * `max-w-*` caps, which left large empty gaps around narrow cards in wide
+ * columns. Spacing uses Tailwind's default scale (gap-3/gap-4/rhythm) —
+ * tokens.css owns colours, radii and shadows only.
+ */
+
+/* 2:3 poster tiles: 2 → 3 → 4 → 5 columns as the screen grows. */
+@utility poster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 2rem;
+  @variant sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @variant md {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  @variant lg {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Row cards (list view, showtimes, cinemas, search results): 1 column,
+ * two-up from md. */
+@utility row-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  @variant md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 16:9 video tiles: 2 → 3 → 4 columns. */
+@utility video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  @variant sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @variant md {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 /* Dialogs keep the scrollbar inside the content surface; the close button stays fixed. */
 @utility dialog-content-scroll {
   max-block-size: calc(85vh - var(--dialog-scroll-reserve, 0px));

@@ -92,9 +92,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
           />
           <ViewToggle lang={lang} view={st.view} onChange={st.setView} />
         </ListToolbar>
-        <div
-          className={`mt-6 grid gap-4 ${st.view === "grid" ? "sm:grid-cols-2 lg:grid-cols-3" : ""}`}
-        >
+        <div className={`mt-8 ${st.view === "grid" ? "row-grid" : "grid gap-3"}`}>
           {shown.map((p) => (
             <div key={p.id} className="glass-card flex gap-4 p-4">
               {p.img && (
