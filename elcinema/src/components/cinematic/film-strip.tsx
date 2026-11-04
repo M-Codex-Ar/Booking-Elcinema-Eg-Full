@@ -15,7 +15,7 @@ const DEFAULT_FRAMES: FilmStripFrame[] = [
 ];
 
 /** How many times the frame sequence repeats per film strip group. */
-const REPEATS = 2;
+const REPEATS = 1;
 
 /** Slow horizontal film strip riding along the bottom of the intro. */
 export function FilmStrip({ frames }: { frames?: FilmStripFrame[] }) {
@@ -39,7 +39,7 @@ export function FilmStrip({ frames }: { frames?: FilmStripFrame[] }) {
           </div>
         ))}
       </div>
-      <div className="film-perf film-perf-bottom" />
+      <div className="film-perf" />
     </div>
   ));
 

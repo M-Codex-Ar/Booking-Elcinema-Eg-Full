@@ -34,8 +34,9 @@ export const Route = createFileRoute("/$lang/")({
       <p className="text-lg font-bold">Page not found</p>
     </div>
   ),
-  head: ({ params }) => {
+  head: ({ params, loaderData }) => {
     const en = params.lang !== "ar";
+    const heroImage = loaderData?.[0]?.data?.promos?.[0]?.img;
     const title = en
       ? "elCinema — Movies, TV Guide & Box Office"
       : "إل سينما — أفلام، جدول القنوات وبوكس أوفيس";
@@ -43,6 +44,17 @@ export const Route = createFileRoute("/$lang/")({
       ? "Egypt's cinema and TV guide: what's playing now, coming soon, tonight's TV schedule and the weekly box office."
       : "دليل السينما والتلفاز في مصر: ما يُعرض الآن، القادم قريبًا، جدول القنوات الليلة، وبوكس أوفيس الأسبوع.";
     return {
+      links: heroImage
+        ? [
+            {
+              rel: "preload",
+              as: "image",
+              href: heroImage,
+              fetchPriority: "high",
+              referrerPolicy: "no-referrer",
+            },
+          ]
+        : [],
       meta: [
         { title },
         { name: "description", content: description },
