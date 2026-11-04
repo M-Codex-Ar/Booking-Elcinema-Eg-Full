@@ -40,6 +40,7 @@ src/
 ├── components/
 │   ├── ui/                shadcn primitives consumed by the app shell + dashboard
 │   ├── shared/            primitives.tsx (markup) + variants.ts (class recipes) + controls, ui facade, TvGuide
+│   ├── cinematic/         CinematicLoader + first-load subcomponents (background, film strip, animated logo, progress) + pacing math
 │   └── layout/            SiteChrome, SiteMenu, ThemeToggle
 ├── features/
 │   ├── auth/              auth.ts helpers + AuthDialog
@@ -53,7 +54,7 @@ src/
 ├── lib/                   build.ts, data.ts, images.ts, links.ts, media.shared.ts, cn(), error capture/reporting, supabase-env
 ├── utils/                 slug.ts (and other small helpers)
 ├── services/clients/supabase/  client, auth-attacher, auth-middleware, generated types
-├── hooks/                 use-mobile.tsx
+├── hooks/                 use-mobile.tsx, use-app-ready.ts (cinematic first-load gate)
 ├── test/                  Vitest suites + setup
 ├── assets/                bundled images
 └── router.tsx is now under app/; routeTree.gen.ts stays at src root
@@ -88,6 +89,24 @@ Identity changes drive cache correctness: `__root.tsx` subscribes to
 `onAuthStateChange` and calls `router.invalidate()` on `SIGNED_IN`, `SIGNED_OUT`
 and `USER_UPDATED`, plus `queryClient.invalidateQueries()` for anything that is
 not a sign-out.
+
+## First load
+
+The cinematic first load (ported from the guided loading experience) mounts
+`<CinematicLoader />` once in `__root.tsx` above the routed outlet:
+
+- `components/cinematic/` holds the overlay (`cinematic-loader.tsx`), the
+  atmospheric stage (`cinematic-background.tsx`), the logo reveal
+  (`animated-logo.tsx`), the progress readout (`loading-progress.tsx`), the film
+  strip (`film-strip.tsx`) and the pure pacing math (`loader-logic.ts`).
+- `hooks/use-app-ready.ts` gates the reveal on hydration plus the hero artwork
+  (`img[data-hero]`, marked by `SmartImg`'s `dataHero`) with a hard cap, so a slow
+  image can never trap the intro.
+- The overlay runs `intro` → `exiting` → `done`, eases progress to 100% only when
+  the app is genuinely ready (min-duration floor, returning-visitor / reduced-motion
+  variants), then dissolves via the `loader-lift` keyframe.
+- Copy lives in `i18n/` (`loader.preparing`, `loader.tagline`); colours, fonts and
+  motion come from `theme/tokens.css` and `theme/utilities.css`.
 
 ## Styling and copy
 
