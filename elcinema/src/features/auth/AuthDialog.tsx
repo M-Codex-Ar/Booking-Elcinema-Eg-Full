@@ -13,7 +13,7 @@ import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { isAdmin } from "@/features/auth/auth";
+import { isAdmin, describeAuthError } from "@/features/auth/auth";
 
 export type AuthMode = "login" | "register";
 
@@ -101,12 +101,7 @@ export function AuthDialog({
         });
 
         if (err) {
-          const msg = err.message.toLowerCase();
-          if (msg.includes("already registered") || msg.includes("already in use")) {
-            setError(t("auth.alreadyRegistered"));
-            return;
-          }
-          setError(err.message);
+          setError(describeAuthError(t, err.message));
           return;
         }
 
@@ -121,12 +116,7 @@ export function AuthDialog({
 
       const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
       if (err) {
-        const msg = err.message.toLowerCase();
-        if (msg.includes("invalid login credentials")) {
-          setError(t("auth.invalidCredentials"));
-          return;
-        }
-        setError(err.message);
+        setError(describeAuthError(t, err.message));
         return;
       }
 
@@ -154,7 +144,7 @@ export function AuthDialog({
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (err) {
-        setError(err.message);
+        setError(describeAuthError(t, err.message));
       } else {
         toast.success(t("auth.resetSent"));
       }

@@ -49,6 +49,9 @@ export const enChrome = {
   "auth.invalidCredentials": "Wrong email or password.",
   "auth.alreadyRegistered": "This email is already registered. Please sign in.",
   "auth.checkEmail": "Account created! Please check your email to confirm registration.",
+  "auth.emailNotConfirmed":
+    "Please confirm your email first — the confirmation link was sent when you registered.",
+  "auth.tooManyAttempts": "Too many attempts. Wait a moment and try again.",
   "auth.enterEmailFirst": "Please enter your email address first.",
   "auth.loading": "Please wait…",
   "auth.account": "Account",
