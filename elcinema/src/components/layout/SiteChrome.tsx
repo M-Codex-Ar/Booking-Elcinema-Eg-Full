@@ -11,18 +11,17 @@ import type { Lang } from "@/types/home";
 import { ImgWithFallback, SmartImg } from "@/components/shared/primitives";
 import { Na } from "@/components/shared/ui";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { SiteMenu, NAV_GROUPS } from "@/components/layout/SiteMenu";
+import { SiteMenu, NAV_GROUPS, type NavGroup } from "@/components/layout/SiteMenu";
 import { AuthDialog } from "@/features/auth/AuthDialog";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin, getUserDisplayName } from "@/features/auth/auth";
-import { makeT } from "@/i18n";
+import { makeT, otherLang } from "@/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -35,35 +34,6 @@ import {
  */
 const LOGO_URL = "/images/brand/logo.png";
 const FOOTER_LOGO_URL = "/images/brand/footer-logo.png";
-
-const COPY = {
-  en: {
-    login: "Login",
-    dashboard: "Dashboard",
-    signOut: "Sign out",
-    search: "Search",
-    nav: [
-      ["now", "Now Playing"],
-      ["soon", "Coming Soon"],
-      ["tvguide", "TV Guide"],
-      ["boxoffice", "Box Office"],
-    ] as const,
-    switchTo: "عربي",
-  },
-  ar: {
-    login: "تسجيل الدخول",
-    dashboard: "لوحة التحكم",
-    signOut: "خروج",
-    search: "ابحث",
-    nav: [
-      ["now", "السينمات الآن"],
-      ["soon", "قريباً"],
-      ["tvguide", "جدول القنوات"],
-      ["boxoffice", "بوكس أوفيس"],
-    ] as const,
-    switchTo: "English",
-  },
-};
 
 const SOCIAL = {
   facebook: "https://www.facebook.com/elCinemaEgypt/",
@@ -100,7 +70,8 @@ const iconBtn =
   "flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary";
 
 export function SiteHeader({ lang }: { lang: Lang }) {
-  const c = COPY[lang];
+  const t = makeT(lang);
+  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [query, setQuery] = useState("");
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
@@ -126,17 +97,17 @@ export function SiteHeader({ lang }: { lang: Lang }) {
 
   const signOut = async () => {
     if (isSupabaseConfigured()) await supabase.auth.signOut();
-    window.location.assign(`/${lang}`);
+    void navigate({ to: `/${lang}` as never });
   };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    window.location.assign(`/${lang}/search?q=${encodeURIComponent(query.trim())}`);
+    void navigate({ to: `/${lang}/search` as never, search: { q: query.trim() } as never });
   };
   // /en/work/x -> /ar/work/x ; keep the rest of the path intact.
-  const otherLang: Lang = lang === "en" ? "ar" : "en";
-  const otherPath = "/" + pathname.replace(/^\/(en|ar)/, otherLang);
+  const nextLanguage = otherLang(lang);
+  const otherPath = "/" + pathname.replace(/^\/(en|ar)/, nextLanguage);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
@@ -152,7 +123,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
         </Na>
         <nav className="ms-2 hidden items-center gap-1 lg:flex">
           {NAV_GROUPS.map((group) => (
-            <NavDropdown key={group.en} lang={lang} group={group} />
+            <NavDropdown key={group.label} lang={lang} group={group} />
           ))}
         </nav>
         {signedIn ? (
@@ -162,7 +133,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
                 href={`/${lang}/dashboard`}
                 className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90"
               >
-                <LayoutDashboard className="h-4 w-4" /> {c.dashboard}
+                <LayoutDashboard className="h-4 w-4" /> {t("chrome.dashboard")}
               </Na>
             ) : (
               <span className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/60 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
@@ -173,8 +144,8 @@ export function SiteHeader({ lang }: { lang: Lang }) {
             <button
               type="button"
               onClick={signOut}
-              aria-label={c.signOut}
-              title={c.signOut}
+              aria-label={t("chrome.signOut")}
+              title={t("chrome.signOut")}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
             >
               <LogOut className="h-4 w-4" />
@@ -189,7 +160,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
                   type="button"
                   className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-glow-md"
                 >
-                  <LogIn className="h-4 w-4" /> {c.login}
+                  <LogIn className="h-4 w-4" /> {t("auth.login")}
                 </button>
               }
             />
@@ -217,8 +188,8 @@ export function SiteHeader({ lang }: { lang: Lang }) {
               <button
                 type="button"
                 onClick={signOut}
-                aria-label={c.signOut}
-                title={c.signOut}
+                aria-label={t("chrome.signOut")}
+                title={t("chrome.signOut")}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
               >
                 <LogOut className="h-3.5 w-3.5" />
@@ -231,8 +202,8 @@ export function SiteHeader({ lang }: { lang: Lang }) {
                 trigger={
                   <button
                     type="button"
-                    aria-label={c.login}
-                    title={c.login}
+                    aria-label={t("auth.login")}
+                    title={t("auth.login")}
                     className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
                   >
                     <LogIn className="h-3.5 w-3.5" />
@@ -249,7 +220,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           */}
           <Na
             href={`/${lang}/search`}
-            label={c.search}
+            label={t("chrome.search")}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:hidden"
           >
             <Search className="h-4 w-4" />
@@ -260,14 +231,15 @@ export function SiteHeader({ lang }: { lang: Lang }) {
           >
             <input
               type="text"
-              placeholder={c.search}
+              aria-label={t("chrome.search")}
+              placeholder={t("chrome.search")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="h-full w-24 bg-transparent px-2 text-xs outline-none placeholder:text-muted-foreground sm:text-sm md:w-48 md:px-3"
+              className="h-full w-24 bg-transparent px-2 text-xs outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring sm:text-sm md:w-48 md:px-3"
             />
             <button
               type="submit"
-              aria-label={c.search}
+              aria-label={t("chrome.search")}
               className="flex h-full min-w-10 items-center justify-center bg-primary px-2.5 text-primary-foreground hover:bg-primary/90 md:px-3"
             >
               <Search className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -297,7 +269,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
             href={otherPath}
             className="flex h-9 min-w-10 shrink-0 items-center justify-center gap-1 rounded-md px-2 whitespace-nowrap text-xs font-semibold hover:text-primary sm:text-sm"
           >
-            {c.switchTo}
+            {t("chrome.switchTo")}
           </Na>
         </div>
       </div>
@@ -305,7 +277,7 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   );
 }
 
-function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[number] }) {
+function NavDropdown({ lang, group }: { lang: Lang; group: NavGroup }) {
   const t = makeT(lang);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -320,7 +292,7 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
           active ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
         }`}
       >
-        {group[lang]}
+        {t(group.label)}
         <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -335,22 +307,19 @@ function NavDropdown({ lang, group }: { lang: Lang; group: (typeof NAV_GROUPS)[n
           <DropdownMenuItem
             key={it.seg}
             onSelect={() => go(it.seg)}
+            aria-current={
+              pathname === `/${lang}/${it.seg}` || pathname.startsWith(`/${lang}/${it.seg}/`)
+                ? "page"
+                : undefined
+            }
             className={`cursor-pointer gap-2 rounded-lg py-2 font-semibold ${
               i > 0 ? "mt-0.5 border-t border-border/60 pt-2" : ""
             }`}
           >
             <it.icon className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
-            {it[lang]}
+            {t(it.label)}
           </DropdownMenuItem>
         ))}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={() => go("search")}
-          className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"
-        >
-          <Search className="h-4 w-4 text-primary group-data-[highlighted]:text-primary-foreground" />{" "}
-          {t("chrome.advancedSearch")}
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

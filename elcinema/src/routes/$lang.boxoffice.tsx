@@ -1,17 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BoxOfficePage } from "@/pages/BoxOffice";
 import { managedContentOptions, mergedBoxoffice } from "@/features/content/content";
-import { asLang } from "@/i18n";
+import { asLang, text } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/boxoffice")({
   loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),
   component: BoxOfficeRoute,
   head: ({ params }) => {
-    const en = params.lang !== "ar";
-    const title = en ? "Cinema Revenue | elCinema" : "إيرادات السينما | إل سينما";
-    const description = en
-      ? "The weekly Egypt box office: top 20 movies by weekly revenue in EGP."
-      : "بوكس أوفيس مصر الأسبوعي: أفضل 20 فيلمًا من حيث إيراد الأسبوع بالجنيه.";
+    const lang = asLang(params.lang);
+    const title = `${text(lang, "nav.boxoffice")} | elCinema`;
+    const description = text(lang, "box.metaDescription");
     return {
       meta: [
         { title },

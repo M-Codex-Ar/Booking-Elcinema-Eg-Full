@@ -1,0 +1,22 @@
+name: Pull request title
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a Conventional Commit title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            const pattern = /^(feat|fix|docs|build|ci|perf|refactor|test|chore)(\([^)]+\))?!?: .+$/;
+            if (!pattern.test(title)) {
+              core.setFailed(`Use a Conventional Commit title, for example "fix(navigation): unify section menus". Current title: "${title}"`);
+            }

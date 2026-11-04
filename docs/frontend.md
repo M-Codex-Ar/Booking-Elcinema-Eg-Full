@@ -8,17 +8,17 @@ Vitest 4 · ESLint 9 + Prettier · TypeScript strict.
 
 Run from `elcinema/` (or `npm run <script>:web` from the repository root):
 
-| Command | What it does |
-| --- | --- |
-| `pnpm install` | Install dependencies (`pnpm-lock.yaml`; `pnpm-workspace.yaml` enforces a 24-hour supply-chain age guard). |
-| `pnpm run dev` | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort). |
-| `pnpm run build` | Type-free production build through Nitro, output in `.output/`. |
-| `pnpm run preview` | Serve the built output locally. |
-| `pnpm run lint` | ESLint over the whole project. |
-| `pnpm run format` / `format:check` | Prettier write / verify. |
-| `pnpm run typecheck` | `tsc -p tsconfig.json --noEmit`. |
-| `pnpm run test` | Vitest once; `test:watch` for the loop. |
-| `pnpm run check` | The gate: format check, lint, typecheck, tests, build. |
+| Command                            | What it does                                                                                              |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `pnpm install`                     | Install dependencies (`pnpm-lock.yaml`; `pnpm-workspace.yaml` enforces a 24-hour supply-chain age guard). |
+| `pnpm run dev`                     | Vite dev server; it prints its own URL (the Lovable plugin sets host/port/strictPort).                    |
+| `pnpm run build`                   | Type-free production build through Nitro, output in `.output/`.                                           |
+| `pnpm run preview`                 | Serve the built output locally.                                                                           |
+| `pnpm run lint`                    | ESLint over the whole project.                                                                            |
+| `pnpm run format` / `format:check` | Prettier write / verify.                                                                                  |
+| `pnpm run typecheck`               | `tsc -p tsconfig.json --noEmit`.                                                                          |
+| `pnpm run test`                    | Vitest once; `test:watch` for the loop.                                                                   |
+| `pnpm run check`                   | The gate: format check, lint, typecheck, tests, build.                                                    |
 
 [`/scripts/check.sh`](../scripts/check.sh) wraps the same gate and adds the
 committed route-tree freshness check that CI enforces.
@@ -128,3 +128,15 @@ is tracked as a task, not a rumour.
 - The `search` route ignores `q` when merging results (correctness bug).
 
 See [../CHANGELOG.md](../CHANGELOG.md) for what changed most recently.
+
+# Navigation and catalogue filters
+
+`SiteMenu` and the desktop section menus use the same translated `NAV_GROUPS`
+route map. The compact menu is hidden at the desktop navigation breakpoint,
+while search and authentication each have a single header entry point per
+viewport. Search form submissions navigate through TanStack Router so route
+data and transitions remain client-side.
+
+Catalogue filters expose their active count and a clear action through the
+shared `ActiveFilters` control. Genre chips are limited to keys with bilingual
+labels in the genre catalogue, and TV guide category copy lives in `i18n/`.

@@ -8,6 +8,7 @@ import type { Lang } from "@/types/home";
 import type { LiveLineupDetail, LiveLineupIndex } from "@/types/live";
 import { Na } from "@/components/shared/ui";
 import {
+  ActiveFilters,
   FilterInput,
   ListToolbar,
   Pagination,
@@ -43,6 +44,11 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
 
       <ListToolbar>
         <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
+        <ActiveFilters
+          count={Number(Boolean(st.q.trim()))}
+          lang={lang}
+          onClear={() => st.setQ("")}
+        />
         <span className="grow" />
         <SortSelect
           lang={lang}
@@ -125,6 +131,11 @@ export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang:
         <>
           <ListToolbar>
             <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
+            <ActiveFilters
+              count={Number(Boolean(st.q.trim()))}
+              lang={lang}
+              onClear={() => st.setQ("")}
+            />
             <span className="grow" />
             <SortSelect
               lang={lang}

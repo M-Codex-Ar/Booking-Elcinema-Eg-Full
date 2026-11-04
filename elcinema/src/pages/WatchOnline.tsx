@@ -13,6 +13,7 @@ import type { LiveVodGuide } from "@/types/live";
 import { LiveError, LivePoster, VodBadge } from "@/features/live/live-ui";
 import { Na, Row } from "@/components/shared/ui";
 import {
+  ActiveFilters,
   FilterInput,
   ListToolbar,
   Pagination,
@@ -77,6 +78,11 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
         </h2>
         <ListToolbar>
           <FilterInput lang={lang} value={st.q} onChange={st.setQ} />
+          <ActiveFilters
+            count={Number(Boolean(st.q.trim()))}
+            lang={lang}
+            onClear={() => st.setQ("")}
+          />
           <span className="grow" />
           <SortSelect
             lang={lang}

@@ -2,10 +2,12 @@
  * view toggle and pagination (all URL-driven). */
 import { CalendarClock, Star } from "lucide-react";
 import { GENRES } from "@/lib/data";
+import { knownGenreKeys } from "@/lib/genres";
 import { movieMeta, workId } from "@/lib/build";
 import { Na, PosterArt, fmtDate, t, workPath } from "@/components/shared/ui";
 import type { Lang, Movie } from "@/types/home";
 import {
+  ActiveFilters,
   ListToolbar,
   Pagination,
   SortSelect,
@@ -18,6 +20,7 @@ import {
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
 import { knownGenreKeys } from "@/lib/genres";
+import { chip } from "@/components/shared/variants";
 
 type SortKey = "soon" | "title" | "runtime";
 
@@ -98,14 +101,7 @@ export function ComingSoonPage({
       <p className="mt-1 text-sm text-muted-foreground">{copy("soon.sub")}</p>
 
       <ListToolbar>
-        <Na
-          href={`/${lang}/soon`}
-          className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-            !genre
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border hover:border-primary"
-          }`}
-        >
+        <Na href={`/${lang}/soon`} className={chip({ active: !genre })}>
           {copy("controls.all")}
         </Na>
         {genres.map((g) => (
@@ -113,15 +109,16 @@ export function ComingSoonPage({
             key={g}
             href={`/${lang}/soon`}
             search={{ genre: g }}
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-              genre === g
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary"
-            }`}
+            className={chip({ active: genre === g })}
           >
             {t(GENRES[g], lang)}
           </Na>
         ))}
+        <ActiveFilters
+          count={genre ? 1 : 0}
+          lang={lang}
+          onClear={() => setSearch({ genre: undefined, page: undefined })}
+        />
         <span className="grow" />
         <SortSelect
           lang={lang}

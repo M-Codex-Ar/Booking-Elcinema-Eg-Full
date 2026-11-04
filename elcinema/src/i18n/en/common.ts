@@ -14,6 +14,8 @@ export const enCommon = {
   "controls.za": "Z to A",
   "controls.default": "Default",
   "controls.none": "No matches.",
+  "controls.activeFilters": "Active filters: {count}",
+  "controls.clearFilters": "Clear filters",
   "common.director": "Director",
   "common.directorColon": "Director:",
   "common.writerColon": "Writer:",
