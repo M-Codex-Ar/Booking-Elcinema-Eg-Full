@@ -103,6 +103,9 @@ cinematic depth without hard-coded page colours. The body also uses the same
 background image as a fallback beneath route shells. The shared `Page` primitive
 stays transparent so it does not paint an opaque surface over this canvas; cards
 and other intentional panels opt into `bg-card`, `glass-card`, or another surface.
+The first-load overlay uses this same background image and the active `--primary`
+token for its animated highlights, keeping its canvas and accent colours aligned
+with the selected theme.
 
 Three of them exist because of a measured breakage, not a preference:
 

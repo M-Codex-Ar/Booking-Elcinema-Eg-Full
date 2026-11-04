@@ -11,7 +11,7 @@ type LoadingProgressProps = {
 };
 
 /**
- * Thin gold progress line with a percentage readout.
+ * Thin brand-colour progress line with a percentage readout.
  * The percentage is a live region announced once, not on every tick.
  */
 export const LoadingProgress = forwardRef<LoadingProgressHandle, LoadingProgressProps>(

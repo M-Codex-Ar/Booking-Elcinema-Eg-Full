@@ -50,7 +50,6 @@ export function CinematicBackground() {
         />
       ))}
       <div className="loader-bg-layer loader-grain" />
-      <div className="loader-bg-layer loader-vignette" />
       <div className="loader-gate" />
     </div>
   );
