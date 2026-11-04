@@ -385,6 +385,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
             items={cinemaCountryItems(lang, t)}
             label={t("home.cinemasRegion")}
             direction={lang === "ar" ? "rtl" : "ltr"}
+            autoPlay
             className="rounded-3xl border border-border bg-background/60"
             // Instance fit for the home page: the portable 100svh default is
             // meant for full-screen demos; here the guide row sets the stage.
