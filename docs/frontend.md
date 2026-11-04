@@ -90,10 +90,12 @@ Identity changes drive cache correctness: `__root.tsx` subscribes to
 and `USER_UPDATED`, plus `queryClient.invalidateQueries()` for anything that is
 not a sign-out.
 
-Managed rows are optional additions to the built-in catalogue. The seven public
-table reads run concurrently with a 1.2s request timeout; failed or unavailable
-tables become empty additions so a database slowdown cannot fail the public
-route.
+Managed rows are optional additions to the built-in catalogue. On the homepage,
+they load after the initial SSR response. The seven public table reads run
+concurrently under one 1.2s total deadline; a timeout aborts outstanding reads
+and returns empty additions. The shared query does not retry because every public
+page already has a built-in fallback, so a database slowdown cannot hold the
+page open for repeated attempts.
 
 ## First load
 
