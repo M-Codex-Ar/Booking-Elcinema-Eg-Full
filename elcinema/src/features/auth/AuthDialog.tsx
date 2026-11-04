@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
-import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin, describeAuthError } from "@/features/auth/auth";
 
@@ -71,6 +70,10 @@ export function AuthDialog({
       setError(t("auth.notEnabled"));
       return;
     }
+
+    // The supabase stack stays out of the first-load bundle; a credential
+    // submit is the first point where it is actually needed.
+    const { supabase } = await import("@/services/clients/supabase/client");
 
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") ?? "").trim();
@@ -140,6 +143,7 @@ export function AuthDialog({
     setBusy(true);
     setError("");
     try {
+      const { supabase } = await import("@/services/clients/supabase/client");
       const { error: err } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
       });

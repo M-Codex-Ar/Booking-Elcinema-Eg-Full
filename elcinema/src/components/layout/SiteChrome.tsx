@@ -13,7 +13,6 @@ import { Na } from "@/components/shared/ui";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { SiteMenu, NAV_GROUPS, type NavGroup } from "@/components/layout/SiteMenu";
 import { AuthDialog } from "@/features/auth/AuthDialog";
-import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { isAdmin, getUserDisplayName } from "@/features/auth/auth";
 import { makeT, otherLang } from "@/i18n";
@@ -79,15 +78,26 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     let alive = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (alive) setCurrentUser(data.session?.user ?? null);
+    let cleanup: (() => void) | undefined;
+    // Dynamic import keeps the supabase stack (auth, realtime, postgrest,
+    // storage) out of the first-load bundle; the header picks the session up
+    // right after hydration instead.
+    void import("@/services/clients/supabase/client").then(({ supabase }) => {
+      if (!alive) return;
+      supabase.auth.getSession().then(({ data }) => {
+        if (alive) setCurrentUser(data.session?.user ?? null);
+      });
+      const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
+        setCurrentUser(session?.user ?? null),
+      );
+      cleanup = () => {
+        alive = false;
+        sub.subscription.unsubscribe();
+      };
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
-      setCurrentUser(session?.user ?? null),
-    );
     return () => {
       alive = false;
-      sub.subscription.unsubscribe();
+      cleanup?.();
     };
   }, []);
 
@@ -96,7 +106,10 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const displayName = getUserDisplayName(currentUser);
 
   const signOut = async () => {
-    if (isSupabaseConfigured()) await supabase.auth.signOut();
+    if (isSupabaseConfigured()) {
+      const { supabase } = await import("@/services/clients/supabase/client");
+      await supabase.auth.signOut();
+    }
     void navigate({ to: `/${lang}` as never });
   };
 
