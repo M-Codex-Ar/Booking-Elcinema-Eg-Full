@@ -54,10 +54,8 @@ export function StaticPage({
                 className={`scroll-mt-20 space-y-3 ${isContact ? "glass-card p-5 sm:p-6" : ""}`}
                 id={`section-${i}`}
               >
-                {/* Section Heading */}
-                <div
-                  className={`space-y-1 ps-3 ${isContact ? "border-s-4 border-primary" : "border-l-4 border-primary"}`}
-                >
+                {/* Section Heading — logical border so it flips with RTL */}
+                <div className="space-y-1 border-s-4 border-primary ps-3">
                   <h2 className="text-xl font-black sm:text-2xl">{section.heading}</h2>
                   <div
                     className={`h-1 w-8 ${isContact ? "bg-primary" : "bg-gradient-to-r from-primary to-transparent"}`}
@@ -117,7 +115,13 @@ export function StaticPage({
               {/* Image (Other static pages) - Fill remaining space */}
               {!sidebarForm && page.image && (
                 <div className="overflow-hidden rounded-xl border border-border flex-1 min-h-0">
-                  <img src={page.image} alt={page.title} className="w-full h-full object-cover" />
+                  <img
+                    src={page.image}
+                    alt={page.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               )}
 
@@ -149,8 +153,14 @@ export function StaticPage({
             )}
 
             {!sidebarForm && page.image && (
-              <div className="overflow-hidden rounded-xl border border-border h-96">
-                <img src={page.image} alt={page.title} className="w-full h-full object-cover" />
+              <div className="h-96 overflow-hidden rounded-xl border border-border">
+                <img
+                  src={page.image}
+                  alt={page.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </div>
             )}
 

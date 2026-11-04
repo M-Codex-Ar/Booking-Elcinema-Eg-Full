@@ -142,7 +142,7 @@ export function SearchPage({
         </p>
       )}
 
-      <div className="mt-4 grid gap-3">
+      <div className="row-grid mt-8">
         {shown.map((r) => {
           const icon = TAB_ICON[r.type];
           const Icon = icon;

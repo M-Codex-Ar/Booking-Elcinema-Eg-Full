@@ -145,9 +145,9 @@ export function NowPlayingPage({
       </ListToolbar>
 
       {view === "grid" ? (
-        <div className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="poster-grid mt-8">
           {shown.map((m) => (
-            <div key={m.slug} className="w-full max-w-44">
+            <div key={m.slug} className="w-full">
               <div className="group w-full">
                 <Na href={workPath(lang, workId(m))} className="block">
                   <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
@@ -169,7 +169,7 @@ export function NowPlayingPage({
           ))}
         </div>
       ) : (
-        <div className="mt-8 space-y-3">
+        <div className="row-grid mt-8">
           {shown.map((m) => (
             <Row key={m.slug} movie={m} lang={lang} />
           ))}

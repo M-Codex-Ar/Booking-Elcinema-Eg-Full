@@ -3,6 +3,38 @@ import type { User } from "@supabase/supabase-js";
 export type UserRole = "admin" | "user";
 
 /**
+ * Map a raw Supabase auth error message to bilingual i18n copy.
+ *
+ * Provider messages are English-only, so anything we do not recognise is
+ * replaced with the generic failure copy instead of leaking raw provider
+ * text into the Arabic edition. Recognised failures map to a dedicated key:
+ *
+ * - "invalid login credentials" → wrong email/password (the common 400 on
+ *   `grant_type=password`)
+ * - "email not confirmed"       → account exists but the confirmation link
+ *   was never used
+ * - "already registered"/"already in use" → duplicate sign-up
+ * - "too many requests"/"rate limit" → API throttling
+ */
+export function describeAuthError<T extends string>(
+  t: (key: T) => string,
+  message: string,
+): string {
+  const msg = message.toLowerCase();
+  if (msg.includes("invalid login credentials")) return t("auth.invalidCredentials" as T);
+  if (msg.includes("email not confirmed")) return t("auth.emailNotConfirmed" as T);
+  if (msg.includes("already registered") || msg.includes("already in use")) {
+    return t("auth.alreadyRegistered" as T);
+  }
+  if (msg.includes("too many requests") || msg.includes("rate limit")) {
+    return t("auth.tooManyAttempts" as T);
+  }
+  // Unknown failure: log the raw text for debugging, show generic copy.
+  console.error("auth: unhandled provider error:", message);
+  return t("auth.requestFailed" as T);
+}
+
+/**
  * Extract user role from Supabase user object.
  * Priority:
  * 1. app_metadata.role (cryptographically signed in JWT by Supabase Auth)

@@ -5,6 +5,7 @@
  * as internal app routes.
  */
 import { ArrowRight, Clapperboard, Star, UserRound } from "lucide-react";
+import { useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { artworkSrc, useArtwork, LogoImage } from "@/components/shared/primitives";
@@ -119,7 +120,7 @@ export function LivePoster({
 }) {
   return (
     <div
-      className={`group ${fluid ? "w-full max-w-44" : "shrink-0 snap-start"} ${wide ? "w-64 md:w-72" : fluid ? "" : "w-36 md:w-44"}`}
+      className={`group ${fluid ? "w-full" : "shrink-0 snap-start"} ${wide ? "w-64 md:w-72" : fluid ? "" : "w-36 md:w-44"}`}
     >
       <Na href={liveWorkPath(lang, id)} className="block">
         <div
@@ -159,16 +160,29 @@ export function RatingPill({ rating, votes }: { rating: number | null; votes: nu
 /** Friendly error panel for pages whose live scrape failed. */
 export function LiveError({ message, lang }: { message: string; lang: Lang }) {
   const t = makeT(lang);
+  const router = useRouter();
   return (
     <div className={cn(stateBlock())}>
       <h1 className="text-2xl font-black">{t("common.couldntLoad")}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{message}</p>
-      <Na
-        href={`/${lang}`}
-        className="mt-6 inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
-      >
-        {t("common.goHome")}
-      </Na>
+      <div className="mt-6 flex justify-center gap-3">
+        {/* The failure may be cached in a query; invalidate refetches every
+            active query so a transient scrape failure is recoverable without
+            leaving the page. */}
+        <button
+          type="button"
+          onClick={() => void router.invalidate()}
+          className="inline-flex rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground hover:bg-primary/90"
+        >
+          {t("common.tryAgain")}
+        </button>
+        <Na
+          href={`/${lang}`}
+          className="inline-flex rounded-lg border border-border px-6 py-3 font-bold hover:border-primary"
+        >
+          {t("common.goHome")}
+        </Na>
+      </div>
     </div>
   );
 }

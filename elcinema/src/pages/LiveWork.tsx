@@ -21,7 +21,7 @@ import { useRef, useState } from "react";
 import { ImgWithFallback } from "@/components/shared/primitives";
 import type { Lang } from "@/types/home";
 import type { LiveWork } from "@/types/live";
-import { Na, Row } from "@/components/shared/ui";
+import { Na, Row, useScrollEdges } from "@/components/shared/ui";
 import {
   LiveImg,
   LivePoster,
@@ -38,6 +38,8 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
   const t = makeT(lang);
   const castRailRef = useRef<HTMLDivElement>(null);
   const isRtl = lang === "ar";
+  // Scroll arrows render only for the directions that hold more cast cards.
+  const castEdges = useScrollEdges(castRailRef);
   const [day, setDay] = useState(0);
   const showtimes = data.showtimes.slice(0, DAY_COUNT);
   const dayIndex = Math.min(day, Math.max(showtimes.length - 1, 0));
@@ -208,30 +210,34 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                 <div className="mb-3 flex min-w-0 items-center justify-between gap-2 sm:gap-3">
                   <h2 className="min-w-0 truncate text-lg font-black">{t("common.castColon")}</h2>
                   <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-                    <button
-                      type="button"
-                      aria-label={t("home.previous")}
-                      onClick={() => scrollCast(-1)}
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-                    >
-                      {isRtl ? (
-                        <ChevronRight className="h-4 w-4" />
-                      ) : (
-                        <ChevronLeft className="h-4 w-4" />
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      aria-label={t("home.next")}
-                      onClick={() => scrollCast(1)}
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-                    >
-                      {isRtl ? (
-                        <ChevronLeft className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </button>
+                    {castEdges.start && (
+                      <button
+                        type="button"
+                        aria-label={t("home.previous")}
+                        onClick={() => scrollCast(-1)}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                      >
+                        {isRtl ? (
+                          <ChevronRight className="h-4 w-4" />
+                        ) : (
+                          <ChevronLeft className="h-4 w-4" />
+                        )}
+                      </button>
+                    )}
+                    {castEdges.end && (
+                      <button
+                        type="button"
+                        aria-label={t("home.next")}
+                        onClick={() => scrollCast(1)}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                      >
+                        {isRtl ? (
+                          <ChevronLeft className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div
@@ -336,7 +342,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
                 </button>
               ))}
             </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="row-grid mt-4">
               {current.cinemas.slice(0, 6).map((c) => (
                 <div key={c.id} className="glass-card p-4">
                   <div className="font-bold">{c.name}</div>
@@ -362,7 +368,7 @@ export function LiveWorkPage({ data, lang }: { data: LiveWork; lang: Lang }) {
             <h2 className="mb-4 flex items-center gap-2 text-xl font-black">
               <Tv className="h-5 w-5 text-primary" /> {t("video.brand")}
             </h2>
-            <div className="grid grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
+            <div className="video-grid">
               {data.videos.slice(0, 4).map((v) => (
                 <Na key={v.id} href={videoPath(lang, v.id)} className="group w-full">
                   <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">

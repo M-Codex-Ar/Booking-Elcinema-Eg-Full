@@ -97,9 +97,9 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
       )}
 
       {st.view === "grid" ? (
-        <div className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="poster-grid mt-8">
           {shown.map((m) => (
-            <Na key={m.id} href={`/${lang}/booking/${m.id}`} className="group w-full max-w-44">
+            <Na key={m.id} href={`/${lang}/booking/${m.id}`} className="group w-full">
               <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
                 <LiveImg src={m.img} alt={m.title} className="h-full w-full" />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
@@ -115,7 +115,7 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid gap-3 md:grid-cols-2">
+        <div className="row-grid mt-8">
           {shown.map((m) => (
             <Na
               key={m.id}
@@ -187,8 +187,8 @@ export function BookingMoviePage({
         <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("booking.back")}
       </Na>
 
-      <div className="mt-4 flex items-start gap-4">
-        <div className="hidden w-28 shrink-0 overflow-hidden rounded-xl border border-border sm:block">
+      <div className="mt-4 flex flex-col items-start gap-4 md:flex-row md:items-start">
+        <div className="w-28 shrink-0 overflow-hidden rounded-xl border border-border">
           <div className="aspect-[2/3]">
             <LiveImg src={poster} alt={title} className="h-full w-full" />
           </div>
@@ -234,7 +234,7 @@ export function BookingMoviePage({
 
       {current && current.cinemas.length > 0 ? (
         <>
-          <div className="mt-6 grid gap-3 md:grid-cols-2">
+          <div className="row-grid mt-6">
             {current.cinemas.map((c) => (
               <div key={c.id} className="glass-card p-4">
                 <div className="font-bold">{c.name}</div>

@@ -3,14 +3,34 @@
  * internal link, real poster artwork with a generated gradient fallback,
  * the scrolling poster row and bilingual helpers.
  */
-import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
-import { useRef, type CSSProperties, type ReactNode } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, LoaderCircle, type LucideIcon } from "lucide-react";
+import {
+  useRef,
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import { AppLink, Artwork } from "@/components/shared/primitives";
 import { makeT } from "@/i18n";
 import type { Bi, Lang } from "@/types/home";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const t = (v: Bi | undefined, lang: Lang): string => (v ? v[lang] : "");
+
+/** Branded full-page pending state for route transitions (spinner, no copy). */
+export function RoutePending() {
+  return (
+    <div
+      className="page-background flex min-h-[60vh] items-center justify-center"
+      role="status"
+      aria-busy="true"
+    >
+      <LoaderCircle className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
+    </div>
+  );
+}
 
 /**
  * Internal link for dynamically built paths. Route paths are parameterised by
@@ -89,6 +109,49 @@ export function PosterArt({
   );
 }
 
+/**
+ * Scroll-edge visibility for horizontal rails and tables: `start`/`end` are
+ * true only while more content actually sits in that direction, so prev/next
+ * buttons can render only when they do something instead of always showing.
+ * RTL-safe — Chrome/Firefox expose negative `scrollLeft` in RTL, and
+ * `Math.abs(scrollLeft)` is the visual distance scrolled from the start edge
+ * in both directions, matching the scroll buttons' sign convention.
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function useScrollEdges(ref: RefObject<HTMLElement | null>): {
+  start: boolean;
+  end: boolean;
+} {
+  const [edges, setEdges] = useState({ start: false, end: false });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      const pos = Math.abs(el.scrollLeft);
+      // Small thresholds absorb sub-pixel rounding from snap scrolling.
+      setEdges({
+        start: max > 2 && pos > 2,
+        end: max > 2 && max - pos > 2,
+      });
+    };
+    measure();
+    el.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    // Content-driven width changes (the min-width wrapper of the guide table,
+    // poster cards in a rail) also flip the edges even without user scrolling.
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    for (const child of Array.from(el.children)) ro.observe(child);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+      ro.disconnect();
+    };
+  }, [ref]);
+  return edges;
+}
+
 /** Scrolling poster row with section title, arrows and "See all" link. */
 export function Row({
   title,
@@ -106,6 +169,9 @@ export function Row({
   const t = makeT(lang);
   const ref = useRef<HTMLDivElement>(null);
   const isRtl = lang === "ar";
+  // Arrows render only for the directions that hold more content; a row or
+  // table that fits its container (wide screens) shows none at all.
+  const edges = useScrollEdges(ref);
   const scroll = (d: number) => {
     const factor = isRtl ? -d : d;
     ref.current?.scrollBy({ left: factor * ref.current.clientWidth * 0.8, behavior: "smooth" });
@@ -128,22 +194,26 @@ export function Row({
           )}
         </div>
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          <button
-            type="button"
-            aria-label={t("home.previous")}
-            onClick={() => scroll(-1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-          >
-            {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </button>
-          <button
-            type="button"
-            aria-label={t("home.next")}
-            onClick={() => scroll(1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-          >
-            {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </button>
+          {edges.start && (
+            <button
+              type="button"
+              aria-label={t("home.previous")}
+              onClick={() => scroll(-1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            >
+              {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </button>
+          )}
+          {edges.end && (
+            <button
+              type="button"
+              aria-label={t("home.next")}
+              onClick={() => scroll(1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+            >
+              {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </button>
+          )}
         </div>
       </div>
       <div ref={ref} className="scrollbar-hide flex snap-x gap-4 overflow-x-auto pb-2">

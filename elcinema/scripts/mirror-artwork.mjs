@@ -14,6 +14,10 @@
  *   logos    — the two fixed cdn.elcinema.com wordmarks used in the chrome
  *   born     — today's "Born Today" rail on /en/ (people who are usually not in
  *              the dataset, so no other kind mirrors their headshots)
+ *   channels — every TV channel in data/tvguide.json -> the channel logo on the
+ *              site's own CDN (`media0106.elcinema.com/tvguide/<id>_1.png`),
+ *              stored under its elcinema channel id and mapped back through the
+ *              manifest key (`ch-<n>.png`)
  *
  * each remote image is downloaded to `public/images/<kind>/<id>.<ext>` and the
  * manifest entry for that record's key is rewritten to the local path, so the
@@ -58,7 +62,7 @@ const val = (name, fallback) => {
 const dryRun = has("dry-run");
 const force = has("force");
 const limit = Number.parseInt(val("limit", "0"), 10) || 0;
-const kinds = val("kinds", "posters,people,logos,born")
+const kinds = val("kinds", "posters,people,logos,born,channels")
   .split(",")
   .map((k) => k.trim())
   .filter(Boolean);
@@ -177,6 +181,28 @@ if (kinds.includes("born")) {
   }
 }
 
+/**
+ * Channel logos for the static TV guide. elcinema publishes one logo per
+ * channel on its own CDN at a stable id-based path, keyed in the dataset by the
+ * scraped asset filename (`ch-<n>.png`). Id-named local files + the manifest
+ * rewrite make the guide render its logos from this app, never the CDN.
+ */
+if (kinds.includes("channels")) {
+  const guide = JSON.parse(readFileSync(join(appRoot, "src/data/tvguide.json"), "utf8"));
+  for (const line of Array.isArray(guide.lines) ? guide.lines : []) {
+    const ch = line?.channel;
+    if (ch?.img && ch?.id)
+      records.push({
+        key: ch.img,
+        id: ch.id,
+        path: "/en/tvguide/",
+        dir: "channels",
+        fixed: `https://media0106.elcinema.com/tvguide/${ch.id}_1.png`,
+        ext: "png",
+      });
+  }
+}
+
 if (limit) records.length = Math.min(records.length, limit);
 const manifestPath = join(appRoot, "src/lib/images.ts");
 let manifest = readFileSync(manifestPath, "utf8");
@@ -186,6 +212,15 @@ let skipped = 0;
 const failures = [];
 
 for (const rec of records) {
+  // Id-named file this record mirrors to; fixed when the source dictates the
+  // extension (channels), otherwise always the image content type — so compute
+  // the reuse check without touching the network first.
+  const file = rec.ext ? `${rec.id}.${rec.ext}` : null;
+  if (file && existsSync(join(appRoot, "public/images", rec.dir, file)) && !force) {
+    skipped++;
+    if (rec.key) updates.set(rec.key, `/images/${rec.dir}/${file}`);
+    continue;
+  }
   let remote = rec.fixed;
   if (!remote) {
     const page = await get(`${BASE}${rec.path}`, "html");
@@ -201,16 +236,15 @@ for (const rec of records) {
     failures.push(`${rec.dir}/${rec.id}: download failed for ${remote}`);
     continue;
   }
-  const file = `${rec.id}.${extFor(head.type)}`;
-  const outDir = join(appRoot, "public/images", rec.dir);
-  const outFile = join(outDir, file);
-  const localPath = `/images/${rec.dir}/${file}`;
+  const ext = rec.ext ?? extFor(head.type);
+  const outFile = join(appRoot, "public/images", rec.dir, `${rec.id}.${ext}`);
+  const localPath = `/images/${rec.dir}/${rec.id}.${ext}`;
   if (existsSync(outFile) && !force) {
     skipped++;
   } else if (dryRun) {
     console.log(`would save ${localPath}  <-  ${remote}  (${head.buffer.length} bytes)`);
   } else {
-    mkdirSync(outDir, { recursive: true });
+    mkdirSync(join(appRoot, "public/images", rec.dir), { recursive: true });
     writeFileSync(outFile, head.buffer);
     mirrored++;
   }

@@ -43,6 +43,7 @@ export const enCommon = {
   "common.notFoundPage": "Page not found",
   "common.notFoundHint": "The page you're looking for doesn't exist or has been moved.",
   "common.goHome": "Go home",
+  "common.tryAgain": "Try again",
   "common.backHome": "Back home",
   "common.moviePage": "Movie page",
   "common.videoGallery": "Video Gallery",

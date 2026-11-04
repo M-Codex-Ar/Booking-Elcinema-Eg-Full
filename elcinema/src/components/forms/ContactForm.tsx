@@ -1,9 +1,19 @@
+/**
+ * Public contact form. There is no backend to receive form posts, so the
+ * submit action hands the composed message to the visitor's own email app
+ * (mailto) addressed to the site's real ticket/contact address published on
+ * elcinema.com/contact — nothing is silently discarded.
+ */
 import { useState } from "react";
-import { Loader2, Mail, MessageSquare, Send, User } from "lucide-react";
+import { Mail, MessageSquare, Send, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { makeT } from "@/i18n";
 import type { Lang } from "@/types/home";
+
+/** The address elcinema.com publishes on its own contact page. */
+const CONTACT_EMAIL = "tickets@elcinema.com";
 
 interface ContactFormData {
   name: string;
@@ -16,37 +26,8 @@ interface ContactFormProps {
   lang: Lang;
 }
 
-const STRINGS = {
-  en: {
-    name: "Your Name",
-    email: "Email Address",
-    subject: "Subject",
-    message: "Message",
-    send: "Send Message",
-    sending: "Sending...",
-    success: "Thank you! We'll get back to you soon.",
-    error: "Something went wrong. Please try again.",
-    required: "This field is required",
-    invalidEmail: "Please enter a valid email",
-    messageTooShort: "Message must be at least 10 characters",
-  },
-  ar: {
-    name: "اسمك",
-    email: "عنوان بريدك الإلكتروني",
-    subject: "الموضوع",
-    message: "الرسالة",
-    send: "إرسال الرسالة",
-    sending: "جاري الإرسال...",
-    success: "شكراً! سنعود إليك قريباً.",
-    error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
-    required: "هذا الحقل مطلوب",
-    invalidEmail: "يرجى إدخال بريد إلكتروني صحيح",
-    messageTooShort: "يجب أن تكون الرسالة 10 أحرف على الأقل",
-  },
-};
-
 export function ContactForm({ lang }: ContactFormProps) {
-  const t = STRINGS[lang];
+  const t = makeT(lang);
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -54,7 +35,7 @@ export function ContactForm({ lang }: ContactFormProps) {
     message: "",
   });
   const [errors, setErrors] = useState<Partial<ContactFormData>>({});
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [sent, setSent] = useState(false);
 
   const validateEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -63,38 +44,31 @@ export function ContactForm({ lang }: ContactFormProps) {
   const validate = (): boolean => {
     const newErrors: Partial<ContactFormData> = {};
 
-    if (!formData.name.trim()) newErrors.name = t.required;
-    if (!formData.email.trim()) newErrors.email = t.required;
-    else if (!validateEmail(formData.email)) newErrors.email = t.invalidEmail;
-    if (!formData.subject.trim()) newErrors.subject = t.required;
-    if (!formData.message.trim()) newErrors.message = t.required;
-    else if (formData.message.trim().length < 10) newErrors.message = t.messageTooShort;
+    if (!formData.name.trim()) newErrors.name = t("contact.required");
+    if (!formData.email.trim()) newErrors.email = t("contact.required");
+    else if (!validateEmail(formData.email)) newErrors.email = t("contact.invalidEmail");
+    if (!formData.subject.trim()) newErrors.subject = t("contact.required");
+    if (!formData.message.trim()) newErrors.message = t("contact.required");
+    else if (formData.message.trim().length < 10) newErrors.message = t("contact.messageTooShort");
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validate()) return;
 
-    setStatus("loading");
-
-    try {
-      // In a real app, this would call a server function
-      // For now, simulate success
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-
-      // Reset success message after 3 seconds
-      setTimeout(() => setStatus("idle"), 3000);
-    } catch {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 3000);
-    }
+    const subject = encodeURIComponent(`elCinema — ${formData.subject} (${formData.name})`);
+    const body = encodeURIComponent(
+      `${formData.message}\n\n—\n${formData.name}\n${formData.email}`,
+    );
+    // Hand the composed message to the visitor's email client; the browser
+    // keeps the app page intact.
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    setSent(true);
+    setTimeout(() => setSent(false), 8000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -107,39 +81,34 @@ export function ContactForm({ lang }: ContactFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-4">
+    <form onSubmit={handleSubmit} className="w-full space-y-4" aria-label={t("contact.formTitle")}>
       {/* Status Messages */}
-      {status === "success" && (
-        <div className="rounded-lg bg-green-50 p-4 dark:bg-green-950">
-          <p className="text-sm font-medium text-green-800 dark:text-green-200">{t.success}</p>
-        </div>
-      )}
-
-      {status === "error" && (
-        <div className="rounded-lg bg-red-50 p-4 dark:bg-red-950">
-          <p className="text-sm font-medium text-red-800 dark:text-red-200">{t.error}</p>
+      {sent && (
+        <div className="rounded-lg bg-success/10 p-4" role="status">
+          <p className="text-sm font-medium text-success">{t("contact.mailOpened")}</p>
         </div>
       )}
 
       {/* Name Field */}
       <div className="space-y-1.5">
-        <label htmlFor="name" className="flex items-center gap-2 text-sm font-semibold">
-          <User className="h-4 w-4" />
-          {t.name}
+        <label htmlFor="contact-name" className="flex items-center gap-2 text-sm font-semibold">
+          <User className="h-4 w-4" aria-hidden="true" />
+          {t("contact.name")}
         </label>
         <Input
-          id="name"
+          id="contact-name"
           name="name"
           type="text"
+          autoComplete="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder={t.name}
-          disabled={status === "loading"}
-          className={cn("transition", errors.name && "border-red-500 focus:ring-red-500")}
-          aria-describedby={errors.name ? "name-error" : undefined}
+          placeholder={t("contact.name")}
+          className={cn("transition", errors.name && "border-destructive")}
+          aria-describedby={errors.name ? "contact-name-error" : undefined}
+          aria-invalid={errors.name ? true : undefined}
         />
         {errors.name && (
-          <p id="name-error" className="text-sm text-red-500">
+          <p id="contact-name-error" className="text-sm font-semibold text-destructive">
             {errors.name}
           </p>
         )}
@@ -147,23 +116,24 @@ export function ContactForm({ lang }: ContactFormProps) {
 
       {/* Email Field */}
       <div className="space-y-1.5">
-        <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold">
-          <Mail className="h-4 w-4" />
-          {t.email}
+        <label htmlFor="contact-email" className="flex items-center gap-2 text-sm font-semibold">
+          <Mail className="h-4 w-4" aria-hidden="true" />
+          {t("contact.email")}
         </label>
         <Input
-          id="email"
+          id="contact-email"
           name="email"
           type="email"
+          autoComplete="email"
           value={formData.email}
           onChange={handleChange}
           placeholder="you@example.com"
-          disabled={status === "loading"}
-          className={cn("transition", errors.email && "border-red-500 focus:ring-red-500")}
-          aria-describedby={errors.email ? "email-error" : undefined}
+          className={cn("transition", errors.email && "border-destructive")}
+          aria-describedby={errors.email ? "contact-email-error" : undefined}
+          aria-invalid={errors.email ? true : undefined}
         />
         {errors.email && (
-          <p id="email-error" className="text-sm text-red-500">
+          <p id="contact-email-error" className="text-sm font-semibold text-destructive">
             {errors.email}
           </p>
         )}
@@ -171,23 +141,23 @@ export function ContactForm({ lang }: ContactFormProps) {
 
       {/* Subject Field */}
       <div className="space-y-1.5">
-        <label htmlFor="subject" className="flex items-center gap-2 text-sm font-semibold">
-          <MessageSquare className="h-4 w-4" />
-          {t.subject}
+        <label htmlFor="contact-subject" className="flex items-center gap-2 text-sm font-semibold">
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          {t("contact.subject")}
         </label>
         <Input
-          id="subject"
+          id="contact-subject"
           name="subject"
           type="text"
           value={formData.subject}
           onChange={handleChange}
-          placeholder={t.subject}
-          disabled={status === "loading"}
-          className={cn("transition", errors.subject && "border-red-500 focus:ring-red-500")}
-          aria-describedby={errors.subject ? "subject-error" : undefined}
+          placeholder={t("contact.subject")}
+          className={cn("transition", errors.subject && "border-destructive")}
+          aria-describedby={errors.subject ? "contact-subject-error" : undefined}
+          aria-invalid={errors.subject ? true : undefined}
         />
         {errors.subject && (
-          <p id="subject-error" className="text-sm text-red-500">
+          <p id="contact-subject-error" className="text-sm font-semibold text-destructive">
             {errors.subject}
           </p>
         )}
@@ -195,50 +165,35 @@ export function ContactForm({ lang }: ContactFormProps) {
 
       {/* Message Field */}
       <div className="space-y-1.5">
-        <label htmlFor="message" className="text-sm font-semibold">
-          {t.message}
+        <label htmlFor="contact-message" className="text-sm font-semibold">
+          {t("contact.message")}
         </label>
         <textarea
-          id="message"
+          id="contact-message"
           name="message"
           value={formData.message}
           onChange={handleChange}
-          placeholder={t.message}
-          disabled={status === "loading"}
+          placeholder={t("contact.message")}
           rows={4}
           className={cn(
-            "w-full rounded-lg border border-border bg-background px-4 py-2 font-sans text-base",
+            "w-full resize-none rounded-lg border border-border bg-background px-4 py-2 font-sans text-base",
             "transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
-            "resize-none",
-            errors.message && "border-red-500 focus:ring-red-500",
+            errors.message && "border-destructive",
           )}
-          aria-describedby={errors.message ? "message-error" : undefined}
+          aria-describedby={errors.message ? "contact-message-error" : undefined}
+          aria-invalid={errors.message ? true : undefined}
         />
         {errors.message && (
-          <p id="message-error" className="text-sm text-red-500">
+          <p id="contact-message-error" className="text-sm font-semibold text-destructive">
             {errors.message}
           </p>
         )}
       </div>
 
       {/* Submit Button */}
-      <Button
-        type="submit"
-        disabled={status === "loading"}
-        size="lg"
-        className="w-full gap-2 sm:w-auto"
-      >
-        {status === "loading" ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            {t.sending}
-          </>
-        ) : (
-          <>
-            <Send className="h-4 w-4" />
-            {t.send}
-          </>
-        )}
+      <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto">
+        <Send className="h-4 w-4" aria-hidden="true" />
+        {t("contact.send")}
       </Button>
     </form>
   );

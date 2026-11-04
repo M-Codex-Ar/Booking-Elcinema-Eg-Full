@@ -129,15 +129,15 @@ export function ComingSoonPage({
       </ListToolbar>
 
       {view === "list" ? (
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <div className="row-grid mt-8">
           {shown.map((m) => (
             <SoonCard key={m.slug} movie={m} lang={lang} />
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="poster-grid mt-8">
           {shown.map((m) => (
-            <div key={m.slug} className="w-full max-w-44">
+            <div key={m.slug} className="w-full">
               <Na href={workPath(lang, workId(m))} className="block">
                 <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
                   <PosterArt hue={m.hue} title={m.title[lang]} img={m.poster} />

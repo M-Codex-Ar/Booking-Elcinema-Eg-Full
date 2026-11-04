@@ -7,6 +7,7 @@ export const arChrome = {
   "chrome.dashboard": "لوحة التحكم",
   "chrome.switchTo": "English",
   "chrome.menu": "القائمة",
+  "chrome.close": "إغلاق",
   "chrome.sections": "أقسام",
   "chrome.chairman": "رئيس مجلس الإدارة: خالد هشام",
   "chrome.editor": "مدير التحرير: ضياء محمد",
@@ -48,6 +49,10 @@ export const arChrome = {
   "auth.invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "auth.alreadyRegistered": "هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.",
   "auth.checkEmail": "تم إنشاء الحساب! يرجى مراجعة بريدك الإلكتروني لتأكيد التسجيل.",
+  "auth.emailNotConfirmed": "يرجى تأكيد بريدك الإلكتروني أولاً — رابط التأكيد أُرسل عند التسجيل.",
+  "auth.confirmLinkExpired":
+    "رابط التأكيد غير صالح أو منتهي الصلاحية. يرجى التسجيل من جديد لتصلك رسالة تأكيد جديدة.",
+  "auth.tooManyAttempts": "عدد كبير من المحاولات. انتظر قليلاً ثم حاول مرة أخرى.",
   "auth.enterEmailFirst": "يرجى إدخال بريدك الإلكتروني أولاً.",
   "auth.loading": "يرجى الانتظار…",
   "auth.account": "الحساب",

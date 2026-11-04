@@ -216,7 +216,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
               );
             })}
           </div>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="row-grid mt-4">
             {showtimes.map(({ cinema, times }) => (
               <div key={cinema.id} className="glass-card p-4">
                 <div className="flex items-center justify-between gap-3">
@@ -247,7 +247,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
         {similar.length > 0 && (
           <section className="py-10">
             <h2 className="mb-4 text-xl font-black">{copy("work.similar")}</h2>
-            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-6">
+            <div className="poster-grid">
               {similar.map((m) => (
                 <SimilarCard key={m.slug} movie={m} lang={lang} />
               ))}
@@ -261,7 +261,7 @@ export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
 
 function SimilarCard({ movie, lang }: { movie: Movie; lang: Lang }) {
   return (
-    <Na href={workPath(lang, workId(movie))} className="group w-full max-w-40">
+    <Na href={workPath(lang, workId(movie))} className="group w-full">
       <div className="hover-lift relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary">
         <PosterArt hue={movie.hue} title={movie.title[lang]} img={movie.poster} />
       </div>

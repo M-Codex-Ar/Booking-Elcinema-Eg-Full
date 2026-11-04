@@ -7,6 +7,7 @@ export const enChrome = {
   "chrome.dashboard": "Dashboard",
   "chrome.switchTo": "عربي",
   "chrome.menu": "Menu",
+  "chrome.close": "Close",
   "chrome.sections": "Sections",
   "chrome.chairman": "Chairman: Khaled Hesham",
   "chrome.editor": "Editor-in-Chief: Doaa Mohamed",
@@ -49,6 +50,11 @@ export const enChrome = {
   "auth.invalidCredentials": "Wrong email or password.",
   "auth.alreadyRegistered": "This email is already registered. Please sign in.",
   "auth.checkEmail": "Account created! Please check your email to confirm registration.",
+  "auth.emailNotConfirmed":
+    "Please confirm your email first — the confirmation link was sent when you registered.",
+  "auth.confirmLinkExpired":
+    "This confirmation link is invalid or has expired. Please register again to receive a new email.",
+  "auth.tooManyAttempts": "Too many attempts. Wait a moment and try again.",
   "auth.enterEmailFirst": "Please enter your email address first.",
   "auth.loading": "Please wait…",
   "auth.account": "Account",

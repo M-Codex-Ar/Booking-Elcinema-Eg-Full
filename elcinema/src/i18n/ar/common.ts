@@ -43,6 +43,7 @@ export const arCommon = {
   "common.notFoundPage": "الصفحة غير موجودة",
   "common.notFoundHint": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
   "common.goHome": "الصفحة الرئيسية",
+  "common.tryAgain": "حاول مرة أخرى",
   "common.backHome": "العودة للرئيسية",
   "common.moviePage": "صفحة الفيلم",
   "common.videoGallery": "معرض الفيديو",

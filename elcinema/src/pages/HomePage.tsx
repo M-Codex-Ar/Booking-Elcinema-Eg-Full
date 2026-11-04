@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  Globe,
   Play,
   Ticket,
   Tv,
@@ -24,11 +25,42 @@ import {
 import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/types/home";
 import { bookingLink, cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
-import { Na, fmtMonthDay } from "@/components/shared/ui";
-import { bi, makeT } from "@/i18n";
+import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
+import { bi, makeT, type CopyKey } from "@/i18n";
+import GlassyCarousel, { type GlassyCarouselItem } from "@/components/ui/glassy-coverflow-carousel";
 import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
 import type { Lang } from "@/types/home";
+
+/**
+ * Country cinema guides, one card each, in the live site's own order
+ * (elcinema.com publishes per-country cinema directories at /theater/<id>/):
+ * the directory itself opens in a NEW TAB — the app never navigates to it.
+ */
+const CINEMA_COUNTRIES = [
+  { code: "eg", theaterId: 1 },
+  { code: "ae", theaterId: 2 },
+  { code: "kw", theaterId: 3 },
+  { code: "lb", theaterId: 4 },
+  { code: "bh", theaterId: 6 },
+  { code: "qa", theaterId: 7 },
+  { code: "sa", theaterId: 8 },
+  { code: "om", theaterId: 9 },
+  { code: "jo", theaterId: 10 },
+  { code: "iq", theaterId: 11 },
+] as const;
+
+function cinemaCountryItems(lang: Lang, t: ReturnType<typeof makeT>): GlassyCarouselItem[] {
+  return CINEMA_COUNTRIES.map((c) => ({
+    id: `cinemas-${c.code}`,
+    title: t(`cinemasCountry.${c.code}` as CopyKey),
+    subtitle: t(`cinemasCountry.${c.code}.tag` as CopyKey),
+    description: t(`cinemasCountry.${c.code}.desc` as CopyKey),
+    image: `https://flagcdn.com/w320/${c.code}.png`,
+    href: `https://elcinema.com/${lang}/theater/${c.theaterId}/`,
+    linkLabel: t("carousel.visit"),
+  }));
+}
 
 /** Anchor that never navigates the app to elcinema.com (see links.ts). */
 function CardA({
@@ -290,6 +322,9 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
   const guide = data.tvGuide;
   const guideRef = useRef<HTMLDivElement>(null);
   const isRtl = lang === "ar";
+  // The prev/next arrows only exist for the directions that hold more
+  // table: a screen wide enough to show the whole timeline shows none.
+  const guideEdges = useScrollEdges(guideRef);
   const scrollGuide = (d: number) => {
     const factor = isRtl ? -d : d;
     guideRef.current?.scrollBy({
@@ -331,6 +366,51 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
           ))}
         </Row>
       )}
+
+      {/* Cinemas of the Region: one flag card per country cinema guide. The
+          card opens an in-app preview; the full directory itself is an
+          external reference opened in a new tab from the preview. */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 pt-2 md:px-8">
+        <div className="mb-2 flex min-w-0 items-center gap-2 sm:gap-3">
+          <h2 className="flex min-w-0 items-center gap-2 text-xl font-bold md:text-2xl">
+            <span className="shrink-0 text-primary">
+              <Globe className="h-5 w-5" />
+            </span>
+            <span className="truncate">{t("home.cinemasRegion")}</span>
+          </h2>
+        </div>
+        <p className="mb-4 text-sm text-muted-foreground">{t("home.cinemasRegionSub")}</p>
+        <div className="overflow-hidden rounded-3xl border border-border">
+          <GlassyCarousel
+            items={cinemaCountryItems(lang, t)}
+            label={t("home.cinemasRegion")}
+            direction={lang === "ar" ? "rtl" : "ltr"}
+            className="rounded-3xl border border-border bg-background/60"
+            // Instance fit for the home page: the portable 100svh default is
+            // meant for full-screen demos; here the guide row sets the stage.
+            style={{ height: "clamp(480px, 66svh, 680px)" }}
+            copy={{
+              controls: t("carousel.controls"),
+              previous: t("carousel.previous"),
+              next: t("carousel.next"),
+              play: t("carousel.play"),
+              pause: t("carousel.pause"),
+              close: t("carousel.close"),
+              previewAria: t("carousel.previewAria"),
+              watchAria: t("carousel.watchAria"),
+              selectAria: t("carousel.selectAria"),
+              officialTrailer: t("carousel.officialTrailer"),
+              watch: t("carousel.watch"),
+              visit: t("carousel.visit"),
+              onYouTube: t("carousel.onYouTube"),
+              hint: t("carousel.hint"),
+              or: t("carousel.or"),
+              browse: t("carousel.browse"),
+              announce: t("carousel.announce"),
+            }}
+          />
+        </div>
+      </section>
 
       {data.watchOnline.length > 0 && (
         <Row
@@ -401,22 +481,34 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               </CardA>
             </div>
             <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-              <button
-                type="button"
-                aria-label={t("home.previous")}
-                onClick={() => scrollGuide(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-              >
-                {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-              </button>
-              <button
-                type="button"
-                aria-label={t("home.next")}
-                onClick={() => scrollGuide(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-              >
-                {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              </button>
+              {guideEdges.start && (
+                <button
+                  type="button"
+                  aria-label={t("home.previous")}
+                  onClick={() => scrollGuide(-1)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                >
+                  {isRtl ? (
+                    <ChevronRight className="h-4 w-4" />
+                  ) : (
+                    <ChevronLeft className="h-4 w-4" />
+                  )}
+                </button>
+              )}
+              {guideEdges.end && (
+                <button
+                  type="button"
+                  aria-label={t("home.next")}
+                  onClick={() => scrollGuide(1)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                >
+                  {isRtl ? (
+                    <ChevronLeft className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
 

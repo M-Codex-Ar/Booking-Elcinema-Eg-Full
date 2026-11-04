@@ -11,9 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
-import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { isAdmin } from "@/features/auth/auth";
+import { isAdmin, describeAuthError } from "@/features/auth/auth";
 
 export type AuthMode = "login" | "register";
 
@@ -72,6 +71,10 @@ export function AuthDialog({
       return;
     }
 
+    // The supabase stack stays out of the first-load bundle; a credential
+    // submit is the first point where it is actually needed.
+    const { supabase } = await import("@/services/clients/supabase/client");
+
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") ?? "").trim();
     const password = String(f.get("password") ?? "");
@@ -97,16 +100,16 @@ export function AuthDialog({
               full_name: name,
               role: "user",
             },
+            // The confirmation email always returns to the origin the person
+            // registered from — never to whatever Site URL happens to be set
+            // in the Supabase dashboard (a stale default breaks production).
+            // The URL must also be allow-listed under "Redirect URLs".
+            emailRedirectTo: `${window.location.origin}/${lang}`,
           },
         });
 
         if (err) {
-          const msg = err.message.toLowerCase();
-          if (msg.includes("already registered") || msg.includes("already in use")) {
-            setError(t("auth.alreadyRegistered"));
-            return;
-          }
-          setError(err.message);
+          setError(describeAuthError(t, err.message));
           return;
         }
 
@@ -121,12 +124,7 @@ export function AuthDialog({
 
       const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
       if (err) {
-        const msg = err.message.toLowerCase();
-        if (msg.includes("invalid login credentials")) {
-          setError(t("auth.invalidCredentials"));
-          return;
-        }
-        setError(err.message);
+        setError(describeAuthError(t, err.message));
         return;
       }
 
@@ -150,11 +148,12 @@ export function AuthDialog({
     setBusy(true);
     setError("");
     try {
+      const { supabase } = await import("@/services/clients/supabase/client");
       const { error: err } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (err) {
-        setError(err.message);
+        setError(describeAuthError(t, err.message));
       } else {
         toast.success(t("auth.resetSent"));
       }
