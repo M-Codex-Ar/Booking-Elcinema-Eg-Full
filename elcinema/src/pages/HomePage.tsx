@@ -24,7 +24,7 @@ import {
 import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/types/home";
 import { bookingLink, cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
-import { Na, fmtMonthDay } from "@/components/shared/ui";
+import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
 import { bi, makeT } from "@/i18n";
 import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
@@ -290,6 +290,9 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
   const guide = data.tvGuide;
   const guideRef = useRef<HTMLDivElement>(null);
   const isRtl = lang === "ar";
+  // The prev/next arrows only exist for the directions that hold more
+  // table: a screen wide enough to show the whole timeline shows none.
+  const guideEdges = useScrollEdges(guideRef);
   const scrollGuide = (d: number) => {
     const factor = isRtl ? -d : d;
     guideRef.current?.scrollBy({
@@ -401,22 +404,34 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
               </CardA>
             </div>
             <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-              <button
-                type="button"
-                aria-label={t("home.previous")}
-                onClick={() => scrollGuide(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-              >
-                {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-              </button>
-              <button
-                type="button"
-                aria-label={t("home.next")}
-                onClick={() => scrollGuide(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
-              >
-                {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              </button>
+              {guideEdges.start && (
+                <button
+                  type="button"
+                  aria-label={t("home.previous")}
+                  onClick={() => scrollGuide(-1)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                >
+                  {isRtl ? (
+                    <ChevronRight className="h-4 w-4" />
+                  ) : (
+                    <ChevronLeft className="h-4 w-4" />
+                  )}
+                </button>
+              )}
+              {guideEdges.end && (
+                <button
+                  type="button"
+                  aria-label={t("home.next")}
+                  onClick={() => scrollGuide(1)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:h-9 sm:w-9"
+                >
+                  {isRtl ? (
+                    <ChevronLeft className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
 
