@@ -18,7 +18,7 @@ export type ManagedTable = (typeof MANAGED_TABLES)[number];
 const MANAGED_READ_TIMEOUT_MS = 1_200;
 
 /** Opaque sb_ keys are not JWTs: send apikey, never a Bearer of the key. */
-function createKeyFetch(supabaseKey: string): typeof fetch {
+function createKeyFetch(supabaseKey: string, requestSignal: AbortSignal): typeof fetch {
   return (input, init) => {
     const headers = new Headers(
       typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
@@ -27,8 +27,24 @@ function createKeyFetch(supabaseKey: string): typeof fetch {
     if (headers.get("Authorization") === `Bearer ${supabaseKey}`) headers.delete("Authorization");
     headers.set("apikey", supabaseKey);
     const timeout = AbortSignal.timeout(MANAGED_READ_TIMEOUT_MS);
-    const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
+    const signal = AbortSignal.any([
+      requestSignal,
+      timeout,
+      ...(init?.signal ? [init.signal] : []),
+    ]);
     return fetch(input, { ...init, headers, signal });
+  };
+}
+
+function emptyManagedContent() {
+  return {
+    movies: [],
+    people: [],
+    boxoffice: [],
+    channels: [],
+    programs: [],
+    videos: [],
+    lists: [],
   };
 }
 
@@ -38,20 +54,11 @@ function createKeyFetch(supabaseKey: string): typeof fetch {
 export const getManagedContent = createServerFn({ method: "GET" }).handler(async () => {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) {
-    return {
-      movies: [],
-      people: [],
-      boxoffice: [],
-      channels: [],
-      programs: [],
-      videos: [],
-      lists: [],
-    };
-  }
+  if (!url || !key) return emptyManagedContent();
+  const controller = new AbortController();
   const supabase = createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    global: { fetch: createKeyFetch(key) },
+    global: { fetch: createKeyFetch(key, controller.signal) },
   });
   const q = async (table: ManagedTable) => {
     try {
@@ -63,16 +70,35 @@ export const getManagedContent = createServerFn({ method: "GET" }).handler(async
       return [];
     }
   };
-  const [movies, people, boxoffice, channels, programs, videos, lists] = await Promise.all([
-    q("managed_movies"),
-    q("managed_people"),
-    q("managed_boxoffice"),
-    q("managed_channels"),
-    q("managed_programs"),
-    q("managed_videos"),
-    q("managed_lists"),
-  ]);
-  return { movies, people, boxoffice, channels, programs, videos, lists };
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const timeoutResult = new Promise<ReturnType<typeof emptyManagedContent>>((resolve) => {
+    timeout = setTimeout(() => {
+      controller.abort();
+      resolve(emptyManagedContent());
+    }, MANAGED_READ_TIMEOUT_MS);
+  });
+  try {
+    const reads = Promise.all([
+      q("managed_movies"),
+      q("managed_people"),
+      q("managed_boxoffice"),
+      q("managed_channels"),
+      q("managed_programs"),
+      q("managed_videos"),
+      q("managed_lists"),
+    ]).then(([movies, people, boxoffice, channels, programs, videos, lists]) => ({
+      movies,
+      people,
+      boxoffice,
+      channels,
+      programs,
+      videos,
+      lists,
+    }));
+    return await Promise.race([reads, timeoutResult]);
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
 });
 
 export type ManagedContent = Awaited<ReturnType<typeof getManagedContent>>;

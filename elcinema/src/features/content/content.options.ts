@@ -6,4 +6,7 @@ export const managedContentOptions = queryOptions({
   queryKey: ["managed-content"],
   queryFn: () => getManagedContent(),
   staleTime: 60 * 1000,
+  // This data is an optional enhancement; retries add seconds to a request
+  // whose failure already falls back cleanly to the built-in catalogue.
+  retry: false,
 });
