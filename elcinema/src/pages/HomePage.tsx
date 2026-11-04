@@ -27,6 +27,7 @@ import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
 import { bi, makeT } from "@/i18n";
 import { CinemasRegionMarquee } from "@/components/shared/CinemasRegionMarquee";
+import { HOME_TV_GUIDE_PREVIEW_LIMIT } from "@/features/home/home.constants";
 import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
 import type { Lang } from "@/types/home";
@@ -290,6 +291,10 @@ function BornMeta({ person, lang }: { person: EcBornPerson; lang: Lang }) {
 export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
   const t = makeT(lang);
   const guide = data.tvGuide;
+  // The home page is a quick guide preview. The dedicated TV Guide page keeps
+  // the complete channel list; rendering all 100+ snapshot rows here bloats
+  // the initial DOM and makes page layout more expensive.
+  const homeGuideLines = guide.lines.slice(0, HOME_TV_GUIDE_PREVIEW_LIMIT);
   const guideRef = useRef<HTMLDivElement>(null);
   const isRtl = lang === "ar";
   // The prev/next arrows only exist for the directions that hold more
@@ -396,7 +401,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
         </Row>
       )}
 
-      {guide.lines.length > 0 && (
+      {homeGuideLines.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-8 md:px-8">
           <div className="mb-4 flex items-center justify-between gap-2 sm:gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -463,7 +468,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
                     ))}
                   </div>
                 </div>
-                {guide.lines.map((line, i) => (
+                {homeGuideLines.map((line, i) => (
                   <div key={i} className="flex border-b border-border/60 last:border-0">
                     <CardA
                       href={line.channelHref}
