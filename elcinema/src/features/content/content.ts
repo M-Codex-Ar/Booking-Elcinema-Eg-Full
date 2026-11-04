@@ -505,16 +505,6 @@ function parseHourLabel(label: string): number | null {
   return h * 60 + Number(match[2]);
 }
 
-/** Shared query for the managed-content payload (public read). */
-import { queryOptions } from "@tanstack/react-query";
-import { getManagedContent } from "@/features/content/content.functions";
-
-export const managedContentOptions = queryOptions({
-  queryKey: ["managed-content"],
-  queryFn: () => getManagedContent(),
-  staleTime: 60 * 1000,
-});
-
 /** Direct URL for a movie's artwork (absolute poster URLs pass through). */
 export function movieArt(movie: Movie): string {
   return movie.poster && /^https?:\/\//.test(movie.poster) ? movie.poster : posterUrl(movie);

@@ -27,6 +27,8 @@ import type {
   EcWatchOnlineItem,
 } from "@/types/home";
 import { pickArtwork } from "@/types/media";
+import { BOXOFFICE, boxofficeDate, MOVIES, TV_GUIDE_DATA } from "@/lib/data";
+import { img } from "@/lib/images";
 import artworkJson from "@/data/artwork.json";
 
 /**
@@ -41,8 +43,10 @@ const HOME_PATH = "/en/";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 const CACHE_TTL_MS = 10 * 60 * 1000;
-const FETCH_TIMEOUT_MS = 8_000;
+const FETCH_TIMEOUT_MS = 4_000;
 const STALE_TTL_MS = 60 * 60 * 1000;
+const HOME_LIVE_BUDGET_MS = 1_200;
+const HOME_FALLBACK_TTL_MS = 15_000;
 
 const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
 const inFlight = new Map<string, Promise<string>>();
@@ -469,23 +473,113 @@ export function parseHomePage(html: string): EcHomeData {
   };
 }
 
-export async function getHomePage(): Promise<EcHomeData> {
-  const key = `home:${HOME_PATH}`;
-  const hit = cache.get(key);
-  if (hit && hit.expires > Date.now()) return hit.data as EcHomeData;
-  const data = parseHomePage(await fetchPage(HOME_PATH));
-  // Enrichment is useful metadata, but must not hold up the whole homepage.
-  cache.set(key, { data, expires: Date.now() + 30_000, staleUntil: Date.now() + STALE_TTL_MS });
+function fallbackHomeData(): EcHomeData {
+  const guideSpan = Math.max(1, TV_GUIDE_DATA.to - TV_GUIDE_DATA.from);
+  const formatTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60) % 24;
+    const remainder = minutes % 60;
+    return `${String(hours).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`;
+  };
+
+  return {
+    promos: [],
+    movies: MOVIES.filter((movie) => movie.status === "now")
+      .slice(0, 12)
+      .map((movie) => ({
+        href: `/en/work/${movie.id}/`,
+        img: img(movie.poster) || null,
+        title: movie.title.en,
+        bookingHref: null,
+      })),
+    watchOnline: [],
+    tvSummary: [],
+    tvGuide: {
+      times: TV_GUIDE_DATA.times.map(formatTime),
+      lines: TV_GUIDE_DATA.lines.map(({ channel, slots }) => ({
+        channelImg: img(channel.img) || null,
+        channelName: channel.name.en,
+        channelHref: "/en/tvguide/",
+        slots: slots.map((slot) => ({
+          title: slot.title.en,
+          titleHref: slot.href,
+          meta: slot.meta,
+          time: `${formatTime(slot.start)} – ${formatTime(slot.end)}`,
+          width: ((slot.end - slot.start) / guideSpan) * 100,
+          left: ((slot.start - TV_GUIDE_DATA.from) / guideSpan) * 100,
+          unclickable: !slot.href,
+          category: null,
+        })),
+      })),
+    },
+    videos: [],
+    bornToday: { date: "", dateKey: "", href: "", people: [] },
+    lists: [],
+    boxofficeDate: boxofficeDate.en,
+    boxoffice: BOXOFFICE.slice(0, 5).map((row) => ({
+      href: row.slug ? `/en/work/${row.slug}/` : "/en/boxoffice/",
+      title: row.title.en,
+      img: row.slug ? img(MOVIES.find((movie) => movie.id === row.slug)?.poster) || null : null,
+      revenue:
+        row.weeklyEgp >= 1_000_000
+          ? `${(row.weeklyEgp / 1_000_000).toFixed(1)}M EGP`
+          : `${Math.round(row.weeklyEgp / 1_000)}K EGP`,
+    })),
+  };
+}
+
+async function refreshHomeData(key: string): Promise<EcHomeData> {
+  // Bypass a stale HTML hit here. `fetchPage` deliberately serves stale HTML
+  // while refreshing it, which is right for a page response but would parse
+  // that same stale snapshot into a new ten-minute homepage cache.
+  const data = parseHomePage(await refreshPage(`page:${HOME_PATH}`, HOME_PATH));
+  const now = Date.now();
+  cache.set(key, {
+    data,
+    expires: now + CACHE_TTL_MS,
+    staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+  });
+
+  // Enrichment is useful metadata, but must not hold up the homepage.
   void enrichBornToday(data.bornToday)
     .then((bornToday) => {
       const enriched = { ...data, bornToday };
-      const now = Date.now();
+      const enrichedAt = Date.now();
       cache.set(key, {
         data: enriched,
-        expires: now + CACHE_TTL_MS,
-        staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+        expires: enrichedAt + CACHE_TTL_MS,
+        staleUntil: enrichedAt + CACHE_TTL_MS + STALE_TTL_MS,
       });
     })
     .catch(() => undefined);
   return data;
+}
+
+export async function getHomePage(): Promise<EcHomeData> {
+  const key = `home:${HOME_PATH}`;
+  const now = Date.now();
+  const hit = cache.get(key);
+  if (hit && hit.expires > now) return hit.data as EcHomeData;
+  if (hit && hit.staleUntil > now) {
+    void refreshHomeData(key).catch(() => undefined);
+    return hit.data as EcHomeData;
+  }
+
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const liveData = await Promise.race([
+    refreshHomeData(key).catch(() => null),
+    new Promise<null>((resolve) => {
+      timeout = setTimeout(() => resolve(null), HOME_LIVE_BUDGET_MS);
+    }),
+  ]);
+  if (timeout) clearTimeout(timeout);
+  if (liveData) return liveData;
+
+  const fallback = fallbackHomeData();
+  const fallbackAt = Date.now();
+  cache.set(key, {
+    data: fallback,
+    expires: fallbackAt + HOME_FALLBACK_TTL_MS,
+    staleUntil: fallbackAt + STALE_TTL_MS,
+  });
+  return fallback;
 }

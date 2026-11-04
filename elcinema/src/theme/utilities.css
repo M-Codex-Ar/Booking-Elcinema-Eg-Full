@@ -568,16 +568,16 @@
 /* ---- Phases ---- */
 
 .cinematic-loader[data-phase="exiting"] .loader-center {
-  animation: var(--duration-cinematic) var(--ease-cinematic-out) 0.45s both center-out;
+  animation: var(--duration-loader-exit) var(--ease-cinematic-out) both center-out;
 }
 .cinematic-loader[data-phase="exiting"] .loader-spot {
-  animation: spot-exit 0.7s ease-out both;
+  animation: spot-exit var(--duration-loader-exit) ease-out both;
 }
 .cinematic-loader[data-phase="exiting"] .film-strip-scene {
-  animation: strip-out 0.55s ease-in both;
+  animation: strip-out var(--duration-loader-exit) ease-in both;
 }
 .cinematic-loader[data-phase="exiting"] {
-  animation: var(--duration-cinematic) var(--ease-cinematic-out) 0.6s 0.12s loader-lift;
+  animation: loader-lift var(--duration-loader-exit) var(--ease-cinematic-out) both;
 }
 
 /* The progress fill opens from the reading-direction start edge, so the Arabic
@@ -599,7 +599,7 @@
   transition-duration: 0.01ms !important;
 }
 .cinematic-loader[data-motion="reduced"] {
-  transition: opacity 0.4s ease;
+  transition: opacity var(--duration-loader-exit) ease;
 }
 .cinematic-loader[data-motion="reduced"][data-phase="exiting"] {
   animation: none;

@@ -90,6 +90,11 @@ Identity changes drive cache correctness: `__root.tsx` subscribes to
 and `USER_UPDATED`, plus `queryClient.invalidateQueries()` for anything that is
 not a sign-out.
 
+Managed rows are optional additions to the built-in catalogue. The seven public
+table reads run concurrently with a 1.2s request timeout; failed or unavailable
+tables become empty additions so a database slowdown cannot fail the public
+route.
+
 ## First load
 
 The cinematic first load (ported from the guided loading experience) mounts
@@ -99,12 +104,12 @@ The cinematic first load (ported from the guided loading experience) mounts
   atmospheric stage (`cinematic-background.tsx`), the logo reveal
   (`animated-logo.tsx`), the progress readout (`loading-progress.tsx`), the film
   strip (`film-strip.tsx`) and the pure pacing math (`loader-logic.ts`).
-- `hooks/use-app-ready.ts` gates the reveal on hydration plus the hero artwork
-  (`img[data-hero]`, marked by `SmartImg`'s `dataHero`) with a hard cap, so a slow
-  image can never trap the intro.
-- The overlay runs `intro` → `exiting` → `done`, eases progress to 100% only when
-  the app is genuinely ready (min-duration floor, returning-visitor / reduced-motion
-  variants), then dissolves via the `loader-lift` keyframe.
+- `hooks/use-app-ready.ts` gates the reveal on hydration only. Remote hero artwork
+  must not hide already usable page content; image components reserve layout and
+  have their own placeholder behavior.
+- The overlay runs `intro` → `exiting` → `done`, reaches 100% when hydration is
+  complete, and exits in 240ms (reduced-motion uses a simple 240ms fade). It has
+  no minimum presentation floor, so it never adds a fixed wait to a fast load.
 - Copy lives in `i18n/` (`loader.preparing`, `loader.tagline`); colours, fonts and
   motion come from `theme/tokens.css` and `theme/utilities.css`.
 
@@ -134,6 +139,10 @@ is tracked as a task, not a rumour.
   options. Split along the port/adapter lines in [architecture.md](architecture.md#layers).
 - `live.server.ts` (602 lines) holds seven parsers plus the fetch/cache layer in
   one module.
+- Live scrapes still sit on some route loader paths. They now time out after 4s;
+  the homepage and known static pages return local data after a 1.2s live-data
+  budget and refresh the scrape in the background. Detail pages without a local
+  fallback can still wait for the 4s timeout on a cold cache.
 - `dashboard/editor.tsx` (713 lines) is one component doing form state, validation
   and writes; writes currently bypass the guarded server function.
 - `ui.tsx` remains the page-facing shorthand layer (`Na` delegates to

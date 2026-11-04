@@ -26,12 +26,14 @@ import type {
   LiveWork,
 } from "@/types/live";
 import { pickArtwork, toArtworkUrl } from "@/types/media";
+import { getFallbackPage } from "@/lib/fallback-content";
 
 const BASE = "https://elcinema.com";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 const CACHE_TTL_MS = 10 * 60 * 1000;
-const FETCH_TIMEOUT_MS = 8_000;
+const FETCH_TIMEOUT_MS = 4_000;
+const STATIC_PAGE_LIVE_BUDGET_MS = 1_200;
 const STALE_TTL_MS = 60 * 60 * 1000;
 
 const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
@@ -711,8 +713,19 @@ export function parseStaticPage(html: string, lang: Lang): LiveStaticPage {
 }
 
 export async function getStaticPage(lang: Lang, path: string): Promise<LiveStaticPage> {
-  const html = await fetchPage(path);
-  return parseStaticPage(html, lang);
+  const fallback = getFallbackPage(path, lang);
+  const livePage = fetchPage(path).then((html) => parseStaticPage(html, lang));
+  if (!fallback) return livePage;
+
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const page = await Promise.race([
+    livePage.catch(() => null),
+    new Promise<null>((resolve) => {
+      timeout = setTimeout(() => resolve(null), STATIC_PAGE_LIVE_BUDGET_MS);
+    }),
+  ]);
+  if (timeout) clearTimeout(timeout);
+  return page ?? fallback;
 }
 
 // ---------------------------------------------------------------------------

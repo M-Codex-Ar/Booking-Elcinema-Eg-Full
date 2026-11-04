@@ -70,7 +70,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { managedContentOptions } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
 import {
   allMovies,
   managedBoxofficeRows,

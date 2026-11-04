@@ -100,7 +100,9 @@ dropped from the build.
 error states, and the dashboard. Its brand and gold washes are derived from the
 active palette in `tokens.css`, so light and dark mode keep the same subtle
 cinematic depth without hard-coded page colours. The body also uses the same
-background image as a fallback beneath route shells.
+background image as a fallback beneath route shells. The shared `Page` primitive
+stays transparent so it does not paint an opaque surface over this canvas; cards
+and other intentional panels opt into `bg-card`, `glass-card`, or another surface.
 
 Three of them exist because of a measured breakage, not a preference:
 

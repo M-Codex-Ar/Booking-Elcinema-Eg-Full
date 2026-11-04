@@ -24,6 +24,17 @@ It has four ceilings:
 4. **Validation lives in the UI.** Dashboard writes currently post row payloads
    straight through; malformed data can reach the table.
 
+The frontend currently limits the impact of slow scrapes: remote requests have a
+4-second timeout, while the homepage and known static pages return local fallback
+content after 1.2 seconds and let the live scrape refresh its cache in the
+background. This cache is process-local, so cold serverless instances can still
+need to fetch upstream data. Scheduled ingestion remains the durable way to take
+scraping out of a user request.
+
+Public reads of the seven optional managed-content tables run concurrently with
+a 1.2-second abort budget. A failed table is treated as an empty additive
+collection so Supabase availability cannot blank the built-in catalogue pages.
+
 The API closes all four by owning ingestion, authorization and validation, and by
 exposing a versioned contract.
 

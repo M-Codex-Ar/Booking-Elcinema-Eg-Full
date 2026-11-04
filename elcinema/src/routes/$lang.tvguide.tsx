@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TvGuidePage } from "@/pages/TvGuidePage";
-import { managedContentOptions, mergedTvGuide } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
+import { mergedTvGuide } from "@/features/content/content";
 import { asLang } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/tvguide")({

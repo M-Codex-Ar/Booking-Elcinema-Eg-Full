@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoonPage } from "@/pages/ComingSoon";
-import { managedContentOptions, mergedComingSoon } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
+import { mergedComingSoon } from "@/features/content/content";
 import { asLang } from "@/i18n";
 import type { ViewMode } from "@/components/shared/controls";
 

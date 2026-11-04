@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { HERO_READY_TIMEOUT_MS, INTRO_MAX_MS } from "@/components/cinematic/loader-logic";
+import { INTRO_MAX_MS } from "@/components/cinematic/loader-logic";
 
 /**
- * Signals that the app behind the loader is genuinely ready:
- * React has hydrated AND the hero image finished loading (or failed,
- * in which case the homepage shows its own fallback and we don't wait).
- * A hard cap guarantees the loader can never trap the user.
+ * Signals that the server-rendered route has hydrated. Artwork loads in its
+ * own reserved box and must not hold the whole page behind the full-screen
+ * intro. A hard cap still protects against a broken hydration lifecycle.
  */
 export function useAppReady(active: boolean): boolean {
   const [ready, setReady] = useState(false);
@@ -20,25 +19,9 @@ export function useAppReady(active: boolean): boolean {
     // Absolute ceiling — initialization errors or slow APIs can't trap the loader.
     const cap = window.setTimeout(done, INTRO_MAX_MS);
 
-    const hero = document.querySelector("img[data-hero]") as HTMLImageElement | null;
-    const heroLoaded = hero
-      ? new Promise<void>((resolve) => {
-          if (hero.complete) {
-            resolve();
-            return;
-          }
-          hero.addEventListener("load", () => resolve(), { once: true });
-          hero.addEventListener("error", () => resolve(), { once: true });
-        })
-      : Promise.resolve();
-
-    // Give the hero this long before we stop waiting for it and go ahead anyway.
-    const heroCeiling = new Promise<void>((resolve) =>
-      window.setTimeout(resolve, HERO_READY_TIMEOUT_MS),
-    );
-
-    // Whichever lands first: the hero finishing, or its ceiling.
-    Promise.race([heroLoaded.catch(() => undefined), heroCeiling]).then(done);
+    // Do not wait for third-party artwork. The route is usable as soon as it
+    // hydrates; image components already preserve their layout and fall back.
+    done();
 
     return () => {
       cancelled = true;

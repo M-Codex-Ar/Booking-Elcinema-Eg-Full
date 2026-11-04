@@ -5,12 +5,8 @@ import { LiveError } from "@/features/live/live-ui";
 import { LivePersonPage } from "@/pages/LivePerson";
 import { PersonPage } from "@/pages/Person";
 import { ManagedPersonPage } from "@/pages/Managed";
-import {
-  managedContentOptions,
-  managedPeople,
-  managedPersonById,
-  managedRef,
-} from "@/features/content/content";
+import { managedPeople, managedPersonById, managedRef } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
 import type { ManagedContent } from "@/features/content/content.functions";
 import { personById, personBySlug, personId } from "@/lib/build";
 import { asLang } from "@/i18n";
@@ -41,7 +37,7 @@ export const Route = createFileRoute("/$lang/person/$id")({
   // Built-in sample people render from the catalogue, dashboard-added people
   // ("m-…") from the managed content, and every other numeric person id is
   // fetched live from elcinema.com (English or Arabic edition).
-  loader: ({ context, params }) => {
+  loader: async ({ context, params }) => {
     if (params.id.startsWith("m-"))
       return context.queryClient.ensureQueryData(managedContentOptions);
     if (

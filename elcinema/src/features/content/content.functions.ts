@@ -15,6 +15,7 @@ export const MANAGED_TABLES = [
   "managed_lists",
 ] as const;
 export type ManagedTable = (typeof MANAGED_TABLES)[number];
+const MANAGED_READ_TIMEOUT_MS = 1_200;
 
 /** Opaque sb_ keys are not JWTs: send apikey, never a Bearer of the key. */
 function createKeyFetch(supabaseKey: string): typeof fetch {
@@ -25,7 +26,9 @@ function createKeyFetch(supabaseKey: string): typeof fetch {
     if (init?.headers) new Headers(init.headers).forEach((value, key) => headers.set(key, value));
     if (headers.get("Authorization") === `Bearer ${supabaseKey}`) headers.delete("Authorization");
     headers.set("apikey", supabaseKey);
-    return fetch(input, { ...init, headers });
+    const timeout = AbortSignal.timeout(MANAGED_READ_TIMEOUT_MS);
+    const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
+    return fetch(input, { ...init, headers, signal });
   };
 }
 
@@ -50,7 +53,16 @@ export const getManagedContent = createServerFn({ method: "GET" }).handler(async
     auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
     global: { fetch: createKeyFetch(key) },
   });
-  const q = async (table: ManagedTable) => (await supabase.from(table).select("*")).data ?? [];
+  const q = async (table: ManagedTable) => {
+    try {
+      const { data, error } = await supabase.from(table).select("*");
+      return error ? [] : (data ?? []);
+    } catch {
+      // Managed additions are optional. A slow or unavailable table must not
+      // hold up the built-in public catalogue or fail the entire route.
+      return [];
+    }
+  };
   const [movies, people, boxoffice, channels, programs, videos, lists] = await Promise.all([
     q("managed_movies"),
     q("managed_people"),
