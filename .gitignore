@@ -50,3 +50,5 @@ desktop.ini
 .qoder/cache/
 .tmp/
 scratch/
+.worktrees/
+.pnpm-store/

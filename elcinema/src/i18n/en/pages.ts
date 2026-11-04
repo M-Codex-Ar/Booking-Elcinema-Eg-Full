@@ -187,41 +187,51 @@ export const enPages = {
   "carousel.announce": "{position} of {total}: {title}.",
   "cinemasCountry.eg": "Cinemas of Egypt",
   "cinemasCountry.eg.tag": "The guide's home edition",
+  "cinemasCountry.eg.chains": "Renaissance · Galaxy · VOX · Zawya",
   "cinemasCountry.eg.desc":
     "Daily showtimes, online booking and the box office across Egyptian cinemas — the fullest coverage in the guide.",
   "cinemasCountry.ae": "Cinemas of the UAE",
   "cinemasCountry.ae.tag": "Dubai · Abu Dhabi · Sharjah",
+  "cinemasCountry.ae.chains": "VOX · Reel · Roxy · Novo",
   "cinemasCountry.ae.desc":
     "Multiplexes across the Emirates: IMAX, 4DX and VIP boutique screens next to every big release.",
   "cinemasCountry.kw": "Cinemas of Kuwait",
   "cinemasCountry.kw.tag": "Kuwait City",
+  "cinemasCountry.kw.chains": "Cinescape · Grand · 1954 Film House",
   "cinemasCountry.kw.desc":
     "Kuwait's long cinema tradition: main chains, premieres and family screenings.",
   "cinemasCountry.lb": "Cinemas of Lebanon",
   "cinemasCountry.lb.tag": "Beirut",
+  "cinemasCountry.lb.chains": "Grand · VOX · Empire",
   "cinemasCountry.lb.desc":
     "Lebanese screens and premieres, from Beirut multiplexes to the festival circuit.",
   "cinemasCountry.bh": "Cinemas of Bahrain",
   "cinemasCountry.bh.tag": "Manama",
+  "cinemasCountry.bh.chains": "Cineco · Mukta A2 · VOX",
   "cinemasCountry.bh.desc":
     "Bahrain's compact, lively scene: cinema chains and the newest releases.",
   "cinemasCountry.qa": "Cinemas of Qatar",
   "cinemasCountry.qa.tag": "Doha",
+  "cinemasCountry.qa.chains": "Novo · Flik · VOX",
   "cinemasCountry.qa.desc":
     "Qatar's screens: premium formats and Doha's festival-season highlights.",
   "cinemasCountry.sa": "Cinemas of Saudi Arabia",
   "cinemasCountry.sa.tag": "Riyadh · Jeddah",
+  "cinemasCountry.sa.chains": "Muvi · AMC · VOX · Empire",
   "cinemasCountry.sa.desc":
     "The kingdom's fast-growing cinema industry: premium formats and year-round premieres.",
   "cinemasCountry.om": "Cinemas of Oman",
   "cinemasCountry.om.tag": "Muscat",
+  "cinemasCountry.om.chains": "VOX · City Cinema",
   "cinemasCountry.om.desc": "Omani screens and premieres across Muscat and the coastal cities.",
   "cinemasCountry.jo": "Cinemas of Jordan",
   "cinemasCountry.jo.tag": "Amman",
+  "cinemasCountry.jo.chains": "Prime · Taj · Grand",
   "cinemasCountry.jo.desc":
     "Jordanian screens in Amman and beyond: Arabic and international releases together.",
   "cinemasCountry.iq": "Cinemas of Iraq",
   "cinemasCountry.iq.tag": "Baghdad",
+  "cinemasCountry.iq.chains": "Iraqi Cinema · Babylon · Royal",
   "cinemasCountry.iq.desc":
     "The Iraqi cinema guide: screens and titles from Baghdad and the other cities.",
 } as const;

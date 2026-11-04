@@ -19,18 +19,22 @@ import { enChrome } from "./en/chrome";
 import { arChrome } from "./ar/chrome";
 import { enCommon } from "./en/common";
 import { arCommon } from "./ar/common";
+import { enLoader } from "./en/loader";
+import { arLoader } from "./ar/loader";
 import { enPages } from "./en/pages";
 import { arPages } from "./ar/pages";
 
 export const EN_STRINGS = {
   ...enChrome,
   ...enCommon,
+  ...enLoader,
   ...enPages,
 } as const;
 
 export const AR_STRINGS = {
   ...arChrome,
   ...arCommon,
+  ...arLoader,
   ...arPages,
 } as const;
 

@@ -28,6 +28,7 @@ import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
 import { bi, makeT, type CopyKey } from "@/i18n";
 import GlassyCarousel, { type GlassyCarouselItem } from "@/components/ui/glassy-coverflow-carousel";
+import { CinemasRegionMarquee } from "@/components/shared/CinemasRegionMarquee";
 import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
 import type { Lang } from "@/types/home";
@@ -110,6 +111,7 @@ function Hero({ promos, lang }: { promos: EcPromo[]; lang: Lang }) {
           alt={promo.title}
           kind="wide"
           eager={idx === 0}
+          dataHero={idx === 0}
           className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${idx === i ? "opacity-100" : "opacity-0"}`}
         />
       ))}
@@ -380,6 +382,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
           </h2>
         </div>
         <p className="mb-4 text-sm text-muted-foreground">{t("home.cinemasRegionSub")}</p>
+        <CinemasRegionMarquee lang={lang} className="mb-4" />
         <div className="overflow-hidden rounded-3xl border border-border">
           <GlassyCarousel
             items={cinemaCountryItems(lang, t)}

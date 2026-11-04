@@ -268,6 +268,7 @@ export function SmartImg({
   fit = "cover",
   eager = false,
   className,
+  dataHero = false,
 }: {
   src?: string | null | undefined;
   fallbackSrc?: string | null | undefined;
@@ -276,6 +277,8 @@ export function SmartImg({
   fit?: "cover" | "contain";
   eager?: boolean;
   className?: string | undefined;
+  /** Marks the artwork the cinematic first-load waits on (see `components/cinematic`). */
+  dataHero?: boolean;
 }) {
   const art = useArtwork(src, fallbackSrc);
   const live = !!art.src && !art.failed;
@@ -289,6 +292,7 @@ export function SmartImg({
       referrerPolicy="no-referrer"
       onError={live ? art.onError : undefined}
       data-artwork={live ? "live" : "placeholder"}
+      data-hero={dataHero ? "true" : undefined}
       className={cn(fit === "cover" ? "object-cover" : "object-contain", className)}
     />
   );

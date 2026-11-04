@@ -92,6 +92,16 @@
   --duration-medium: 0.35s;
   --duration-fast: 0.2s;
 
+  /* Cinematic first-load (guided loading experience port): the eased reveal
+     choreography, entrance duration and the loader readout type scale. These
+     motion/type values are theme-independent, so they live in one place. */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-cinematic-out: cubic-bezier(0.55, 0, 0.55, 0.2);
+  --duration-cinematic: 0.7s;
+  --loader-spin: 16s;
+  --text-loader-label: 0.625rem;
+  --text-loader-value: 1.25rem;
+
   /* Chrome geometry */
   --scrollbar-size: 6px;
   --header-height: 4rem;

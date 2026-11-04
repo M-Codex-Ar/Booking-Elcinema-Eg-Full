@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { langFromPath, makeT } from "@/i18n";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
+import { CinematicLoader } from "@/components/cinematic/cinematic-loader";
 import appCss from "../styles.css?url";
 
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
@@ -198,6 +199,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Cinematic first load: full-screen intro that plays once per session,
+          waiting on the hero artwork before handing over. Client-side navigations
+          never re-enter it. */}
+      <CinematicLoader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster />
