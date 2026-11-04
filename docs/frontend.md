@@ -110,6 +110,8 @@ The cinematic first load (ported from the guided loading experience) mounts
 - The overlay runs `intro` → `exiting` → `done`, reaches 100% when hydration is
   complete, and exits in 240ms (reduced-motion uses a simple 240ms fade). It has
   no minimum presentation floor, so it never adds a fixed wait to a fast load.
+- The overlay backdrop uses the same `--page-background-image` as the app canvas,
+  and its animated highlights use `--primary`, so both themes stay visually aligned.
 - Copy lives in `i18n/` (`loader.preparing`, `loader.tagline`); colours, fonts and
   motion come from `theme/tokens.css` and `theme/utilities.css`.
 

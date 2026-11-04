@@ -206,7 +206,7 @@
 /*
  * The guided loading experience, ported from eng-shimo/guided-loading-experience
  * and restyled on the elCinema design tokens: atmospheric stage, film strip,
- * animated brand reveal and the gold progress readout. Every colour, font and
+ * animated brand reveal and the brand-colour progress readout. Every colour, font and
  * motion value is expressed through ./tokens.css — no literals here.
  */
 
@@ -218,27 +218,12 @@
   display: grid;
   place-items: center;
   pointer-events: none;
-  background:
-    radial-gradient(
-      120% 90% at 50% 8%,
-      color-mix(in oklab, var(--gold) 14%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      90% 70% at 50% 100%,
-      color-mix(in oklab, var(--background) 75%, transparent),
-      transparent 70%
-    ),
-    var(--background);
+  background: var(--page-background-image);
 }
 
 .loader-bg-layer {
   position: absolute;
   inset: 0;
-}
-
-.loader-vignette {
-  background: radial-gradient(75% 60% at 50% 46%, transparent 40%, var(--background) 100%);
 }
 
 .loader-grain {
@@ -258,8 +243,8 @@
   transform: translateX(-50%);
   background: radial-gradient(
     closest-side,
-    color-mix(in oklab, var(--gold) 16%, transparent) 0%,
-    color-mix(in oklab, var(--gold) 5%, transparent) 45%,
+    color-mix(in oklab, var(--primary) 12%, transparent) 0%,
+    color-mix(in oklab, var(--primary) 4%, transparent) 45%,
     transparent 75%
   );
   filter: blur(6px);
@@ -277,7 +262,7 @@
   background: linear-gradient(
     115deg,
     transparent 42%,
-    color-mix(in oklab, var(--gold) 6%, transparent) 50%,
+    color-mix(in oklab, var(--primary) 5%, transparent) 50%,
     transparent 58%
   );
   animation:
@@ -288,7 +273,7 @@
 .loader-dust {
   position: absolute;
   border-radius: 9999px;
-  background: var(--gold);
+  background: var(--primary);
   animation:
     dust-float var(--dust-dur) ease-in-out var(--dust-delay) infinite alternate,
     var(--duration-normal) ease-out both spot-in;
@@ -334,11 +319,11 @@
 .loader-mark {
   width: 3rem;
   height: 3rem;
-  color: var(--gold);
+  color: var(--primary);
   animation:
     var(--duration-cinematic) var(--ease-cinematic) 0.15s both mark-in,
     var(--loader-spin) linear 0.9s infinite mark-spin;
-  filter: drop-shadow(0 0 18px color-mix(in oklab, var(--gold) 35%, transparent));
+  filter: drop-shadow(0 0 18px color-mix(in oklab, var(--primary) 35%, transparent));
 }
 
 .loader-wordmark {
@@ -361,7 +346,7 @@
 
 .loader-letter:nth-child(3),
 .loader-letter:nth-child(8) {
-  color: var(--gold);
+  color: var(--primary);
 }
 
 .loader-sweep {
@@ -400,7 +385,7 @@
 .loader-tagline-line {
   width: 2.25rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
   animation: var(--duration-cinematic) var(--ease-cinematic) 0.45s both line-in;
 }
 
@@ -474,10 +459,10 @@
   border-radius: 9999px;
   background: linear-gradient(
     90deg,
-    color-mix(in oklab, var(--gold) 70%, transparent),
-    var(--gold)
+    color-mix(in oklab, var(--primary) 70%, transparent),
+    var(--primary)
   );
-  box-shadow: 0 0 12px color-mix(in oklab, var(--gold) 45%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--primary) 45%, transparent);
   transition: transform 0.16s linear;
 }
 
@@ -486,7 +471,7 @@
   font-family: var(--font-display);
   font-size: var(--text-loader-value);
   line-height: 1;
-  color: var(--gold);
+  color: var(--primary);
   font-variant-numeric: tabular-nums;
 }
 
