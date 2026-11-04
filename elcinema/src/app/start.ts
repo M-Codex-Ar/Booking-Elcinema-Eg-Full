@@ -3,6 +3,7 @@ import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/r
 import { renderErrorPage } from "@/lib/error-page";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import { attachSupabaseAuth } from "@/services/clients/supabase/auth-attacher";
+import appCss from "../styles.css?url";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -12,7 +13,7 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
       throw error;
     }
     console.error(error);
-    return new Response(renderErrorPage(), {
+    return new Response(renderErrorPage(appCss), {
       status: 500,
       headers: { "content-type": "text/html; charset=utf-8" },
     });

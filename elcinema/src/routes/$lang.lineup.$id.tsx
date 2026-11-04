@@ -3,12 +3,8 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getLineupDetailFn } from "@/features/live/live.functions";
 import { LiveError } from "@/features/live/live-ui";
 import { LineupDetailRoute } from "@/pages/Lineup";
-import {
-  managedContentOptions,
-  allMovies,
-  managedLists,
-  movieArt,
-} from "@/features/content/content";
+import { allMovies, managedLists, movieArt } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
 import type { ManagedContent } from "@/features/content/content.functions";
 import type { LiveLineupDetail } from "@/types/live";
 import type { Lang } from "@/types/home";

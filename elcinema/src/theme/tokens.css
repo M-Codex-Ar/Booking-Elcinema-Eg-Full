@@ -98,6 +98,7 @@
   --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-cinematic-out: cubic-bezier(0.55, 0, 0.55, 0.2);
   --duration-cinematic: 0.7s;
+  --duration-loader-exit: 0.24s;
   --loader-spin: 16s;
   --text-loader-label: 0.625rem;
   --text-loader-value: 1.25rem;

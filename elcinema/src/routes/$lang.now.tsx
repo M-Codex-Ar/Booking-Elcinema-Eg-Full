@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { NowPlayingPage } from "@/pages/NowPlaying";
-import { managedContentOptions, mergedNowPlaying } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
+import { mergedNowPlaying } from "@/features/content/content";
 import { asLang } from "@/i18n";
 import type { ViewMode } from "@/components/shared/controls";
 

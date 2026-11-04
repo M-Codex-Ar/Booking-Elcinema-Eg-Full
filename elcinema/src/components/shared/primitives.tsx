@@ -43,9 +43,7 @@ export function Page({
   children: ReactNode;
   className?: string | undefined;
 }) {
-  return (
-    <div className={cn("page-flow flex flex-1 flex-col bg-background", className)}>{children}</div>
-  );
+  return <div className={cn("page-flow flex flex-1 flex-col", className)}>{children}</div>;
 }
 
 /** A centred block of content at the site width. */

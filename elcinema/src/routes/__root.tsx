@@ -199,9 +199,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Cinematic first load: full-screen intro that plays once per session,
-          waiting on the hero artwork before handing over. Client-side navigations
-          never re-enter it. */}
+      {/* The first-document intro exits as soon as the route hydrates and never
+          waits on remote hero artwork. Client-side navigations never replay it. */}
       <CinematicLoader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
