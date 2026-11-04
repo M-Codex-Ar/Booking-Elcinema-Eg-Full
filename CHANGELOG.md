@@ -4,6 +4,62 @@ All notable changes to this repository are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/compare/unified-control-center-0.1.0...unified-control-center-0.2.0) (2026-11-04)
+
+
+### Features
+
+* Add FAQ page, static page layouts, contact form, and internal routing ([725b3e8](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/725b3e8cbc20aad01fea0b50615425ffca00e5e7))
+* Add FAQ page, static page layouts, contact form, and internal routing ([fadc7f5](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/fadc7f587c2418e4c3bb303ccf7774186d127d0c))
+* **assets:** mirror TV guide channel logos, recover local artwork ([2b544c9](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/2b544c9df414ad9c24eac11e5a50a3df19dcad48))
+* **auth:** add Supabase role-based auth, admin seed, slug system and responsive layout ([4d48904](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/4d489047ab30807912fc93befc7dda160b51d57d))
+* **chrome:** related account menu + open-state menu icons ([96af055](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/96af055f1a95faed4f892fc9db1c226a6b094cdd))
+* **content:** prefer managed (DB) entries in allMovies; drop invalid @supabase/cli dep ([37a982b](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/37a982b1209e22e52de3b7742d97b1b30ed353e3))
+* **home:** autoplay the Cinemas of the Region carousel ([7d1db04](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/7d1db04bf89a181a1fc003c170dde18bb3c836db))
+* **home:** Cinemas of the Region flag coverflow under Now in Cinemas ([ee64116](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/ee6411681da266616668a54ac08d819004cbf95b))
+* **live:** open the real cinema ticket service from work-page CTAs ([b0c02a8](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/b0c02a8d1560a3dc07d99bdd926d2770a082f93d))
+* modular bilingual i18n and Cinemas of Region marquee slider ([7cec7d0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/7cec7d082b3f4b6a77dbc1bb305b0ff369ace524))
+* **static:** scrape real elcinema.com content pages into the generic StaticPage ([4d149fc](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/4d149fcc278e20409f24eab1b8c3e7b0647d393b))
+* Supabase role-based auth, admin seed account, centralized slugs, and responsive layout ([89c61a1](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/89c61a145cf6c1c175e16a7130db169795dd387c))
+* **theme:** one grid system for every page — unified spacing, no dead space ([9994639](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/999463972e16d5895012c37224a831ad3128c5a8))
+* **tvguide:** add URL-driven pagination and remove inline copy ([3114fe4](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/3114fe40975b1920364a097b850a19acb9bcac8c))
+
+
+### Bug Fixes
+
+* **auth:** bilingual error mapping for the sign-in 400s ([bd2c3f5](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/bd2c3f5415d69b722f2c1075e0976be1a0119577))
+* **auth:** email-confirmation redirect to the live origin + expired-link toast ([a8f23ff](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/a8f23ffa413eca2bed774a31dc2c37464fde7ee6))
+* **auth:** remove email-based admin backdoor and tighten claim checks ([7b6e7e6](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/7b6e7e614a50dfad1636fcb381fcd6b02d1e210b))
+* **auth:** repair auth forms and dialog scrolling ([5d63397](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/5d63397b8c8991581911b469b77dff6f57faba5b))
+* **auth:** require configured Supabase for deploys ([5fe59b0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/5fe59b01f686ed01bd9bdc1d5a9c8b52e64f161e))
+* **booking:** render the movie poster at every screen size on the booking page ([2df4b2e](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/2df4b2e9e127608e8b60362c37981e932010f5eb))
+* **boxoffice:** top 5 on home, full list on the page ([de11224](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/de1122465694c507aee963a70adf5a9855d45a17))
+* clean up merged genre imports ([c8fd8c0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/c8fd8c0551ff609fff076ed831e20a44cd8fc21f))
+* **deploy:** allow Vercel production build to warn when Supabase env vars are pending ([3237933](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/3237933c10ebeb78196a8c92d0b155b1bf0b150f))
+* **elcinema:** drop the demo-replica sentence from the footer ([9af4353](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/9af4353a3755dc0eec66af53f206414b754f43d6))
+* grant release please issue permissions ([64efd89](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/64efd89dbe2424f390db22a3c16d22f24553b1f4))
+* import VodBadge in HomePage to fix reference error ([6ffe04f](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/6ffe04fede7146f73842a0cad50dcf6a694e2f3a))
+* **loader:** order animation shorthand duration before the keyframe name ([bda3063](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/bda3063b3d7386d850fd72acf447fa538d57dace))
+* reject inherited genre keys ([41d4830](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/41d4830941170cf4004a3d616bdde20252a2d258))
+* **release:** grant Release Please required permissions ([5b7cc35](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/5b7cc353e95244050a867a93db393657cc8b755f))
+* resolve navigation and catalogue audit issues ([30f81fc](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/30f81fc55240c7507b7db9c91988b30589c1b24e))
+* **responsive:** refine mobile layout, RTL alignments, and environment check fallback ([15a38aa](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/15a38aad2381b1d244908b27141739945a60c623))
+* **supabase:** stop an env-free build from blanking every page ([44e5bc9](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/44e5bc9b75071cddbeb7d76bc4b2f5d882a05691))
+* **ui:** keep dialog scrollbars inside ([26b1f7a](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/26b1f7acfc9279ff4e9a44655bbe905b68bfa778))
+* **ui:** make live cast rail navigable ([62ed678](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/62ed678b668ed8f96b6a2dead01065ff20dd8d04))
+* **ui:** recoverable live errors, honest contact form, RTL static pages ([8fe67a1](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/8fe67a125ecea97a6cd4b96ae68465148c78f5e7))
+* **ui:** scroll arrows render only for directions holding more content ([da31086](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/da3108686fb52a38159bb23cababf9139b30d473))
+* **web:** reduce loading delays and align page backgrounds ([5eb3dc8](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/5eb3dc8a1397965d3a6704d24ca5cdf9623b2c02))
+* **web:** reduce loading delays and align page backgrounds ([af521bb](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/af521bba82bb8652c95e239eb9cfa4fc35217301))
+
+
+### Performance Improvements
+
+* **bundle:** lazy-load the supabase stack off the first paint ([65981b3](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/65981b35ba3bf0f4ab0ee409f4881cf44d815cdd))
+* **router:** intent preloading + pending shell; fix(contact): honest mailto form; fix(ui): recoverable live errors & RTL static pages ([d0a44db](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/d0a44dbb3a545b857d2931ca88d220dd8355f56a))
+* **router:** preload routes on intent with branded pending shell ([bb811ee](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/bb811ee35722b07081ab4b62f9cdb1cbc2c0ce7b))
+* tune TanStack Query cache defaults (staleTime/gcTime) ([f2a5fdc](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/f2a5fdc8721e93d11b352d6eb26930c374e3e6ee))
+
 ## [Unreleased]
 
 ### Changed
