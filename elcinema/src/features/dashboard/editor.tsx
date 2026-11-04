@@ -117,7 +117,7 @@ function RowDialog({
     >
       <DialogContent
         dir={lang === "ar" ? "rtl" : "ltr"}
-        className="dialog-scroll border-border bg-card sm:max-w-lg"
+        className="border-border bg-card sm:max-w-lg"
       >
         <DialogHeader>
           <DialogTitle className="text-lg font-black">{title}</DialogTitle>
@@ -966,7 +966,7 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
       >
         <DialogContent
           dir={lang === "ar" ? "rtl" : "ltr"}
-          className="dialog-scroll border-border bg-card sm:max-w-lg"
+          className="border-border bg-card sm:max-w-lg"
         >
           <DialogHeader>
             <DialogTitle className="text-lg font-black">
