@@ -26,42 +26,11 @@ import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/t
 import { bookingLink, cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
-import { bi, makeT, type CopyKey } from "@/i18n";
-import GlassyCarousel, { type GlassyCarouselItem } from "@/components/ui/glassy-coverflow-carousel";
+import { bi, makeT } from "@/i18n";
 import { CinemasRegionMarquee } from "@/components/shared/CinemasRegionMarquee";
 import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
 import type { Lang } from "@/types/home";
-
-/**
- * Country cinema guides, one card each, in the live site's own order
- * (elcinema.com publishes per-country cinema directories at /theater/<id>/):
- * the directory itself opens in a NEW TAB — the app never navigates to it.
- */
-const CINEMA_COUNTRIES = [
-  { code: "eg", theaterId: 1 },
-  { code: "ae", theaterId: 2 },
-  { code: "kw", theaterId: 3 },
-  { code: "lb", theaterId: 4 },
-  { code: "bh", theaterId: 6 },
-  { code: "qa", theaterId: 7 },
-  { code: "sa", theaterId: 8 },
-  { code: "om", theaterId: 9 },
-  { code: "jo", theaterId: 10 },
-  { code: "iq", theaterId: 11 },
-] as const;
-
-function cinemaCountryItems(lang: Lang, t: ReturnType<typeof makeT>): GlassyCarouselItem[] {
-  return CINEMA_COUNTRIES.map((c) => ({
-    id: `cinemas-${c.code}`,
-    title: t(`cinemasCountry.${c.code}` as CopyKey),
-    subtitle: t(`cinemasCountry.${c.code}.tag` as CopyKey),
-    description: t(`cinemasCountry.${c.code}.desc` as CopyKey),
-    image: `https://flagcdn.com/w320/${c.code}.png`,
-    href: `https://elcinema.com/${lang}/theater/${c.theaterId}/`,
-    linkLabel: t("carousel.visit"),
-  }));
-}
 
 /** Anchor that never navigates the app to elcinema.com (see links.ts). */
 function CardA({
@@ -382,38 +351,7 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
           </h2>
         </div>
         <p className="mb-4 text-sm text-muted-foreground">{t("home.cinemasRegionSub")}</p>
-        <CinemasRegionMarquee lang={lang} className="mb-4" />
-        <div className="overflow-hidden rounded-3xl border border-border">
-          <GlassyCarousel
-            items={cinemaCountryItems(lang, t)}
-            label={t("home.cinemasRegion")}
-            direction={lang === "ar" ? "rtl" : "ltr"}
-            autoPlay
-            className="rounded-3xl border border-border bg-background/60"
-            // Instance fit for the home page: the portable 100svh default is
-            // meant for full-screen demos; here the guide row sets the stage.
-            style={{ height: "clamp(480px, 66svh, 680px)" }}
-            copy={{
-              controls: t("carousel.controls"),
-              previous: t("carousel.previous"),
-              next: t("carousel.next"),
-              play: t("carousel.play"),
-              pause: t("carousel.pause"),
-              close: t("carousel.close"),
-              previewAria: t("carousel.previewAria"),
-              watchAria: t("carousel.watchAria"),
-              selectAria: t("carousel.selectAria"),
-              officialTrailer: t("carousel.officialTrailer"),
-              watch: t("carousel.watch"),
-              visit: t("carousel.visit"),
-              onYouTube: t("carousel.onYouTube"),
-              hint: t("carousel.hint"),
-              or: t("carousel.or"),
-              browse: t("carousel.browse"),
-              announce: t("carousel.announce"),
-            }}
-          />
-        </div>
+        <CinemasRegionMarquee lang={lang} />
       </section>
 
       {data.watchOnline.length > 0 && (
