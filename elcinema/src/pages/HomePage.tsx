@@ -73,17 +73,15 @@ function Hero({ promos, lang }: { promos: EcPromo[]; lang: Lang }) {
   if (!p) return null;
   return (
     <section className="relative h-[50vh] w-full overflow-hidden md:h-[65vh]">
-      {promos.map((promo, idx) => (
-        <SmartImg
-          key={idx}
-          src={promo.img}
-          alt={promo.title}
-          kind="wide"
-          eager={idx === 0}
-          dataHero={idx === 0}
-          className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${idx === i ? "opacity-100" : "opacity-0"}`}
-        />
-      ))}
+      <SmartImg
+        key={p.img ?? i}
+        src={p.img}
+        alt={p.title}
+        kind="wide"
+        eager={i === 0}
+        dataHero={i === 0}
+        className="absolute inset-0 h-full w-full"
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       {/* The scrim is heavier on the side the title sits, so it mirrors with the
           reading direction — that direction swap is what `scrim-start` owns. */}
