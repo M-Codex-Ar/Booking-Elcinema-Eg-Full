@@ -166,7 +166,6 @@ export const enPages = {
   "soon.empty": "Nothing announced in this genre yet.",
   "search.inQuery": "in",
   "home.cinemasRegion": "Cinemas of the Region",
-  "home.cinemasRegionSub": "Browse cinema guides across the region.",
   "cinemasCountry.eg": "Cinemas of Egypt",
   "cinemasCountry.eg.tag": "The guide's home edition",
   "cinemasCountry.eg.chains": "Renaissance · Galaxy · VOX · Zawya",

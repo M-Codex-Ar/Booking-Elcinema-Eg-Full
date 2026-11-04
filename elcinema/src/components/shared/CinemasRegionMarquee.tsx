@@ -41,7 +41,8 @@ export const CinemasRegionMarquee = memo(function CinemasRegionMarquee({
         gap={20}
         reverse={!isRtl}
         duration={55}
-        durationOnHover={20}
+        pauseOnInteraction
+        draggable
         className="w-full mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
       >
         {CINEMA_COUNTRIES.map((c) => {

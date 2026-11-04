@@ -164,7 +164,6 @@ export const arPages = {
   "soon.empty": "لا إعلانات في هذا النوع بعد.",
   "search.inQuery": "في",
   "home.cinemasRegion": "سينمات المنطقة",
-  "home.cinemasRegionSub": "تصفّح أدلة السينمات في المنطقة.",
   "cinemasCountry.eg": "سينمات مصر",
   "cinemasCountry.eg.tag": "النسخة الأم من الدليل",
   "cinemasCountry.eg.chains": "رينيسانس · جالاكسي · فوكس · زاوية",
