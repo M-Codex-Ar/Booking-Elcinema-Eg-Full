@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import { Clapperboard } from "lucide-react";
 
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { langFromPath, makeT } from "@/i18n";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import appCss from "../styles.css?url";
 
@@ -146,6 +148,21 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  // Supabase auth returns errors (expired or already-used email links) in the
+  // URL fragment; without this the user just sees a silent page. Translate the
+  // common `otp_expired` case and strip the hash so a refresh doesn't repeat it.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.includes("error=")) return;
+    const t = makeT(langFromPath(window.location.pathname));
+    toast.error(
+      hash.includes("error_code=otp_expired")
+        ? t("auth.confirmLinkExpired")
+        : t("auth.requestFailed"),
+    );
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
 
   // Keep the router and caches in sync with identity changes (sign-in,
   // sign-out, profile updates) — not token refreshes or initial session.

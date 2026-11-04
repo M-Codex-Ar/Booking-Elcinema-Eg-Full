@@ -100,6 +100,11 @@ export function AuthDialog({
               full_name: name,
               role: "user",
             },
+            // The confirmation email always returns to the origin the person
+            // registered from — never to whatever Site URL happens to be set
+            // in the Supabase dashboard (a stale default breaks production).
+            // The URL must also be allow-listed under "Redirect URLs".
+            emailRedirectTo: `${window.location.origin}/${lang}`,
           },
         });
 

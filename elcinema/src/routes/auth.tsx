@@ -104,6 +104,10 @@ function AuthPage() {
               full_name: name,
               role: "user",
             },
+            // Return the confirmation email to this deployment's origin, not
+            // the dashboard's Site URL default (see the same comment in
+            // AuthDialog). Must be allow-listed under "Redirect URLs".
+            emailRedirectTo: `${window.location.origin}/${lang}`,
           },
         });
 
