@@ -1,13 +1,16 @@
 /** Search — filters the built-in dataset across titles, persons and channels. */
 import { makeT } from "@/i18n";
 import { Search, User, Tv, Film } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { searchAll } from "@/lib/build";
 import { Na, PosterArt, personPath, workPath } from "@/components/shared/ui";
 import type { Lang } from "@/types/home";
 import type { SearchResult } from "@/lib/build";
 import { dedupeSearchResults } from "@/features/content/content";
 import {
+  ActiveFilters,
+  Chip,
   ListToolbar,
   Pagination,
   SortSelect,
@@ -15,27 +18,6 @@ import {
   sortByText,
   textSortOptions,
 } from "@/components/shared/controls";
-
-const L = {
-  en: {
-    title: "Search",
-    placeholder: "Search movies, people, channels…",
-    tabs: { all: "All", movie: "Titles", person: "Persons", channel: "Channels" } as const,
-    empty: "Type something to search the full elCinema catalogue.",
-    none: "No results for",
-    in: "in",
-    results: "results",
-  },
-  ar: {
-    title: "بحث",
-    placeholder: "ابحث في الأفلام والأشخاص والقنوات…",
-    tabs: { all: "الكل", movie: "الأعمال", person: "الأشخاص", channel: "القنوات" } as const,
-    empty: "اكتب كلمة للبحث في كامل كتالوج elCinema.",
-    none: "لا نتائج عن",
-    in: "في",
-    results: "نتيجة",
-  },
-} as const;
 
 type Tab = "all" | "movie" | "person" | "channel";
 
@@ -51,6 +33,7 @@ export function SearchPage({
   extra: SearchResult[];
 }) {
   const t = makeT(lang);
+  const navigate = useNavigate();
   const tabLabels: Record<Tab, string> = {
     all: t("search.tabAll"),
     movie: t("search.tabMovie"),
@@ -63,6 +46,10 @@ export function SearchPage({
   const results = dedupeSearchResults([...searchAll(q ?? ""), ...extra]);
   const [sort, setSort] = useState("default");
   const [pg, setPg] = useState(1);
+  useEffect(() => {
+    setDraft(q ?? "");
+    setPg(1);
+  }, [q]);
   const byTab = tab === "all" ? results : results.filter((r) => r.type === tab);
   const sorted = sortByText(byTab, sort, (r) => r.title[lang], lang);
   const { page, pages, shown } = paginate(sorted, pg, 10);
@@ -70,7 +57,7 @@ export function SearchPage({
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!draft.trim()) return;
-    window.location.assign(`/${lang}/search?q=${encodeURIComponent(draft.trim())}`);
+    void navigate({ to: `/${lang}/search` as never, search: { q: draft.trim() } as never });
   };
 
   return (
@@ -84,6 +71,7 @@ export function SearchPage({
         <Search className="ms-4 h-4 w-4 shrink-0 text-muted-foreground" />
         <input
           type="text"
+          aria-label={t("search.placeholder")}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={t("search.placeholder")}
@@ -102,23 +90,27 @@ export function SearchPage({
         {tabs.map((k) => {
           const Icon = TAB_ICON[k];
           return (
-            <button
+            <Chip
               key={k}
+              active={tab === k}
               onClick={() => {
                 setTab(k);
                 setPg(1);
               }}
-              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-                tab === k
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border hover:border-primary"
-              }`}
             >
               <Icon className="h-4 w-4" />
               {tabLabels[k]}
-            </button>
+            </Chip>
           );
         })}
+        <ActiveFilters
+          count={Number(tab !== "all")}
+          lang={lang}
+          onClear={() => {
+            setTab("all");
+            setPg(1);
+          }}
+        />
       </div>
 
       {!q && <p className="mt-10 text-center text-sm text-muted-foreground">{t("search.empty")}</p>}

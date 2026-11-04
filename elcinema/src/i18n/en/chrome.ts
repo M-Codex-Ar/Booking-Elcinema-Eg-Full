@@ -2,14 +2,12 @@
  * English UI strings: Site Chrome, Navigation, Theme, Auth, Footer
  */
 export const enChrome = {
-  "chrome.login": "login",
   "chrome.signOut": "Sign out",
   "chrome.search": "Search",
   "chrome.dashboard": "Dashboard",
   "chrome.switchTo": "عربي",
   "chrome.menu": "Menu",
   "chrome.sections": "Sections",
-  "chrome.advancedSearch": "Search the catalogue",
   "chrome.chairman": "Chairman: Khaled Hesham",
   "chrome.editor": "Editor-in-Chief: Doaa Mohamed",
   "chrome.skipToContent": "Skip to content",
@@ -19,7 +17,6 @@ export const enChrome = {
   "nav.soon": "Coming Soon",
   "nav.booking": "Book tickets",
   "nav.boxoffice": "Box Office",
-  "nav.boxofficeFooter": "Cinema Revenue",
   "nav.tvguide": "TV Guide",
   "nav.vod": "Watch Online",
   "nav.video": "elCinema TV",
@@ -53,7 +50,6 @@ export const enChrome = {
   "auth.loading": "Please wait…",
   "auth.account": "Account",
   "auth.backToSite": "Back to the site",
-  "auth.loginOrRegister": "Login / Register",
   "auth.unauthorized": "Admin privileges required to access the dashboard.",
   "auth.adminRole": "Admin",
   "auth.userRole": "User",

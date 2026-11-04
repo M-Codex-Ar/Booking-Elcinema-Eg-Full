@@ -23,49 +23,6 @@ import type { Lang, Movie } from "@/types/home";
 import { makeT } from "@/i18n";
 import { bookingPath } from "@/features/live/live-ui";
 
-const L = {
-  en: {
-    book: "Book tickets",
-    director: "Director:",
-    writer: "Writer:",
-    cast: "Cast:",
-    showtimes: "Playing in Egypt Cinemas",
-    release: "Release Date:",
-    runtime: "minutes",
-    language: "Language:",
-    notFound: "Movie not found",
-    similar: "More like this",
-    story: "Story",
-    photos: "Photos",
-    awards: "Awards & Nominations",
-    won: "Won",
-    nominated: "Nominated",
-    watchOnline: "Watch Online",
-    watchOn: "Watch on",
-    rating: "User score",
-  },
-  ar: {
-    book: "احجز تذاكر",
-    director: "المخرج:",
-    writer: "الكاتب:",
-    cast: "طاقم التمثيل:",
-    showtimes: "معروض في سينمات مصر",
-    release: "تاريخ العرض:",
-    runtime: "دقيقة",
-    language: "اللغة:",
-    notFound: "الفيلم غير موجود",
-    similar: "أفلام مشابهة",
-    story: "القصة",
-    photos: "صور",
-    awards: "الجوائز والترشيحات",
-    won: "فاز",
-    nominated: "رُشّح",
-    watchOnline: "شاهد أونلاين",
-    watchOn: "شاهد على",
-    rating: "تقييم المستخدمين",
-  },
-} as const;
-
 export function WorkPage({ lang, id }: { lang: Lang; id: string }) {
   const copy = makeT(lang);
   const movie = movieBySlugOrId(id);

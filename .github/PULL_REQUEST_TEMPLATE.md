@@ -2,6 +2,8 @@
 
 <!-- One paragraph. The reason belongs here; the diff already shows the what. -->
 
+<!-- Use a Conventional Commit title (for example: fix(navigation): unify section menus). -->
+
 ## Linked issue
 
 Closes #

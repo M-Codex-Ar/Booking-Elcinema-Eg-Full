@@ -4,6 +4,8 @@ import { Tv } from "lucide-react";
 import { TvGuideView } from "@/components/shared/TvGuide";
 import type { ChannelCategory, Lang, TvGuide } from "@/types/home";
 import {
+  ActiveFilters,
+  Chip,
   FilterInput,
   ListToolbar,
   Pagination,
@@ -12,22 +14,22 @@ import {
   pageSlice,
   type SetSearch,
 } from "@/components/shared/controls";
-import { bi, makeT } from "@/i18n";
+import { makeT } from "@/i18n";
 
 const PAGE_SIZE = 20;
 
-const CATS: { id: ChannelCategory | "all"; en: string; ar: string }[] = [
-  { id: "all", en: "All", ar: "Ø§Ù„ÙƒÙ„" },
-  { id: "general", en: "General", ar: "Ø¹Ø§Ù…" },
-  { id: "movies", en: "Movies", ar: "Ø£ÙÙ„Ø§Ù…" },
-  { id: "series", en: "Series", ar: "Ù…Ø³Ù„Ø³Ù„Ø§Øª" },
-  { id: "news", en: "News", ar: "Ø£Ø®Ø¨Ø§Ø±" },
-  { id: "sports", en: "Sports", ar: "Ø±ÙŠØ§Ø¶Ø©" },
-  { id: "kids", en: "Kids", ar: "Ø£Ø·ÙØ§Ù„" },
-  { id: "music", en: "Music", ar: "Ù…ÙˆØ³ÙŠÙ‚Ù‰" },
-  { id: "documentary", en: "Documentary", ar: "ÙˆØ«Ø§Ø¦Ù‚ÙŠ" },
-  { id: "religion", en: "Religion", ar: "Ø¯ÙŠÙ†ÙŠ" },
-];
+const CATS = [
+  { id: "all", label: "guide.category.all" },
+  { id: "general", label: "guide.category.general" },
+  { id: "movies", label: "guide.category.movies" },
+  { id: "series", label: "guide.category.series" },
+  { id: "news", label: "guide.category.news" },
+  { id: "sports", label: "guide.category.sports" },
+  { id: "kids", label: "guide.category.kids" },
+  { id: "music", label: "guide.category.music" },
+  { id: "documentary", label: "guide.category.documentary" },
+  { id: "religion", label: "guide.category.religion" },
+] as const;
 export function TvGuidePage({
   lang,
   guide,
@@ -64,19 +66,19 @@ export function TvGuidePage({
 
       <ListToolbar>
         {CATS.map((c) => (
-          <button
+          <Chip
             key={c.id}
-            type="button"
+            active={activeCat === c.id}
             onClick={() => setSearch({ cat: c.id, q: undefined, page: undefined })}
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
-              activeCat === c.id
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary"
-            }`}
           >
-            {bi(c, lang)}
-          </button>
+            {t(c.label)}
+          </Chip>
         ))}
+        <ActiveFilters
+          count={Number(activeCat !== "all") + Number(Boolean(needle))}
+          lang={lang}
+          onClear={() => setSearch({ cat: "all", q: undefined, page: undefined })}
+        />
         <span className="grow" />
         <FilterInput
           lang={lang}

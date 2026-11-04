@@ -6,6 +6,12 @@ All notable changes to this repository are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Unified the desktop and compact navigation around one translated route map, removed repeated search/account entry points, and routed search submissions through TanStack Router to avoid full-page reloads.
+- Added bilingual active-filter counts and clear actions across catalogue lists; validated genre chips against the translated genre catalogue and corrected TV guide category labels.
+- Added pull request path labeling, Conventional Commit title validation, and Release Please automation for versioned changelog releases.
+
 ### Added
 
 - Scraped static content pages from the live site: `parseStaticPage` / `getStaticPage` in
