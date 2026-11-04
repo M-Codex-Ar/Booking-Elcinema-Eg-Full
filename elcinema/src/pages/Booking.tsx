@@ -187,8 +187,8 @@ export function BookingMoviePage({
         <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("booking.back")}
       </Na>
 
-      <div className="mt-4 flex items-start gap-4">
-        <div className="hidden w-28 shrink-0 overflow-hidden rounded-xl border border-border sm:block">
+      <div className="mt-4 flex flex-col items-start gap-4 md:flex-row md:items-start">
+        <div className="w-28 shrink-0 overflow-hidden rounded-xl border border-border">
           <div className="aspect-[2/3]">
             <LiveImg src={poster} alt={title} className="h-full w-full" />
           </div>
