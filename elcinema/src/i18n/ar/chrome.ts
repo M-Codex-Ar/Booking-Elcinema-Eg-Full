@@ -75,6 +75,7 @@ export const arChrome = {
   "footer.subscribeOk": "تم الاشتراك! شكرًا.",
   "footer.about": "عن الموقع",
   "footer.contact": "تواصل معنا",
+  "chrome.backToTop": "العودة إلى الأعلى",
   "footer.advertise": "إعلن معنا",
   "footer.privacy": "سياسة الخصوصية",
   "footer.terms": "شروط الاستخدام",

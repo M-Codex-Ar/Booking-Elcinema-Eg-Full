@@ -1,6 +1,7 @@
 import { createFileRoute, notFound, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteChrome";
+import { PageAssist } from "@/components/layout/PageAssist";
 import type { Lang } from "@/types/home";
 
 export const Route = createFileRoute("/$lang")({
@@ -49,6 +50,7 @@ function LangLayout() {
         <Outlet />
       </main>
       <SiteFooter lang={l} />
+      <PageAssist lang={l} />
     </div>
   );
 }

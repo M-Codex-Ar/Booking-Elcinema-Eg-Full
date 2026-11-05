@@ -13,6 +13,7 @@ export const arPages = {
   "home.diedOn": "تُوفي في {date}",
   "home.seeAll": "عرض الكل",
   "home.moreInfo": "المزيد",
+  "home.explore": "استكشف",
   "home.bookTickets": "احجز تذاكر",
   "home.slide": "الشريحة {n}",
   "home.previous": "السابق",

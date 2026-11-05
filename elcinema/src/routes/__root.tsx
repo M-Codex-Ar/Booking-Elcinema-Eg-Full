@@ -15,7 +15,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { langFromPath, makeT } from "@/i18n";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { CinematicLoader } from "@/components/cinematic/cinematic-loader";
 import appCss from "../styles.css?url";
 
 /** elCinema-styled 404 page (reused from the uploaded project, dark cinema theme). */
@@ -136,6 +135,13 @@ function RootShell({ children }: { children: ReactNode }) {
             __html: `try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.remove("dark")}catch(e){}`,
           }}
         />
+        <script
+          // The brand mark may animate once per tab session, but the page never
+          // waits for hydration or this short, storage-guarded CSS reveal.
+          dangerouslySetInnerHTML={{
+            __html: `try{const k="elcinema-brand-intro";if(!sessionStorage.getItem(k)){document.documentElement.dataset.brandIntro="true";sessionStorage.setItem(k,"1")}}catch{};document.addEventListener("animationend",function(e){if(e.target instanceof Element&&e.target.matches("[data-brand-name]"))document.documentElement.removeAttribute("data-brand-intro")},true);`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>
@@ -199,9 +205,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* The first-document intro exits as soon as the route hydrates and never
-          waits on remote hero artwork. Client-side navigations never replay it. */}
-      <CinematicLoader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster />

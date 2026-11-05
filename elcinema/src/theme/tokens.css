@@ -85,12 +85,20 @@
   --poster-shade: color-mix(in oklab, black 60%, transparent);
 
   /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out-expo-like: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-brand: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-slow: 0.65s;
-  --duration-normal: 0.5s;
+  --duration-fast: 0.15s;
+  --duration-base: 0.25s;
+  --duration-normal: var(--duration-base);
   --duration-medium: 0.35s;
-  --duration-fast: 0.2s;
+  --duration-slow: 0.45s;
+  --motion-distance-small: 12px;
+  --motion-distance-tiny: 4px;
+  --motion-stagger-step: 90ms;
+  --motion-scale-in: 0.92;
+  --brand-reveal-blur: 4px;
 
   /* Cinematic first-load (guided loading experience port): the eased reveal
      choreography, entrance duration and the loader readout type scale. These

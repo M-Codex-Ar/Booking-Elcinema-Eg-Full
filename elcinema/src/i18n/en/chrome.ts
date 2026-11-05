@@ -77,6 +77,7 @@ export const enChrome = {
   "footer.subscribeOk": "You're subscribed! Thanks.",
   "footer.about": "About Us",
   "footer.contact": "Contact Us",
+  "chrome.backToTop": "Back to top",
   "footer.advertise": "Advertise",
   "footer.privacy": "Privacy Policy",
   "footer.terms": "Terms of Use",

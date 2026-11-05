@@ -68,6 +68,46 @@
   }
 }
 
+/* Tiny brand-only first-load reveal; it never gates or animates page content. */
+html[data-brand-intro="true"] .brand-icon-reveal {
+  animation: brand-icon-arrive var(--duration-base) var(--ease-out-expo-like) both;
+}
+html[data-brand-intro="true"] .brand-name-reveal {
+  animation: brand-name-focus var(--duration-slow) var(--ease-out-expo-like)
+    var(--motion-stagger-step) both;
+}
+@keyframes brand-icon-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-tiny)) scale(var(--motion-scale-in));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes brand-name-focus {
+  from {
+    filter: blur(var(--brand-reveal-blur));
+    opacity: 0;
+    transform: translateY(var(--motion-distance-tiny));
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-brand-intro="true"] .brand-icon-reveal,
+  html[data-brand-intro="true"] .brand-name-reveal {
+    animation: none;
+    filter: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /*
  * Deterministic fallback poster for items without artwork. The hue arrives as
  * `--poster-hue` from the component, so the gradient maths stays in CSS and out

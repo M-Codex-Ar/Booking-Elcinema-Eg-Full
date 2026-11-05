@@ -4,7 +4,15 @@
  */
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, LayoutDashboard, LogIn, LogOut, Search, Send } from "lucide-react";
+import {
+  ChevronDown,
+  Clapperboard,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  Search,
+  Send,
+} from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useRouterState } from "@tanstack/react-router";
 import type { Lang } from "@/types/home";
@@ -30,7 +38,6 @@ import {
  * the header. `SmartImg` still draws the placeholder wordmark if the file is
  * missing.
  */
-const LOGO_URL = "/images/brand/logo.png";
 const FOOTER_LOGO_URL = "/images/brand/footer-logo.png";
 
 const SOCIAL = {
@@ -115,16 +122,19 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const otherPath = "/" + pathname.replace(/^\/(en|ar)/, nextLanguage);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-1.5 px-3 sm:gap-2 md:gap-3 md:px-8">
-        <Na href={`/${lang}`} className="flex h-9 shrink-0 items-center">
-          <SmartImg
-            src={LOGO_URL}
-            alt="elCinema"
-            kind="logo"
-            eager
-            className="site-logo h-7 max-w-[100px] object-contain sm:h-8 sm:max-w-none"
+        <Na href={`/${lang}`} label="elCinema" className="flex h-9 shrink-0 items-center gap-2">
+          <Clapperboard
+            className="brand-icon-reveal h-5 w-5 text-primary sm:h-6 sm:w-6"
+            aria-hidden="true"
           />
+          <span
+            data-brand-name
+            className="brand-name-reveal font-display text-base font-black tracking-tight text-foreground sm:text-lg"
+          >
+            elCinema
+          </span>
         </Na>
         <nav className="ms-2 hidden items-center gap-1 lg:flex">
           {NAV_GROUPS.map((group) => (

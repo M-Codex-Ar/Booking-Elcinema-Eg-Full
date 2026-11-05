@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useMotionValue, animate, motion } from "motion/react";
 import useMeasure from "react-use-measure";
@@ -45,7 +45,37 @@ export const InfiniteSlider = memo(function InfiniteSlider({
   const [isHovering, setIsHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const isPaused = (pauseOnInteraction && (isHovering || isFocused)) || (draggable && isDragging);
+  const [isVisible, setIsVisible] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(true);
+  const visibilityRef = useRef<HTMLDivElement>(null);
+  const isPaused =
+    reducedMotion ||
+    !isVisible ||
+    (pauseOnInteraction && (isHovering || isFocused)) ||
+    (draggable && isDragging);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const element = visibilityRef.current;
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry?.isIntersecting ?? false),
+      { threshold: 0.01 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const size = direction === "horizontal" ? width : height;
@@ -155,7 +185,7 @@ export const InfiniteSlider = memo(function InfiniteSlider({
     : {};
 
   return (
-    <div className={cn("overflow-hidden", className)}>
+    <div ref={visibilityRef} className={cn("overflow-hidden", className)}>
       <motion.div
         ref={ref}
         className={cn("flex w-max", draggable && "cursor-grab touch-pan-y active:cursor-grabbing")}
