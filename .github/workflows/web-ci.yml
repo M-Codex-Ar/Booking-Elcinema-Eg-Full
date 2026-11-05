@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Guard public source from upstream scraping
+        run: pnpm run check:no-upstream-scraper
+
       - name: Format check
         run: pnpm run format:check
 
