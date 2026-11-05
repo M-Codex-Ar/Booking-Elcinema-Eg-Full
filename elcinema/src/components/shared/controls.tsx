@@ -211,7 +211,14 @@ export function clampPage(page: number | undefined, items: number, size: number)
 /** Keys into the centralised `controls.*` copy, flattened for list screens. */
 export const listText = (
   lang: Lang,
-): { filter: string; all: string; az: string; za: string; def: string; none: string } => {
+): {
+  filter: string;
+  all: string;
+  az: string;
+  za: string;
+  def: string;
+  none: string;
+} => {
   const t = makeT(lang);
   return {
     filter: t("controls.filter"),
@@ -284,7 +291,7 @@ export function textSortOptions(lang: Lang) {
   ];
 }
 
-/** Local list state (filter text, sort, view, page) for live-scraped pages. */
+/** Local list state (filter text, sort, view, page) for catalogue pages. */
 export function useListState(defaults: { sort?: string; view?: ViewMode } = {}) {
   const [q, setQ] = useState("");
   const [sort, setSort] = useState(defaults.sort ?? "default");
@@ -314,7 +321,11 @@ export function useListState(defaults: { sort?: string; view?: ViewMode } = {}) 
 /** Filter → sort → paginate in one step. */
 export function paginate<T>(items: T[], page: number, size: number) {
   const p = clampPage(page, items.length, size);
-  return { page: p, pages: pageCount(items.length, size), shown: pageSlice(items, p, size) };
+  return {
+    page: p,
+    pages: pageCount(items.length, size),
+    shown: pageSlice(items, p, size),
+  };
 }
 
 export const matches = (text: string, q: string) =>

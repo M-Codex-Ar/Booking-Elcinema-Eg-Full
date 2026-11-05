@@ -157,7 +157,7 @@ export function RatingPill({ rating, votes }: { rating: number | null; votes: nu
   );
 }
 
-/** Friendly error panel for pages whose live scrape failed. */
+/** Friendly error panel for a page whose local data could not be loaded. */
 export function LiveError({ message, lang }: { message: string; lang: Lang }) {
   const t = makeT(lang);
   const router = useRouter();
@@ -167,7 +167,7 @@ export function LiveError({ message, lang }: { message: string; lang: Lang }) {
       <p className="mt-2 text-sm text-muted-foreground">{message}</p>
       <div className="mt-6 flex justify-center gap-3">
         {/* The failure may be cached in a query; invalidate refetches every
-            active query so a transient scrape failure is recoverable without
+            active query so transient data failures are recoverable without
             leaving the page. */}
         <button
           type="button"

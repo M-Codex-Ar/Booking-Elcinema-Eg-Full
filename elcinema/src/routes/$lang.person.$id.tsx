@@ -1,114 +1,48 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLivePersonFn } from "@/features/live/live.functions";
-import { LiveError } from "@/features/live/live-ui";
-import { LivePersonPage } from "@/pages/LivePerson";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { PersonPage } from "@/pages/Person";
 import { ManagedPersonPage } from "@/pages/Managed";
 import { managedPeople, managedPersonById, managedRef } from "@/features/content/content";
 import { managedContentOptions } from "@/features/content/content.options";
 import type { ManagedContent } from "@/features/content/content.functions";
 import { personById, personBySlug, personId } from "@/lib/build";
-import { asLang } from "@/i18n";
-import type { Lang } from "@/types/home";
-
-const livePersonOptions = (lang: Lang, id: string) =>
-  queryOptions({
-    queryKey: ["elcinema-live-person", lang, id],
-    queryFn: () => getLivePersonFn({ data: { lang, id } }),
-    staleTime: 10 * 60 * 1000,
-  });
+import { asLang, makeT } from "@/i18n";
 
 export const Route = createFileRoute("/$lang/person/$id")({
-  // Legacy person slugs (/en/person/karim-el-dessouki) redirect to the
-  // canonical numeric URL (/en/person/2256417).
   beforeLoad: ({ params }) => {
     if (!/^\d+$/.test(params.id)) {
       const legacy = personBySlug.get(params.id);
-      if (legacy) {
+      if (legacy)
         throw redirect({
           to: "/$lang/person/$id",
           params: { lang: params.lang, id: String(personId(legacy)) },
           replace: true,
         });
-      }
     }
   },
-  // Built-in sample people render from the catalogue, dashboard-added people
-  // ("m-…") from the managed content, and every other numeric person id is
-  // fetched live from elcinema.com (English or Arabic edition).
-  loader: async ({ context, params }) => {
-    if (params.id.startsWith("m-"))
-      return context.queryClient.ensureQueryData(managedContentOptions);
-    if (
-      !/^\d+$/.test(params.id) ||
-      personById.has(Number(params.id)) ||
-      personBySlug.has(params.id)
-    )
-      return null;
-    const lang = asLang(params.lang);
-    return context.queryClient.ensureQueryData(livePersonOptions(lang, params.id));
-  },
+  loader: ({ context, params }) =>
+    params.id.startsWith("m-") ? context.queryClient.ensureQueryData(managedContentOptions) : null,
   component: PersonRoute,
-  errorComponent: ({ error }) => (
-    <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-      <p className="text-lg font-bold">This page didn't load.</p>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {error instanceof Error ? error.message : String(error)}
-      </p>
-    </div>
-  ),
-  notFoundComponent: () => (
-    <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-      <p className="text-lg font-bold">Person not found</p>
-    </div>
-  ),
   head: ({ params, loaderData }) => {
-    const en = params.lang !== "ar";
+    const lang = asLang(params.lang);
     const managedRow = params.id.startsWith("m-")
       ? managedPeople((loaderData ?? null) as ManagedContent | null).find(
-          (r) => managedRef(r) === params.id,
+          (row) => managedRef(row) === params.id,
         )
       : undefined;
-    const sample =
-      !managedRow && /^\d+$/.test(params.id)
-        ? (personById.get(Number(params.id)) ?? personBySlug.get(params.id))
-        : !managedRow
-          ? personBySlug.get(params.id)
-          : undefined;
-    const live =
-      sample || managedRow
-        ? null
-        : ((
-            loaderData as { data?: { name: string; bio?: string | null } | null } | null | undefined
-          )?.data ?? null);
-    const title = managedRow
-      ? `${managedRow.name_en} | elCinema`
-      : sample
-        ? `${sample.name[en ? "en" : "ar"]} | elCinema`
-        : live
-          ? `${live.name} | elCinema`
-          : en
-            ? "Person | elCinema"
-            : "شخصية | إل سينما";
-    const description = managedRow
-      ? `${managedRow.name_en} — ${managedRow.role_en || "Actor"}`
-      : sample
-        ? `${sample.name[en ? "en" : "ar"]} — ${sample.role[en ? "en" : "ar"]}`
-        : live
-          ? `${live.name}${live.bio ? ` — ${live.bio.slice(0, 140)}` : ""}`
-          : en
-            ? "Actor and filmmaker profiles from Egypt's cinema guide."
-            : "ملفات الشخصيات وصناع السينما من دليل السينما المصري.";
+    const sample = personById.get(Number(params.id)) ?? personBySlug.get(params.id);
+    const name = managedRow
+      ? lang === "ar"
+        ? managedRow.name_ar || managedRow.name_en
+        : managedRow.name_en
+      : sample?.name[lang];
+    const title = name
+      ? `${name} | elCinema`
+      : lang === "ar"
+        ? "شخصية | إل سينما"
+        : "Person | elCinema";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "profile" },
-        { name: "twitter:card", content: "summary_large_image" },
-      ],
+      meta: [{ title }, { name: "description", content: name ?? "Local catalogue profile" }],
     };
   },
 });
@@ -116,31 +50,23 @@ export const Route = createFileRoute("/$lang/person/$id")({
 function PersonRoute() {
   const { lang, id } = Route.useParams();
   const l = asLang(lang);
+  const t = makeT(l);
   if (id.startsWith("m-")) return <ManagedPersonLoader lang={l} id={id} />;
-  if (!/^\d+$/.test(id) || personById.has(Number(id)) || personBySlug.has(id)) {
-    return <PersonPage lang={l} id={id} />;
-  }
-  return <LivePersonLoader lang={l} id={id} />;
+  if (personById.has(Number(id)) || personBySlug.has(id)) return <PersonPage lang={l} id={id} />;
+  return (
+    <p className="mx-auto max-w-3xl px-4 py-20 text-center text-lg font-bold">
+      {t("person.notFound")}
+    </p>
+  );
 }
 
-function ManagedPersonLoader({ lang, id }: { lang: Lang; id: string }) {
+function ManagedPersonLoader({ lang, id }: { lang: "en" | "ar"; id: string }) {
   const managed = useSuspenseQuery(managedContentOptions).data;
   const person = managedPersonById(managed).get(id);
-  if (!person) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-        <p className="text-lg font-bold">Person not found</p>
-      </div>
-    );
-  }
-  const bio = managedPeople(managed).find((r) => managedRef(r) === id)?.bio;
-  return <ManagedPersonPage person={person} bio={bio ? bio : undefined} lang={lang} />;
-}
-
-function LivePersonLoader({ lang, id }: { lang: Lang; id: string }) {
-  const result = useSuspenseQuery(livePersonOptions(lang, id)).data;
-  if (result.error || !result.data) {
-    return <LiveError message={result.error ?? ""} lang={lang} />;
-  }
-  return <LivePersonPage data={result.data} lang={lang} />;
+  const bio = managedPeople(managed).find((row) => managedRef(row) === id)?.bio;
+  return person ? (
+    <ManagedPersonPage person={person} bio={bio || undefined} lang={lang} />
+  ) : (
+    <p className="mx-auto max-w-3xl px-4 py-20 text-center">{makeT(lang)("person.notFound")}</p>
+  );
 }

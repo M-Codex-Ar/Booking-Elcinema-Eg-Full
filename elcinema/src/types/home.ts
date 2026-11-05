@@ -19,7 +19,7 @@ export type ChannelCategory =
   | "documentary"
   | "religion";
 
-/** Watch-online play button scraped from the work page (both editions). */
+/** Watch-online provider listed in the local movie catalogue. */
 export interface MovieVod {
   label: string; // platform key, e.g. "netflix"
   note: Bi; // "Free" / "Subscribe"
@@ -27,9 +27,9 @@ export interface MovieVod {
   img: string | null; // platform logo image key
 }
 
-/** One day's showtimes across cinemas, scraped from the work page. */
+/** One day's showtimes across cinemas in the local catalogue. */
 export interface MovieShowtimes {
-  /** Day offset from the dataset scrape date; 0 = the scrape day. */
+  /** Day offset from the catalogue snapshot date; 0 = its first day. */
   dayOffset: number;
   label: string; // source label, e.g. "Monday 02"
   cinemas: {
@@ -41,7 +41,7 @@ export interface MovieShowtimes {
 }
 
 export interface Movie {
-  /** Real elcinema.com work id — the public URL id (/en/work/<id>/). */
+  /** Stable catalogue work ID used by the local detail route. */
   id: string;
   slug: string; // equals id, kept for the legacy slug maps
   title: Bi;
@@ -121,38 +121,38 @@ export interface WatchOnlineItem {
 }
 
 // ---------------------------------------------------------------------------
-// Shapes parsed from the live elcinema.com homepage (see home.server.ts).
+// Homepage view models composed from the catalogue and managed content.
 // ---------------------------------------------------------------------------
 
-export interface EcPromo {
+export interface HomePromo {
   href: string;
   img: string | null;
   title: string;
   button: string;
 }
 
-export interface EcMovie {
+export interface HomeMovieCard {
   href: string;
   img: string | null;
   title: string;
   bookingHref: string | null;
 }
 
-export interface EcVod {
+export interface HomeVodBadge {
   href: string;
   img: string | null;
   label: string;
 }
 
-export interface EcWatchOnlineItem {
+export interface HomeWatchOnlineItem {
   href: string;
   img: string | null;
   title: string;
   meta: string;
-  vod: EcVod | null;
+  vod: HomeVodBadge | null;
 }
 
-export interface EcTvSummaryItem {
+export interface HomeTvSummaryItem {
   href: string;
   img: string | null;
   title: string;
@@ -160,10 +160,10 @@ export interface EcTvSummaryItem {
   channelName: string;
   channelHref: string;
   airtime: string;
-  vod: EcVod | null;
+  vod: HomeVodBadge | null;
 }
 
-export interface EcTvSlot {
+export interface HomeTvSlot {
   title: string;
   titleHref: string | null;
   meta: string;
@@ -174,31 +174,31 @@ export interface EcTvSlot {
   category: number | null;
 }
 
-export interface EcTvLine {
+export interface HomeTvLine {
   channelImg: string | null;
   channelName: string;
   channelHref: string;
-  slots: EcTvSlot[];
+  slots: HomeTvSlot[];
 }
 
-export interface EcTvGuide {
+export interface HomeTvGuide {
   times: string[];
-  lines: EcTvLine[];
+  lines: HomeTvLine[];
 }
 
-export interface EcVideo {
+export interface HomeVideoCard {
   href: string;
   img: string | null;
   title: string;
   duration: string | null;
 }
 
-export interface EcListRow {
+export interface HomeListRow {
   href: string;
   title: string;
 }
 
-export interface EcBoxofficeRow {
+export interface HomeBoxofficeCard {
   href: string;
   title: string;
   img: string | null;
@@ -214,14 +214,14 @@ export interface EcBoxofficeRow {
  * death date. Every field is nullable so the rail still renders when only the
  * homepage was reachable.
  */
-export interface EcBornPerson {
+export interface HomeBornPerson {
   /** Real elcinema person id, from the `/en/person/<id>/` link. */
   id: string;
   href: string;
   name: Bi;
   /** Remote artwork as published by the site; null when it is a blank photo. */
   img: string | null;
-  /** First-party mirror of `img`, when the asset has been scraped locally. */
+  /** First-party copy of `img`, when the asset is available in the local bundle. */
   localImg: string | null;
   /** e.g. "Acting" / "تمثيل", "Music Composer" / "موسيقى تصويرية". */
   category: Bi | null;
@@ -233,25 +233,25 @@ export interface EcBornPerson {
 }
 
 /** The "Born Today" (ولد في مثل هذا اليوم) home section. */
-export interface EcBornToday {
+export interface HomeBornToday {
   /** Day label as the English site prints it, e.g. "2 November". */
   date: string;
   /** `MM-DD` key of the day — locale-neutral, so the UI formats it per edition. */
   dateKey: string;
   /** Listing page for the day, e.g. `/en/index/person/birth_day/11-02`. */
   href: string;
-  people: EcBornPerson[];
+  people: HomeBornPerson[];
 }
 
-export interface EcHomeData {
-  promos: EcPromo[];
-  movies: EcMovie[];
-  watchOnline: EcWatchOnlineItem[];
-  tvSummary: EcTvSummaryItem[];
-  tvGuide: EcTvGuide;
-  videos: EcVideo[];
-  bornToday: EcBornToday;
-  lists: EcListRow[];
+export interface HomeViewData {
+  promos: HomePromo[];
+  movies: HomeMovieCard[];
+  watchOnline: HomeWatchOnlineItem[];
+  tvSummary: HomeTvSummaryItem[];
+  tvGuide: HomeTvGuide;
+  videos: HomeVideoCard[];
+  bornToday: HomeBornToday;
+  lists: HomeListRow[];
   boxofficeDate: string;
-  boxoffice: EcBoxofficeRow[];
+  boxoffice: HomeBoxofficeCard[];
 }

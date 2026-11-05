@@ -15,7 +15,7 @@ export function normalizeTitleForComparison(s: string): string {
 
 /**
  * Normalize link title for URL parsing: removes trailing parenthetical metadata.
- * Used when parsing scraped hrefs where titles may have year or edition info.
+ * Used when resolving catalogue hrefs where titles may have year or edition info.
  *
  * Example: "Movie (2023) (Director's Cut)" → "Movie"
  */

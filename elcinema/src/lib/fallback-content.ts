@@ -1,11 +1,11 @@
 /**
- * Fallback content for static pages when live scraping fails.
+ * Bundled bilingual content for static information pages.
  * Ensures pages always load with meaningful content.
  */
 import type { Lang } from "@/types/home";
-import type { LiveStaticPage } from "@/types/live";
+import type { StaticContentPage } from "@/types/content-view";
 
-export const FALLBACK_PAGES: Record<string, Record<Lang, LiveStaticPage>> = {
+export const FALLBACK_PAGES: Record<string, Record<Lang, StaticContentPage>> = {
   faq: {
     en: {
       title: "Frequently Asked Questions",
@@ -652,7 +652,7 @@ export const FALLBACK_PAGES: Record<string, Record<Lang, LiveStaticPage>> = {
  * Get fallback content for a static page path.
  * Paths like "/en/privacy_policy/" -> returns fallback privacy policy content.
  */
-export function getFallbackPage(path: string, lang: Lang): LiveStaticPage | null {
+export function getFallbackPage(path: string, lang: Lang): StaticContentPage | null {
   // Extract page type from path: "/en/privacy_policy/" -> "privacy_policy"
   const match = path.match(/\/(?:en|ar)\/([a-z_]+)\/?$/);
   if (!match) return null;

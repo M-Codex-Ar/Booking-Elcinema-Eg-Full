@@ -1,17 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getLineupIndexFn } from "@/features/live/live.functions";
 import { managedLists, managedRef } from "@/features/content/content";
 import { managedContentOptions } from "@/features/content/content.options";
 import type { Lang } from "@/types/home";
-import { asLang } from "@/i18n";
+import { asLang, makeT, rowTitle } from "@/i18n";
 import { LineupIndexRoute } from "@/pages/Lineup";
 
 const lineupOptions = (lang: Lang) =>
   queryOptions({
-    queryKey: ["elcinema-lineup", lang],
-    queryFn: () => getLineupIndexFn({ data: { lang } }),
-    staleTime: 10 * 60 * 1000,
+    queryKey: ["managed-lineup-index", lang],
+    queryFn: () => ({ data: { title: "", lists: [] }, error: null }),
   });
 
 export const Route = createFileRoute("/$lang/lineup/")({
@@ -26,7 +24,10 @@ export const Route = createFileRoute("/$lang/lineup/")({
   head: () => ({
     meta: [
       { title: "Featured Lists | elCinema" },
-      { name: "description", content: "Curated movies and series lists by the elCinema editors." },
+      {
+        name: "description",
+        content: "Curated movies and series lists by the elCinema editors.",
+      },
       { property: "og:title", content: "Featured Lists | elCinema" },
       {
         property: "og:description",
@@ -41,19 +42,27 @@ export const Route = createFileRoute("/$lang/lineup/")({
 function LineupRouteComponent() {
   const { lang } = Route.useParams();
   const l = asLang(lang);
+  const t = makeT(l);
   const result = useSuspenseQuery(lineupOptions(l)).data;
   const managed = useSuspenseQuery(managedContentOptions).data;
-  const extra = managedLists(managed).map((r) => ({
-    id: managedRef(r),
-    title: l === "ar" ? r.title_ar || r.title_en : r.title_en,
-    cover: null as string | null,
-  }));
+  const extra = [
+    { id: "local-now", title: t("now.title"), cover: null },
+    { id: "local-soon", title: t("soon.title"), cover: null },
+    ...managedLists(managed).map((r) => ({
+      id: managedRef(r),
+      title: rowTitle(r, l),
+      cover: null as string | null,
+    })),
+  ];
   if (result.error || !result.data) {
     return <LineupIndexRoute result={result} lang={l} />;
   }
   return (
     <LineupIndexRoute
-      result={{ data: { ...result.data, lists: [...result.data.lists, ...extra] }, error: null }}
+      result={{
+        data: { ...result.data, lists: [...result.data.lists, ...extra] },
+        error: null,
+      }}
       lang={l}
     />
   );

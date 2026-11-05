@@ -49,11 +49,7 @@ export const CinemasRegionMarquee = memo(function CinemasRegionMarquee({
           const countryTitle = t(`cinemasCountry.${c.code}` as CopyKey);
           const chains = t(`cinemasCountry.${c.code}.chains` as CopyKey);
           const tag = t(`cinemasCountry.${c.code}.tag` as CopyKey);
-          const link = cardLink(
-            lang,
-            `https://elcinema.com/${lang}/theater/${c.theaterId}/`,
-            countryTitle,
-          );
+          const link = cardLink(lang, `/${lang}/theater/${c.theaterId}/`, countryTitle);
 
           return (
             <a

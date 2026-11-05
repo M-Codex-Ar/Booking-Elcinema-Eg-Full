@@ -1,31 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVodGuideFn } from "@/features/live/live.functions";
-import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { MOVIES } from "@/lib/data";
 import type { Lang } from "@/types/home";
 import { asLang } from "@/i18n";
 import { WatchOnlineRoute } from "@/pages/WatchOnline";
 
 const vodOptions = (lang: Lang) =>
   queryOptions({
-    queryKey: ["elcinema-vod-guide", lang],
-    queryFn: () => getVodGuideFn({ data: { lang } }),
-    staleTime: 10 * 60 * 1000,
+    queryKey: ["local-vod-guide", lang],
+    queryFn: () => {
+      const names = new Set(MOVIES.flatMap((movie) => movie.vod.map((vod) => vod.label)));
+      return {
+        data: {
+          title: lang === "ar" ? "دليل المشاهدة أونلاين" : "Watch online guide",
+          platforms: [...names].map((name) => ({
+            id: name,
+            name,
+            img: null,
+            cats: [],
+          })),
+        },
+        error: null,
+      };
+    },
   });
-
-const homeOptions = queryOptions({
-  queryKey: ["elcinema-home"],
-  queryFn: () => getElcinemaHomeFn(),
-  staleTime: 5 * 60 * 1000,
-});
 
 export const Route = createFileRoute("/$lang/vod")({
   loader: ({ context, params }) => {
     const lang = asLang(params.lang);
-    return Promise.all([
-      context.queryClient.ensureQueryData(vodOptions(lang)),
-      context.queryClient.ensureQueryData(homeOptions),
-    ]);
+    return context.queryClient.ensureQueryData(vodOptions(lang));
   },
   component: VodRouteComponent,
   errorComponent: ({ error }) => (

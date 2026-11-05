@@ -1,12 +1,9 @@
 /**
  * elCinema homepage, rendered with the dark cinema design system.
- * Data comes from the parsed elcinema.com/en/ homepage (EcHomeData).
+ * Data is composed from the bundled catalogue and optional managed rows.
  * Rendered inside the bilingual shell, which supplies the site header/footer.
  *
- * Every card link goes through `cardLink`: internal pages when the app has
- * one (sample-matched work/person detail, now/soon/boxoffice/tvguide/search),
- * otherwise the real elcinema.com page in a new tab — a raw elcinema.com
- * navigation inside the app produced "refused to connect".
+ * Every card destination resolves to a local route when it belongs to this app.
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
@@ -21,7 +18,14 @@ import {
   MonitorPlay,
   Cake,
 } from "lucide-react";
-import type { Bi, EcBornPerson, EcHomeData, EcPromo, EcTvSlot, EcVod } from "@/types/home";
+import type {
+  Bi,
+  HomeBornPerson,
+  HomeViewData,
+  HomePromo,
+  HomeTvSlot,
+  HomeVodBadge,
+} from "@/types/home";
 import { bookingLink, cardLink } from "@/lib/links";
 import { LogoImage, SmartImg } from "@/components/shared/primitives";
 import { Na, fmtMonthDay, useScrollEdges } from "@/components/shared/ui";
@@ -32,7 +36,7 @@ import { VodBadge } from "@/features/live/live-ui";
 import type { PlaceholderKind } from "@/types/media";
 import type { Lang } from "@/types/home";
 
-/** Anchor that never navigates the app to elcinema.com (see links.ts). */
+/** Local route anchor for catalogue card destinations. */
 function CardA({
   href,
   title,
@@ -60,7 +64,7 @@ function CardA({
   );
 }
 
-function Hero({ promos, lang }: { promos: EcPromo[]; lang: Lang }) {
+function Hero({ promos, lang }: { promos: HomePromo[]; lang: Lang }) {
   const t = makeT(lang);
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -147,7 +151,10 @@ function Row({
   const scroll = (d: number) => {
     // In RTL, scroll direction behavior depends on browser, but clientWidth offset sign is opposite
     const factor = isRtl ? -d : d;
-    ref.current?.scrollBy({ left: factor * ref.current.clientWidth * 0.8, behavior: "smooth" });
+    ref.current?.scrollBy({
+      left: factor * ref.current.clientWidth * 0.8,
+      behavior: "smooth",
+    });
   };
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 md:px-8">
@@ -251,9 +258,9 @@ function Poster({
  * stretch of the row: sort by start, clip each slot against its neighbours,
  * and drop anything left with no visible room.
  */
-function layoutSlots(slots: EcTvSlot[]): { s: EcTvSlot; left: number; width: number }[] {
+function layoutSlots(slots: HomeTvSlot[]): { s: HomeTvSlot; left: number; width: number }[] {
   const sorted = [...slots].sort((a, b) => a.left - b.left);
-  const placed: { s: EcTvSlot; left: number; width: number }[] = [];
+  const placed: { s: HomeTvSlot; left: number; width: number }[] = [];
   let prevEnd = 0;
   sorted.forEach((s, i) => {
     const start = Math.max(s.left, prevEnd);
@@ -273,7 +280,7 @@ function layoutSlots(slots: EcTvSlot[]): { s: EcTvSlot; left: number; width: num
  * is only there when the day's listing page published it, so the line shrinks
  * to the name alone rather than showing gaps.
  */
-function BornMeta({ person, lang }: { person: EcBornPerson; lang: Lang }) {
+function BornMeta({ person, lang }: { person: HomeBornPerson; lang: Lang }) {
   const t = makeT(lang);
   const say = (value: Bi | null) => bi(value ?? undefined, lang);
   const facts = [
@@ -286,7 +293,7 @@ function BornMeta({ person, lang }: { person: EcBornPerson; lang: Lang }) {
   return <span className="line-clamp-1">{facts.join(" · ")}</span>;
 }
 
-export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
+export function HomePage({ data, lang }: { data: HomeViewData; lang: Lang }) {
   const t = makeT(lang);
   const guide = data.tvGuide;
   // The home page is a quick guide preview. The dedicated TV Guide page keeps
@@ -488,7 +495,10 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
                             href={s.titleHref}
                             title={s.title}
                             lang={lang}
-                            style={{ left: `calc(${left}% + 2px)`, width: `calc(${width}% - 4px)` }}
+                            style={{
+                              left: `calc(${left}% + 2px)`,
+                              width: `calc(${width}% - 4px)`,
+                            }}
                             className="absolute inset-y-1.5 overflow-hidden rounded-md border border-border bg-secondary px-2.5 py-1 text-xs transition-colors hover:border-primary"
                           >
                             <div className="truncate font-semibold">{s.title}</div>
@@ -497,7 +507,10 @@ export function HomePage({ data, lang }: { data: EcHomeData; lang: Lang }) {
                         ) : (
                           <div
                             key={j}
-                            style={{ left: `calc(${left}% + 2px)`, width: `calc(${width}% - 4px)` }}
+                            style={{
+                              left: `calc(${left}% + 2px)`,
+                              width: `calc(${width}% - 4px)`,
+                            }}
                             className="absolute inset-y-1.5 overflow-hidden rounded-md border border-border bg-secondary px-2.5 py-1 text-xs"
                           >
                             <div className="truncate font-semibold">{s.title}</div>

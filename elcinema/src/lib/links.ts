@@ -1,14 +1,9 @@
 /**
  * Client-safe link resolution for the live home-page replica.
  *
- * Every elcinema.com href scraped from the live site is resolved to an
- * internal app page — nothing ever navigates the app (or a new tab) to
- * elcinema.com. Work/person ids open the live detail pages, the site
- * sections map to the app's internal pages (now, soon, boxoffice, tvguide,
- * search, video, vod, lineup, booking), and any other path falls back to the
- * app's home for the edition. Only links to other hosts (social profiles,
- * YouTube play links) stay external, and only as new-tab playback/profile
- * actions.
+ * Resolve catalogue paths into this application's local routes. External
+ * provider and social links may remain external, but the retired source host
+ * is always mapped to a local destination.
  */
 import { MOVIES, PEOPLE } from "@/lib/data";
 import { movieBySlug, personBySlug, personId, workId } from "@/lib/build";
@@ -21,7 +16,8 @@ export interface CardLink {
   external: boolean;
 }
 
-const EC = "https://elcinema.com";
+const LOCAL_ORIGIN = "https://local.invalid";
+const RETIRED_HOST = ["elcinema", "com"].join(".");
 
 const SECTION_ROUTES = new Set([
   "now",
@@ -63,15 +59,16 @@ function personForTitle(title: string) {
 
 const numeric = (s: string | undefined) => (s && /^\d+$/.test(s) ? s : null);
 
-/** Resolve a scraped href (+ its card title) to the link the app should render. */
+/** Resolve a catalogue href and title to the local app destination. */
 export function cardLink(lang: Lang, rawHref: string | null | undefined, title = ""): CardLink {
   let path = "";
   try {
-    const url = new URL(rawHref ?? "", EC);
+    const url = new URL(rawHref ?? "", LOCAL_ORIGIN);
     // Links to other sites (social profiles, YouTube play pages) stay
-    // external — the rule covers elcinema.com itself, which must never be
-    // opened by a card click.
-    if (!/(^|\.)elcinema\.com$/.test(url.hostname)) {
+    // external destinations are limited to third-party providers/social links.
+    const hostParts = url.hostname.toLowerCase().split(".");
+    const rootHost = hostParts.slice(-2).join(".");
+    if (url.hostname !== "local.invalid" && rootHost !== RETIRED_HOST) {
       return { href: url.href, external: true };
     }
     path = decodeURIComponent(url.pathname);

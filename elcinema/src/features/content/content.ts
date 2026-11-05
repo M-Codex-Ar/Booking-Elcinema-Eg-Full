@@ -19,15 +19,18 @@ import type {
   TvGuide,
   ChannelCategory,
   Lang,
-  EcHomeData,
-  EcMovie,
-  EcVideo,
-  EcListRow,
-  EcBoxofficeRow,
-  EcTvLine,
-  EcTvSlot,
+  HomeViewData,
+  HomePromo,
+  HomeWatchOnlineItem,
+  HomeTvGuide,
+  HomeMovieCard,
+  HomeListRow,
+  HomeBoxofficeCard,
+  HomeTvLine,
+  HomeTvSlot,
 } from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
+import { makeT } from "@/i18n";
 
 export type ManagedMovieRow = Record<string, unknown> & {
   id: string;
@@ -165,6 +168,7 @@ export function managedPersonToPerson(row: ManagedPersonRow): Person {
 }
 
 import { normalizeTitleForComparison } from "@/lib/normalize";
+import { toArtworkUrl } from "@/types/media";
 
 const rows = <T>(list: Record<string, unknown>[] | undefined) => (list ?? []) as unknown as T[];
 
@@ -279,17 +283,17 @@ export function mergedBoxoffice(m: ManagedContent | null): BoxofficeEntry[] {
     weeklyEgp: Number(r.weekly_egp) || 0,
     totalEgp: Number(r.total_egp) || 0,
   }));
-  // Managed rows lead so an operator-corrected entry overrides the scraped one.
+  // Managed rows lead so an operator-corrected entry overrides catalogue data.
   return dedupeByTitle([...extra, ...staticBoxoffice], (b) => b.title.en);
 }
 
 /** TV guide: built-in grid + one line per managed channel with its programs. */
 export function mergedTvGuide(m: ManagedContent | null): TvGuide {
-  const scrapedNames = new Set(tvGuide.lines.map((l) => normTitle(l.channel.name.en)));
+  const builtInNames = new Set(tvGuide.lines.map((l) => normTitle(l.channel.name.en)));
   const seenNames = new Set<string>();
   const channels = managedChannels(m).filter((ch) => {
     const k = normTitle(ch.name_en || ch.name_ar);
-    if (!k || scrapedNames.has(k) || seenNames.has(k)) return false;
+    if (!k || builtInNames.has(k) || seenNames.has(k)) return false;
     seenNames.add(k);
     return true;
   });
@@ -367,145 +371,105 @@ export function managedPersonById(m: ManagedContent | null): Map<string, Person>
   return new Map(managedPeople(m).map((r) => [managedRef(r), managedPersonToPerson(r)]));
 }
 
-/** Homepage: weave managed content into the scraped home data.
- * Managed entries lead their rows and duplicate scraped cards are dropped,
- * so anything the operator adds is visible immediately and never shown twice. */
-export function mergedHomeData(data: EcHomeData, m: ManagedContent | null, lang: Lang): EcHomeData {
-  const t = (en: string, ar: string) => (lang === "ar" ? ar || en : en);
-  const pickMovie = (title: string) =>
-    managedMovies(m).find(
-      (mm) =>
-        normTitle(mm.title_en) === normTitle(title) || normTitle(mm.title_ar) === normTitle(title),
-    );
-
-  const movies: EcMovie[] = dedupeByTitle(
-    [
-      ...managedMovies(m)
-        .filter((r) => r.status !== "soon")
-        .map(managedMovieToMovie)
-        .map((mv): EcMovie => ({
-          href: `/${lang}/work/${mv.id}`,
-          img: movieArt(mv),
-          title: t(mv.title.en, mv.title.ar),
-          bookingHref: null,
-        })),
-      ...data.movies,
-    ],
-    (x) => x.title,
-  );
-
-  const videos: EcVideo[] = dedupeByTitle(
-    [
-      ...managedVideos(m).map((v): EcVideo => ({
-        href: v.url,
-        img: v.thumb_url,
-        title: t(v.title_en, v.title_ar),
-        duration: v.duration || null,
-      })),
-      ...data.videos,
-    ],
-    (x) => x.title,
-  );
-
-  const boxoffice: EcBoxofficeRow[] = dedupeByTitle(
-    [
-      ...managedBoxofficeRows(m).map((r): EcBoxofficeRow => {
-        const movie = pickMovie(r.title_en) ?? pickMovie(r.title_ar);
-        const weekly = Number(r.weekly_egp) || 0;
-        return {
-          href: movie ? `/${lang}/work/${managedRef(movie)}` : `/${lang}/boxoffice`,
-          title: t(r.title_en, r.title_ar),
-          img: movie?.poster_url ?? null,
-          revenue:
-            weekly >= 1_000_000 ? `${(weekly / 1_000_000).toFixed(1)}M EGP` : `${weekly} EGP`,
-        };
-      }),
-      ...data.boxoffice,
-    ],
-    (x) => x.title,
-  );
-
-  const lists: EcListRow[] = dedupeByTitle(
-    [
-      ...managedLists(m).map((l): EcListRow => ({
-        href: `/${lang}/lineup/m-${l.id}`,
-        title: t(l.title_en, l.title_ar),
-      })),
-      ...data.lists,
-    ],
-    (x) => x.title,
-  );
-
-  // Managed channels join the home TV-guide timeline. Slot positions are
-  // percentages of the scraped hour window (first label = window start).
-  let tvGuideData = data.tvGuide;
-  const channels = managedChannels(m);
-  const firstLabel = data.tvGuide.times[0];
-  const windowStart = firstLabel ? parseHourLabel(firstLabel) : null;
-  if (channels.length > 0 && windowStart !== null) {
-    // Label spacing varies by source (hourly or half-hour); infer it.
-    const second = parseHourLabel(data.tvGuide.times[1] ?? "");
-    const step = second !== null && second > windowStart ? second - windowStart : 60;
-    const span = Math.max(data.tvGuide.times.length, 1) * step;
-    const scraped = new Set(data.tvGuide.lines.map((l) => normTitle(l.channelName)));
-    const seen = new Set<string>();
-    const fmt = (mins: number) =>
-      `${String(Math.floor(mins / 60) % 24).padStart(2, "0")}:${String(Math.round(mins % 60)).padStart(2, "0")}`;
-    const lines: EcTvLine[] = channels
-      .filter((ch) => {
-        const k = normTitle(t(ch.name_en, ch.name_ar));
-        if (!k || scraped.has(k) || seen.has(k)) return false;
-        seen.add(k);
-        return true;
-      })
-      .map((ch) => ({
-        channelImg: ch.logo_url,
-        channelName: t(ch.name_en, ch.name_ar),
-        channelHref: "/tvguide",
-        slots: managedPrograms(m)
-          .filter((prog) => prog.channel_id === ch.id)
-          .sort((a, b) => a.start_min - b.start_min)
-          .flatMap((prog): EcTvSlot[] => {
-            const left = ((prog.start_min - windowStart) / span) * 100;
-            const right = ((prog.end_min - windowStart) / span) * 100;
-            if (right <= 0 || left >= 100) return [];
-            const clipL = Math.max(0, left);
-            const clipR = Math.min(100, right);
-            if (clipR - clipL < 2) return [];
-            return [
-              {
-                title: t(prog.title_en, prog.title_ar),
-                titleHref: null,
-                meta: "",
-                time: `${fmt(prog.start_min)} - ${fmt(prog.end_min)}`,
-                width: clipR - clipL,
-                left: clipL,
-                unclickable: true,
-                category: null,
-              },
-            ];
-          }),
-      }))
-      .filter((l) => l.slots.length > 0);
-    if (lines.length > 0)
-      tvGuideData = { ...data.tvGuide, lines: [...data.tvGuide.lines, ...lines] };
-  }
-
-  return { ...data, movies, videos, boxoffice, lists, tvGuide: tvGuideData };
+/** Dashboard videos addressed by their stable local public reference. */
+export function managedVideoById(m: ManagedContent | null): Map<string, ManagedVideoRow> {
+  return new Map(managedVideos(m).map((row) => [managedRef(row), row]));
 }
 
-/** "20:00" or "11:30 AM" -> minutes since midnight, or null when unparsable. */
-function parseHourLabel(label: string): number | null {
-  const match = /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i.exec(label.trim());
-  if (!match) return null;
-  let h = Number(match[1]);
-  const ap = match[3]?.toUpperCase();
-  if (ap === "PM" && h < 12) h += 12;
-  if (ap === "AM" && h === 12) h = 0;
-  return h * 60 + Number(match[2]);
+/** Homepage view model built only from the bundled catalogue and managed rows. */
+export function mergedHomeData(m: ManagedContent | null, lang: Lang): HomeViewData {
+  const t = (en: string, ar: string) => (lang === "ar" ? ar || en : en);
+  const copy = makeT(lang);
+  const movies: HomeMovieCard[] = mergedNowPlaying(m).map((movie) => ({
+    href: `/${lang}/work/${movie.id}`,
+    img: movieArt(movie),
+    title: t(movie.title.en, movie.title.ar),
+    bookingHref: movie.showtimes.length ? `/${lang}/booking/${movie.id}` : null,
+  }));
+  const promos: HomePromo[] = movies.slice(0, 5).map((movie) => ({
+    href: movie.href,
+    img: movie.img,
+    title: movie.title,
+    button: "",
+  }));
+  const watchOnline: HomeWatchOnlineItem[] = allMovies(m)
+    .filter((movie) => movie.vod.length > 0)
+    .map((movie) => ({
+      href: `/${lang}/work/${movie.id}`,
+      img: movieArt(movie),
+      title: t(movie.title.en, movie.title.ar),
+      meta: movie.year,
+      vod: movie.vod[0] ? { href: movie.vod[0].href, img: null, label: movie.vod[0].label } : null,
+    }));
+  const guide = mergedTvGuide(m);
+  const formatTime = (minutes: number) =>
+    `${String(Math.floor(minutes / 60) % 24).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+  const tvGuideData: HomeTvGuide = {
+    times: guide.times.map(formatTime),
+    lines: guide.lines.map((line) => ({
+      channelImg: line.channel.img,
+      channelName: t(line.channel.name.en, line.channel.name.ar),
+      channelHref: `/${lang}/tvguide`,
+      slots: line.slots.map((slot) => {
+        const span = Math.max(guide.to - guide.from, 1);
+        return {
+          title: t(slot.title.en, slot.title.ar),
+          titleHref: slot.href ? `/${lang}/work/${slot.href}` : null,
+          meta: slot.meta,
+          time: `${formatTime(slot.start)} - ${formatTime(slot.end)}`,
+          width: ((slot.end - slot.start) / span) * 100,
+          left: ((slot.start - guide.from) / span) * 100,
+          unclickable: !slot.href,
+          category: null,
+        };
+      }),
+    })),
+  };
+  const boxoffice: HomeBoxofficeCard[] = mergedBoxoffice(m).map((row) => {
+    const movie = allMovies(m).find(
+      (item) =>
+        item.id === row.slug ||
+        normTitle(item.title.en) === normTitle(row.title.en) ||
+        normTitle(item.title.ar) === normTitle(row.title.ar),
+    );
+    const weekly = row.weeklyEgp;
+    return {
+      href: movie ? `/${lang}/work/${movie.id}` : `/${lang}/boxoffice`,
+      title: t(row.title.en, row.title.ar),
+      img: movie ? movieArt(movie) : null,
+      revenue: weekly >= 1_000_000 ? `${(weekly / 1_000_000).toFixed(1)}M EGP` : `${weekly} EGP`,
+    };
+  });
+  const lists: HomeListRow[] = [
+    { href: `/${lang}/lineup/local-now`, title: copy("now.title") },
+    { href: `/${lang}/lineup/local-soon`, title: copy("soon.title") },
+    ...managedLists(m).map((list) => ({
+      href: `/${lang}/lineup/${managedRef(list)}`,
+      title: t(list.title_en, list.title_ar),
+    })),
+  ];
+  return {
+    promos,
+    movies,
+    watchOnline,
+    tvSummary: [],
+    tvGuide: tvGuideData,
+    videos: managedVideos(m).map((video) => ({
+      href: `/${lang}/video/m-${video.id}`,
+      img: video.thumb_url,
+      title: t(video.title_en, video.title_ar),
+      duration: video.duration || null,
+    })),
+    bornToday: { date: "", dateKey: "", href: `/${lang}/person`, people: [] },
+    lists,
+    boxofficeDate: "",
+    boxoffice,
+  };
 }
 
 /** Direct URL for a movie's artwork (absolute poster URLs pass through). */
 export function movieArt(movie: Movie): string {
-  return movie.poster && /^https?:\/\//.test(movie.poster) ? movie.poster : posterUrl(movie);
+  return movie.poster && /^https?:\/\//.test(movie.poster)
+    ? (toArtworkUrl(movie.poster, "") ?? posterUrl(movie))
+    : posterUrl(movie);
 }

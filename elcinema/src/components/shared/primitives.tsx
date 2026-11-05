@@ -238,7 +238,10 @@ export function useArtwork(
 ): { src: string | undefined; failed: boolean; onError: () => void } {
   const sources = artworkSources(src, fallback);
   const first = sources[0];
-  const [state, setState] = useState<{ first: string | undefined; index: number }>({
+  const [state, setState] = useState<{
+    first: string | undefined;
+    index: number;
+  }>({
     first,
     index: 0,
   });
@@ -254,7 +257,7 @@ export function useArtwork(
 /**
  * The only `<img>` the app needs when a designed fallback is not available:
  * never an empty `src`, never a dead hotlink. Sources are tried in order —
- * typically the local mirror, then the scraped URL — and an exhausted chain
+ * typically the local artwork key, then approved managed media — and an exhausted chain
  * renders the shipped placeholder for that aspect, so a missing poster reads as
  * intentional artwork instead of a browser broken-image icon.
  */

@@ -25,9 +25,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 /**
- * Wordmarks served first-party from `public/images/brand/` (mirrored by
- * `scripts/mirror-artwork.mjs --kinds=logos`) instead of hotlinking
- * cdn.elcinema.com, so a renamed asset hash or a referrer rule can never blank
+ * Wordmarks served first-party from `public/images/brand/`, so an upstream
+ * rename or referrer rule can never blank
  * the header. `SmartImg` still draws the placeholder wordmark if the file is
  * missing.
  */
@@ -106,7 +105,10 @@ export function SiteHeader({ lang }: { lang: Lang }) {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    void navigate({ to: `/${lang}/search` as never, search: { q: query.trim() } as never });
+    void navigate({
+      to: `/${lang}/search` as never,
+      search: { q: query.trim() } as never,
+    });
   };
   // /en/work/x -> /ar/work/x ; keep the rest of the path intact.
   const nextLanguage = otherLang(lang);

@@ -51,8 +51,16 @@ function movieCols(lang: Lang): Col<Movie>[] {
       label: L(lang, "Genres", "النوع"),
       value: (m) => m.genres.map((g) => GENRES[g]?.[lang] ?? g).join(", "),
     },
-    { key: "director", label: L(lang, "Director", "المخرج"), value: (m) => m.director[lang] },
-    { key: "release", label: L(lang, "Release", "العرض"), value: (m) => m.release },
+    {
+      key: "director",
+      label: L(lang, "Director", "المخرج"),
+      value: (m) => m.director[lang],
+    },
+    {
+      key: "release",
+      label: L(lang, "Release", "العرض"),
+      value: (m) => m.release,
+    },
     {
       key: "rating",
       label: L(lang, "Rating", "التقييم"),
@@ -96,8 +104,16 @@ export function PeopleSection({ lang }: { lang: Lang }) {
             </div>
           ),
         },
-        { key: "role", label: L(lang, "Role", "الدور"), value: (p) => p.role[lang] },
-        { key: "works", label: L(lang, "Works", "الأعمال"), value: (p) => p.knownFor.length },
+        {
+          key: "role",
+          label: L(lang, "Role", "الدور"),
+          value: (p) => p.role[lang],
+        },
+        {
+          key: "works",
+          label: L(lang, "Works", "الأعمال"),
+          value: (p) => p.knownFor.length,
+        },
         {
           key: "link",
           label: "",
@@ -167,8 +183,16 @@ export function ChannelsSection({ lang }: { lang: Lang }) {
             </div>
           ),
         },
-        { key: "cat", label: L(lang, "Category", "الفئة"), value: (c) => c.category },
-        { key: "count", label: L(lang, "Programs", "البرامج"), value: (c) => c.slots.length },
+        {
+          key: "cat",
+          label: L(lang, "Category", "الفئة"),
+          value: (c) => c.category,
+        },
+        {
+          key: "count",
+          label: L(lang, "Programs", "البرامج"),
+          value: (c) => c.slots.length,
+        },
         {
           key: "next",
           label: L(lang, "First program", "أول برنامج"),
@@ -181,7 +205,7 @@ export function ChannelsSection({ lang }: { lang: Lang }) {
   );
 }
 
-/** Sections that show live data from elcinema.com: link out to the site pages. */
+/** Dashboard shortcuts to public pages rendered from local and managed content. */
 export function LiveSection({
   lang,
   seg,

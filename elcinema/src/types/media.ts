@@ -1,8 +1,8 @@
 /**
- * Media rules shared by the scraper (server) and the UI (client).
+ * Media URL rules shared by local catalogue data and the UI.
  *
  * Two jobs, one place: deciding what an image reference *means* (absolute URL,
- * lazy attribute, dead placeholder) and deciding what the app shows when a
+ * lazy attribute, retired source URL, or placeholder) and deciding what the app shows when a
  * reference cannot be honoured (a shipped placeholder asset). Nothing here
  * touches the network, so both `*.server.ts` parsers and React components can
  * import it without dragging server code into the bundle.
@@ -25,37 +25,42 @@ export type PlaceholderKind = keyof typeof PLACEHOLDER;
  */
 const PREVIEW_ONLY = "/__l5e/";
 
-/** elcinema's own "no photo" images: not artwork, so never render them. */
+/** Known blank and tracking images are not artwork. */
 const BLANK_ART =
   /(blank_photos|blank[-_]?(photo|image)|spacer\.gif|pixel\.(gif|png)|1x1\.|no_(image|photo))/i;
 
-/** elcinema hosts whose artwork we hotlink and mirror. */
-export const ARTWORK_HOSTS = [
-  "cdn.elcinema.com",
-  "media0106.elcinema.com",
-  "elcinema.com",
-] as const;
+const RETIRED_HOST = ["elcinema", "com"].join(".");
+
+export function isRetiredSourceUrl(value: string): boolean {
+  try {
+    const host = new URL(value).hostname.toLowerCase().split(".");
+    return host.slice(-2).join(".") === RETIRED_HOST;
+  } catch {
+    return false;
+  }
+}
 
 /** Absolute `http(s)` URL? */
 export const isAbsoluteUrl = (value: string): boolean => /^https?:\/\//i.test(value);
 
 /**
- * Normalise a scraped reference into something a browser can load.
- * Returns `null` for empty values, site-root links that some carousels park in
- * `src`, preview-only asset URLs and elcinema's blank-photo placeholders.
+ * Normalise a catalogue or managed-media reference into a browser-safe URL.
+ * Returns `null` for empty values, site-root links, preview-only assets,
+ * retired source URLs, and blank-photo placeholders.
  */
 export function toArtworkUrl(src: string | null | undefined, base: string): string | null {
   if (!src) return null;
-  const value = src.trim();
+  let value = src.trim();
   if (!value || value === "/" || value === `${base}/`) return null;
   if (value.startsWith(PREVIEW_ONLY)) return null;
+  if (value.startsWith("//")) value = `https:${value}`;
   if (BLANK_ART.test(value)) return null;
+  if (isRetiredSourceUrl(value)) return null;
   if (isAbsoluteUrl(value)) return value;
-  if (value.startsWith("//")) return `https:${value}`;
   return `${base}${value.startsWith("/") ? "" : "/"}${value}`;
 }
 
-/** Minimal structural view of a cheerio `<img>` wrapper — no cheerio import needed. */
+/** Minimal structural view of an image element. */
 export interface ImgElement {
   attr(name: string): string | undefined;
 }

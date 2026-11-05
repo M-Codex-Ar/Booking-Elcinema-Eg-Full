@@ -20,8 +20,7 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     // Pre-fetch the destination route's loader (and its query cache) on
-    // hover/focus — navigations land on cached data instead of waiting for a
-    // live scrape. Route-level options can raise staleTime further.
+    // hover/focus — navigations can reuse cached local and managed data.
     defaultPreload: "intent",
     defaultPreloadStaleTime: 5 * 60 * 1000,
     // Branded shell + spinner instead of a frozen page when a cold route

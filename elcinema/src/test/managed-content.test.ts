@@ -15,7 +15,6 @@ import {
 } from "@/features/content/content";
 import { tvGuide } from "@/lib/build";
 import { knownGenreKeys } from "@/lib/genres";
-import type { EcHomeData } from "@/types/home";
 import type { ManagedContent } from "@/features/content/content.functions";
 
 const empty: ManagedContent = {
@@ -78,7 +77,10 @@ describe("managed content merge", () => {
     const staticCount = mergedNowPlaying(empty).length;
     expect(staticCount).toBeGreaterThan(0);
     const nowRow = { ...movieRow, status: "now" };
-    const merged = mergedNowPlaying({ ...empty, movies: [nowRow] } as unknown as ManagedContent);
+    const merged = mergedNowPlaying({
+      ...empty,
+      movies: [nowRow],
+    } as unknown as ManagedContent);
     expect(merged.length).toBe(staticCount + 1);
     expect(merged[0]!.id).toBe("m-abc-123");
     expect(merged.at(-1)!.id).not.toBe("m-abc-123");
@@ -92,7 +94,10 @@ describe("managed content merge", () => {
       weekly_egp: 1500000,
       total_egp: 3000000,
     };
-    const merged = mergedBoxoffice({ ...empty, boxoffice: [row] } as unknown as ManagedContent);
+    const merged = mergedBoxoffice({
+      ...empty,
+      boxoffice: [row],
+    } as unknown as ManagedContent);
     expect(merged[0]!.title.en).toBe("Indie Hit"); // managed rows lead
     expect(merged[0]!.weeklyEgp).toBe(1500000);
     expect(merged[0]!.slug).toBeNull();
@@ -129,16 +134,22 @@ describe("managed content merge", () => {
     } as unknown as ManagedContent);
     expect(results.some((r) => r.type === "person" && r.id === "m-p-1")).toBe(true);
     expect(
-      mergedSearch("test", { ...empty, movies: [movieRow] } as ManagedContent).some(
-        (r) => r.type === "movie" && r.id === "m-abc-123",
-      ),
+      mergedSearch("test", {
+        ...empty,
+        movies: [movieRow],
+      } as ManagedContent).some((r) => r.type === "movie" && r.id === "m-abc-123"),
     ).toBe(true);
   });
 });
 
 describe("duplicate rules", () => {
   const scrapedChannel = tvGuide.lines[0]!.channel.name.en;
-  const dupeRow = { ...movieRow, title_en: "Clayface", title_ar: "", status: "now" } as never;
+  const dupeRow = {
+    ...movieRow,
+    title_en: "Clayface",
+    title_ar: "",
+    status: "now",
+  } as never;
 
   it("a managed movie duplicating a built-in title appears once, as the managed entry", () => {
     const merged = mergedNowPlaying({
@@ -151,7 +162,10 @@ describe("duplicate rules", () => {
   });
 
   it("allMovies keeps the managed (DB) entry when a managed movie copies its title", () => {
-    const list = allMovies({ ...empty, movies: [dupeRow] } as unknown as ManagedContent);
+    const list = allMovies({
+      ...empty,
+      movies: [dupeRow],
+    } as unknown as ManagedContent);
     const clay = list.filter((mv) => mv.title.en.toLowerCase() === "clayface");
     expect(clay).toHaveLength(1);
     expect(clay[0]!.id).toBe("m-abc-123");
@@ -163,7 +177,13 @@ describe("duplicate rules", () => {
     const merged = mergedBoxoffice({
       ...empty,
       boxoffice: [
-        { id: "bo-x", title_en: "Clayface", title_ar: "", weekly_egp: 999, total_egp: 1000 },
+        {
+          id: "bo-x",
+          title_en: "Clayface",
+          title_ar: "",
+          weekly_egp: 999,
+          total_egp: 1000,
+        },
       ],
     } as unknown as ManagedContent);
     const clay = merged.filter((b) => b.title.en.toLowerCase() === "clayface");
@@ -214,30 +234,19 @@ describe("duplicate rules", () => {
     expect(results).toHaveLength(2);
   });
 
-  it("the homepage leads rows with managed content and drops duplicate scraped cards", () => {
-    const home: EcHomeData = {
-      promos: [],
-      watchOnline: [],
-      tvSummary: [],
-      movies: [{ href: "/en/work/1", img: null, title: "Clayface", bookingHref: null }],
-      videos: [
-        { href: "https://youtu.be/x", img: null, title: "Official Trailer", duration: null },
-      ],
-      lists: [{ href: "/en/lineup/5", title: "Editor picks this month" }],
-      boxoffice: [
-        { href: "/en/boxoffice", title: "Desert Horizon", img: null, revenue: "2.0M EGP" },
-      ],
-      tvGuide: { times: ["11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM"], lines: [] },
-      bornToday: { date: "", dateKey: "", href: "", people: [] },
-      boxofficeDate: "",
-    };
+  it("builds homepage rows from catalogue data and managed content", () => {
     const merged = mergedHomeData(
-      home,
       {
         ...empty,
         movies: [
           { ...movieRow, status: "now" },
-          { ...movieRow, id: "dz", title_en: "Desert Horizon", title_ar: "", status: "soon" },
+          {
+            ...movieRow,
+            id: "dz",
+            title_en: "Desert Horizon",
+            title_ar: "",
+            status: "soon",
+          },
         ] as never,
         boxoffice: [
           {
@@ -259,7 +268,12 @@ describe("duplicate rules", () => {
           },
         ] as never,
         lists: [
-          { id: "l-1", title_en: "Editor picks this month", title_ar: "", items: [] },
+          {
+            id: "l-1",
+            title_en: "Editor picks this month",
+            title_ar: "",
+            items: [],
+          },
         ] as never,
         channels: [{ ...channelRow }] as never,
         programs: [{ ...programRow, start_min: 690, end_min: 750 }] as never, // 11:30-12:30 inside the window
@@ -268,12 +282,13 @@ describe("duplicate rules", () => {
     );
     expect(merged.movies[0]!.title).toBe("Test Movie"); // managed now-movie leads
     expect(merged.movies.filter((mv) => mv.title === "Clayface")).toHaveLength(1);
-    expect(merged.videos[0]!.href).toBe("https://youtu.be/y"); // managed video leads, duplicate scraped dropped
+    expect(merged.videos[0]!.href).toBe("/en/video/m-v-1"); // managed videos navigate locally
     expect(merged.boxoffice[0]!.href).toContain("/work/m-"); // box-office row links to its managed movie page
     expect(merged.boxoffice[0]!.revenue).toBe("1.3M EGP");
     expect(merged.lists[0]!.href).toContain("/lineup/m-");
-    expect(merged.tvGuide.lines).toHaveLength(1); // managed channel line added to the home timeline
-    expect(merged.tvGuide.lines[0]!.slots[0]!.left).toBeGreaterThanOrEqual(0);
+    const managedLine = merged.tvGuide.lines.find((line) => line.channelName === "My Channel");
+    expect(managedLine?.slots).toHaveLength(1);
+    expect(managedLine?.slots[0]?.left).toBeGreaterThanOrEqual(0);
   });
 });
 

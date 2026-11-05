@@ -1,7 +1,7 @@
 /** Generic static content page (About, Contact, Advertise, Privacy, Terms). */
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import type { LiveStaticPage } from "@/types/live";
+import type { StaticContentPage } from "@/types/content-view";
 
 export function StaticPage({
   icon: Icon,
@@ -14,7 +14,7 @@ export function StaticPage({
   layout = "default",
 }: {
   icon: LucideIcon;
-  page: LiveStaticPage;
+  page: StaticContentPage;
   extra?: ReactNode;
   sidebarForm?: ReactNode;
   socialIcons?: ReactNode;

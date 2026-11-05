@@ -1,5 +1,5 @@
 /**
- * Movie detail — rebuilt after the real elcinema.com /work/<id>/ page:
+ * Movie detail — rendered from the local catalogue:
  * poster and rating header, bilingual details block, story, director/writer/
  * cast with person links, Watch Online, per-day showtimes across cinemas,
  * photos, awards and related works. Sample data, bilingual by design.

@@ -1,11 +1,9 @@
 /**
- * Featured Lists — the live "Screen Works & Celebrity Featured Lists"
- * section scraped from elcinema.com/lineup/ (the real site's Lists section)
- * plus one list's contents. Items link to internal work/person pages.
+ * Featured Lists — operator-managed collections of local catalogue works.
  */
 import { ArrowLeft, ListVideo } from "lucide-react";
 import type { Lang } from "@/types/home";
-import type { LiveLineupDetail, LiveLineupIndex } from "@/types/live";
+import type { FeaturedListDetail, FeaturedListIndex } from "@/types/content-view";
 import { Na } from "@/components/shared/ui";
 import {
   ActiveFilters,
@@ -24,7 +22,7 @@ import {
 import { LiveImg, LiveError, LivePoster, lineupPath, liveWorkPath } from "@/features/live/live-ui";
 import { makeT } from "@/i18n";
 
-export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: Lang }) {
+export function LineupIndexPage({ data, lang }: { data: FeaturedListIndex; lang: Lang }) {
   const t = makeT(lang);
   const tx = listText(lang);
   const st = useListState();
@@ -104,7 +102,7 @@ export function LineupIndexPage({ data, lang }: { data: LiveLineupIndex; lang: L
   );
 }
 
-export function LineupDetailPage({ data, lang }: { data: LiveLineupDetail; lang: Lang }) {
+export function LineupDetailPage({ data, lang }: { data: FeaturedListDetail; lang: Lang }) {
   const t = makeT(lang);
   const tx = listText(lang);
   const st = useListState();
@@ -193,7 +191,7 @@ export function LineupIndexRoute({
   result,
   lang,
 }: {
-  result: { data: LiveLineupIndex | null; error: string | null };
+  result: { data: FeaturedListIndex | null; error: string | null };
   lang: Lang;
 }) {
   if (result.error || !result.data) return <LiveError message={result.error ?? ""} lang={lang} />;
@@ -204,7 +202,7 @@ export function LineupDetailRoute({
   result,
   lang,
 }: {
-  result: { data: LiveLineupDetail | null; error: string | null };
+  result: { data: FeaturedListDetail | null; error: string | null };
   lang: Lang;
 }) {
   if (result.error || !result.data) return <LiveError message={result.error ?? ""} lang={lang} />;

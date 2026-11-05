@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoGalleryFn } from "@/features/live/live.functions";
 import { managedContentOptions } from "@/features/content/content.options";
 import { managedVideos } from "@/features/content/content";
 import type { Lang } from "@/types/home";
@@ -9,9 +8,8 @@ import { VideoGalleryRoute } from "@/pages/Videos";
 
 const galleryOptions = (lang: Lang) =>
   queryOptions({
-    queryKey: ["elcinema-video-gallery", lang],
-    queryFn: () => getVideoGalleryFn({ data: { lang } }),
-    staleTime: 10 * 60 * 1000,
+    queryKey: ["managed-video-gallery", lang],
+    queryFn: () => ({ data: { title: "", sections: [] }, error: null }),
   });
 
 export const Route = createFileRoute("/$lang/video/")({
@@ -30,7 +28,10 @@ export const Route = createFileRoute("/$lang/video/")({
         name: "description",
         content: "Trailers, series episodes, songs and behind-the-scenes videos, updated daily.",
       },
-      { property: "og:title", content: "elCinema TV — Video Gallery | elCinema" },
+      {
+        property: "og:title",
+        content: "elCinema TV — Video Gallery | elCinema",
+      },
       {
         property: "og:description",
         content: "Trailers, series episodes, songs and behind-the-scenes videos, updated daily.",

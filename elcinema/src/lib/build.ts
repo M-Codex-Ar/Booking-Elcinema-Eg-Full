@@ -57,7 +57,7 @@ export const comingSoon = [...MOVIES.filter((m) => m.status === "soon")].sort((a
 );
 
 // ---------- elCinema-style numeric IDs ----------
-// The dataset carries the real elcinema.com work/person ids, so the public
+// The catalogue carries stable work/person ids, so the public
 // URLs are the real site's URLs (/en/work/2098155/).
 
 export function workId(movie: Movie): number | string {
@@ -184,7 +184,12 @@ export const tvGuide: TvGuide = {
   times: TV_GUIDE_DATA.times,
   lines: TV_GUIDE_DATA.lines.map((l) => ({
     channel: { ...l.channel, img: l.channel.img ?? null },
-    slots: l.slots.map((s) => ({ ...s, title: s.title, href: s.href ?? null, meta: s.meta ?? "" })),
+    slots: l.slots.map((s) => ({
+      ...s,
+      title: s.title,
+      href: s.href ?? null,
+      meta: s.meta ?? "",
+    })),
   })),
 };
 
@@ -206,7 +211,10 @@ export function layoutSlots(
   slots: { start: number; end: number }[],
   guide: TvGuide,
 ): { index: number; left: number; width: number }[] {
-  const geo = slots.map((s, index) => ({ index, ...slotGeometry(s.start, s.end, guide) }));
+  const geo = slots.map((s, index) => ({
+    index,
+    ...slotGeometry(s.start, s.end, guide),
+  }));
   const sorted = [...geo].sort((a, b) => a.left - b.left);
   const placed: { index: number; left: number; width: number }[] = [];
   let prevEnd = 0;
@@ -222,13 +230,17 @@ export function layoutSlots(
   return placed;
 }
 
-// ---------- Showtimes (real, scraped per movie) ----------
+// ---------- Catalogue showtimes ----------
 
-/** Showtimes per cinema for a given day tab index (0 = first scraped day). */
+/** Showtimes per cinema for a given day tab index (0 = first catalogue day). */
 export function showtimesFor(
   movie: Movie,
   day = 0,
-): { cinema: { id: string; name: Bi }; times: string[]; bookingHref: string | null }[] {
+): {
+  cinema: { id: string; name: Bi };
+  times: string[];
+  bookingHref: string | null;
+}[] {
   const dayData = movie.showtimes[day];
   if (!dayData) return [];
   return dayData.cinemas.map((cinema) => ({
@@ -252,7 +264,7 @@ export interface MovieMeta {
   language: Bi;
 }
 
-/** Real rating/votes where scraped, deterministic fallbacks otherwise. */
+/** Catalogue rating/votes, deterministic fallbacks otherwise. */
 export function movieMeta(movie: Movie): MovieMeta {
   const rng = mulberry32(hashString(`meta:${movie.slug}`));
   const isEgyptian = movie.country.en === "Egypt";

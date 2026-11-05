@@ -1,17 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { mergedHomeData } from "@/features/content/content";
 import { BookingIndexRoute } from "@/pages/Booking";
 import { asLang } from "@/i18n";
 
-const homeOptions = queryOptions({
-  queryKey: ["elcinema-home"],
-  queryFn: () => getElcinemaHomeFn(),
-  staleTime: 5 * 60 * 1000,
-});
+const homeOptions = (lang: "en" | "ar") =>
+  queryOptions({
+    queryKey: ["local-home", lang],
+    queryFn: () => ({ data: mergedHomeData(null, lang), error: null }),
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const Route = createFileRoute("/$lang/booking/")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeOptions).then(() => null),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(homeOptions(asLang(params.lang))).then(() => null),
   component: BookingRouteComponent,
   head: () => ({
     meta: [

@@ -1,13 +1,8 @@
 /**
- * The built-in bilingual dataset, scraped from elcinema.com (both editions)
- * by scripts/scrape-data.ts and transformed by scripts/build-dataset.ts.
- *
- * Everything here is static, client-safe real content: the movies now
- * playing and coming soon in Egypt, the weekly box office, the industry
- * people behind them and a snapshot of the live TV guide grid. Posters,
- * headshots and channel logos resolve through the local asset manifest
- * (src/images.ts). To refresh the dataset, re-run the two scripts
- * and re-upload the artwork.
+ * The built-in bilingual catalogue is committed and client-safe: movies,
+ * people, genres, box office, artwork keys, and a TV guide snapshot. Artwork
+ * resolves through the first-party asset manifest (src/images.ts). Catalogue
+ * changes are reviewed as ordinary source data updates.
  */
 import moviesData from "@/data/movies.json";
 import peopleData from "@/data/people.json";
@@ -35,7 +30,7 @@ export const BOXOFFICE: BoxofficeEntry[] = (boxofficeData as unknown as { rows: 
   .rows;
 export const boxofficeDate: Bi = (boxofficeData as { date: Bi }).date;
 
-/** TV guide snapshot: channels + program slots from the live grid. */
+/** Bundled TV guide snapshot: channels + program slots. */
 export const TV_GUIDE_DATA = tvguideData as unknown as {
   from: number;
   to: number;

@@ -1,22 +1,22 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { getElcinemaHomeFn } from "@/features/home/home.functions";
 import { HomePage } from "@/pages/HomePage";
-import type { EcHomeData } from "@/types/home";
 import { managedContentOptions } from "@/features/content/content.options";
 import { mergedHomeData } from "@/features/content/content";
 import { asLang } from "@/i18n";
 
-const homeQueryOptions = queryOptions({
-  queryKey: ["elcinema-home"],
-  queryFn: () => getElcinemaHomeFn(),
-  staleTime: 5 * 60 * 1000,
-});
+const homeQueryOptions = (lang: "en" | "ar") =>
+  queryOptions({
+    queryKey: ["local-home", lang],
+    queryFn: () => ({ data: mergedHomeData(null, lang), error: null }),
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const Route = createFileRoute("/$lang/")({
   // Only wait for the bounded, first-party homepage result during SSR.
   // Managed content is additive and loads in the background in HomeRoute.
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeQueryOptions),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(homeQueryOptions(asLang(params.lang))),
   component: HomeRoute,
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-7xl px-4 py-24 text-center">
@@ -66,7 +66,7 @@ export const Route = createFileRoute("/$lang/")({
 
 function HomeRoute() {
   const { lang } = Route.useParams();
-  const result = useSuspenseQuery(homeQueryOptions).data;
+  const result = useSuspenseQuery(homeQueryOptions(asLang(lang))).data;
   // Managed content is optional: keep its network request off the SSR critical
   // path and merge it in when the query resolves in the background.
   const managed = useQuery(managedContentOptions).data ?? null;
@@ -78,8 +78,7 @@ function HomeRoute() {
       </div>
     );
   }
-  const data: EcHomeData = result.data;
-  return <HomePage data={mergedHomeData(data, managed, asLang(lang))} lang={asLang(lang)} />;
+  return <HomePage data={mergedHomeData(managed, asLang(lang))} lang={asLang(lang)} />;
 }
 
 // Keep notFound referenced for the $lang guard's thrown errors to resolve to

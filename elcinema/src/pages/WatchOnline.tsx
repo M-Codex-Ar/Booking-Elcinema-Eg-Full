@@ -1,15 +1,14 @@
 /**
- * Watch Online — the live VOD guide scraped from elcinema.com/vod/: the
- * streaming platforms available in the region with their content categories,
- * plus the movies currently offered to watch online (from the homepage
- * scrape), each linking to its internal work detail page.
+ * Watch Online — provider names and movie availability from catalogue and
+ * managed content, linked to local work detail pages.
  */
 import { ArrowLeft, MonitorPlay } from "lucide-react";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ImgWithFallback } from "@/components/shared/primitives";
-import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { mergedHomeData } from "@/features/content/content";
+import { managedContentOptions } from "@/features/content/content.options";
 import type { Lang } from "@/types/home";
-import type { LiveVodGuide } from "@/types/live";
+import type { VodGuide } from "@/types/content-view";
 import { LiveError, LivePoster, VodBadge } from "@/features/live/live-ui";
 import { Na, Row } from "@/components/shared/ui";
 import {
@@ -27,16 +26,10 @@ import {
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
 
-const homeQueryOptions = queryOptions({
-  queryKey: ["elcinema-home"],
-  queryFn: () => getElcinemaHomeFn(),
-  staleTime: 5 * 60 * 1000,
-});
-
-export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang }) {
+export function WatchOnlinePage({ data, lang }: { data: VodGuide; lang: Lang }) {
   const t = makeT(lang);
-  const home = useSuspenseQuery(homeQueryOptions).data;
-  const watchOnline = home.data?.watchOnline ?? [];
+  const managed = useQuery(managedContentOptions).data ?? null;
+  const watchOnline = mergedHomeData(managed, lang).watchOnline;
   const st = useListState();
   const plats = sortByText(
     data.platforms.filter((p) =>
@@ -56,7 +49,7 @@ export function WatchOnlinePage({ data, lang }: { data: LiveVodGuide; lang: Lang
       {watchOnline.length > 0 && (
         <Row title={t("vod.onDemand")} icon={<MonitorPlay className="h-5 w-5" />} lang={lang}>
           {watchOnline.map((w, i) => {
-            const m = /\/work\/(\d+)/.exec(w.href);
+            const m = /\/work\/([^/]+)/.exec(w.href);
             return m ? (
               <LivePoster
                 key={i}
@@ -145,7 +138,7 @@ export function WatchOnlineRoute({
   result,
   lang,
 }: {
-  result: { data: LiveVodGuide | null; error: string | null };
+  result: { data: VodGuide | null; error: string | null };
   lang: Lang;
 }) {
   if (result.error || !result.data) return <LiveError message={result.error ?? ""} lang={lang} />;

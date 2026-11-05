@@ -1,20 +1,13 @@
 /**
- * Book tickets — internal pages for the booking flow: the list of movies now
- * playing (from the homepage scrape) and, per movie, the cinemas and
- * showtimes for the next days. For sample-catalogue movies the built-in
- * showtime generator is used; for live movies the showtimes are scraped from
- * the real work page. Ticket buttons stay inside the app and lead to these
- * showtimes; online ticket purchase is not available in this app yet.
+ * Book tickets from showtimes bundled with the local movie catalogue.
  */
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, CalendarClock, Ticket } from "lucide-react";
 import { useState } from "react";
-import { getElcinemaHomeFn } from "@/features/home/home.functions";
+import { mergedHomeData } from "@/features/content/content";
 import { dayLabel, movieById } from "@/lib/build";
-import { getLiveWorkFn } from "@/features/live/live.functions";
 import type { Lang } from "@/types/home";
-import type { LiveWork } from "@/types/live";
-import { LiveImg, LiveError, liveWorkPath } from "@/features/live/live-ui";
+import { LiveImg, LiveError } from "@/features/live/live-ui";
 import { Na } from "@/components/shared/ui";
 import {
   ActiveFilters,
@@ -32,17 +25,11 @@ import {
 } from "@/components/shared/controls";
 import { makeT } from "@/i18n";
 
-const homeQueryOptions = queryOptions({
-  queryKey: ["elcinema-home"],
-  queryFn: () => getElcinemaHomeFn(),
-  staleTime: 5 * 60 * 1000,
-});
-
-const liveWorkQueryOptions = (lang: Lang, id: string) =>
+const homeQueryOptions = (lang: Lang) =>
   queryOptions({
-    queryKey: ["elcinema-live-work", lang, id],
-    queryFn: () => getLiveWorkFn({ data: { lang, id } }),
-    staleTime: 10 * 60 * 1000,
+    queryKey: ["local-home", lang],
+    queryFn: () => ({ data: mergedHomeData(null, lang), error: null }),
+    staleTime: 5 * 60 * 1000,
   });
 
 // ---------------------------------------------------------------------------
@@ -51,7 +38,7 @@ const liveWorkQueryOptions = (lang: Lang, id: string) =>
 
 export function BookingIndexPage({ lang }: { lang: Lang }) {
   const t = makeT(lang);
-  const home = useSuspenseQuery(homeQueryOptions).data;
+  const home = useSuspenseQuery(homeQueryOptions(lang)).data;
   const tx = listText(lang);
   const st = useListState();
   const all = (home.data?.movies ?? [])
@@ -147,19 +134,11 @@ export function BookingIndexPage({ lang }: { lang: Lang }) {
 // Booking for one movie: day tabs + cinemas
 // ---------------------------------------------------------------------------
 
-export function BookingMoviePage({
-  lang,
-  id,
-  data,
-}: {
-  lang: Lang;
-  id: string;
-  data: LiveWork | null;
-}) {
+export function BookingMoviePage({ lang, id }: { lang: Lang; id: string }) {
   const t = makeT(lang);
   const [day, setDay] = useState(0);
 
-  // Built-in dataset movie: its real scraped showtimes.
+  // Showtimes are bundled with the local movie catalogue.
   const sampleMovie = movieById.get(Number(id));
   const days = sampleMovie
     ? sampleMovie.showtimes.map((d) => ({
@@ -171,12 +150,12 @@ export function BookingMoviePage({
           bookingHref: c.bookingHref,
         })),
       }))
-    : (data?.showtimes.slice(0, 5) ?? []);
+    : [];
 
   const dayIndex = Math.min(day, Math.max(days.length - 1, 0));
   const current = days[dayIndex];
-  const title = sampleMovie ? sampleMovie.title[lang] : (data?.title ?? "");
-  const poster = sampleMovie ? null : (data?.poster ?? null);
+  const title = sampleMovie?.title[lang] ?? "";
+  const poster = sampleMovie?.poster ?? null;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
@@ -198,15 +177,6 @@ export function BookingMoviePage({
           <h2 className="mt-1 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <CalendarClock className="h-4 w-4 text-primary" /> {t("booking.cinemas")}
           </h2>
-          {!sampleMovie && (
-            <Na
-              href={liveWorkPath(lang, id)}
-              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-            >
-              {t("booking.moviePage")}
-              <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
-            </Na>
-          )}
         </div>
       </div>
 
@@ -263,23 +233,9 @@ export function BookingMoviePage({
 }
 
 export function BookingIndexRoute({ lang }: { lang: Lang }) {
-  const home = useSuspenseQuery(homeQueryOptions).data;
+  const home = useSuspenseQuery(homeQueryOptions(lang)).data;
   if (home.error || !home.data) {
     return <LiveError message={home.error ?? ""} lang={lang} />;
   }
   return <BookingIndexPage lang={lang} />;
-}
-
-export function BookingMovieRoute({
-  result,
-  lang,
-  id,
-}: {
-  result: { data: LiveWork | null; error: string | null };
-  lang: Lang;
-  id: string;
-}) {
-  const isSample = movieById.has(Number(id));
-  if (result.error && !isSample) return <LiveError message={result.error ?? ""} lang={lang} />;
-  return <BookingMoviePage lang={lang} id={id} data={result.data} />;
 }

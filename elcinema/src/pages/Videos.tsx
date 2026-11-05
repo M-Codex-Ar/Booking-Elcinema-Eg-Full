@@ -1,14 +1,16 @@
 /**
- * elCinema TV — the live video gallery (scraped from elcinema.com's video
- * section) and a single video page playing the real embed inside the app.
- * Video cards link internally; the player itself is the site's own YouTube
- * embed.
+ * elCinema TV — the managed video gallery and local video detail pages.
+ * Supported providers play through privacy-enhanced embeds.
  */
 import { ArrowLeft, Play } from "lucide-react";
 import { ImgWithFallback } from "@/components/shared/primitives";
 import type { Lang } from "@/types/home";
 import { useState } from "react";
-import type { LiveVideo, LiveVideoCard, LiveVideoGallery } from "@/types/live";
+import type {
+  ContentVideoDetail,
+  ContentVideoCard,
+  ContentVideoGallery,
+} from "@/types/content-view";
 import type { ManagedVideoRow } from "@/features/content/content";
 import {
   ActiveFilters,
@@ -28,8 +30,9 @@ import {
 import { Na } from "@/components/shared/ui";
 import { makeT, rowTitle } from "@/i18n";
 import { LiveImg, LiveError, videoPath } from "@/features/live/live-ui";
+import { isRetiredSourceUrl } from "@/types/media";
 
-function VideoCard({ v, lang, row }: { v: LiveVideoCard; lang: Lang; row?: boolean }) {
+function VideoCard({ v, lang, row }: { v: ContentVideoCard; lang: Lang; row?: boolean }) {
   const t = makeT(lang);
   return (
     <Na
@@ -65,7 +68,7 @@ export function VideoGalleryPage({
   extra,
   lang,
 }: {
-  data: LiveVideoGallery;
+  data: ContentVideoGallery;
   extra?: ManagedVideoRow[] | undefined;
   lang: Lang;
 }) {
@@ -85,6 +88,16 @@ export function VideoGalleryPage({
     lang,
   );
   const { page, pages, shown } = paginate(filtered, st.page, 12);
+  const localManagedVideoPath = (id: string, url: string) => {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:" || isRetiredSourceUrl(url))
+        return videoPath(lang, `m-${id}`);
+      return parsed.href;
+    } catch {
+      return videoPath(lang, `m-${id}`);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
@@ -159,7 +172,13 @@ export function VideoGalleryPage({
           <h2 className="mb-4 text-xl font-black">{t("common.addedByEditors")}</h2>
           <div className="video-grid">
             {extra.map((v) => (
-              <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="group w-full">
+              <a
+                key={v.id}
+                href={localManagedVideoPath(v.id, v.url)}
+                target={isRetiredSourceUrl(v.url) ? undefined : "_blank"}
+                rel={isRetiredSourceUrl(v.url) ? undefined : "noreferrer"}
+                className="group w-full"
+              >
                 <div className="hover-lift relative aspect-video overflow-hidden rounded-xl bg-secondary">
                   <ImgWithFallback
                     src={v.thumb_url}
@@ -196,7 +215,7 @@ export function VideoGalleryPage({
   );
 }
 
-export function VideoDetailPage({ data, lang }: { data: LiveVideo; lang: Lang }) {
+export function VideoDetailPage({ data, lang }: { data: ContentVideoDetail; lang: Lang }) {
   const t = makeT(lang);
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
@@ -257,7 +276,7 @@ export function VideoGalleryRoute({
   lang,
   extra,
 }: {
-  result: { data: LiveVideoGallery | null; error: string | null };
+  result: { data: ContentVideoGallery | null; error: string | null };
   lang: Lang;
   extra?: ManagedVideoRow[];
 }) {

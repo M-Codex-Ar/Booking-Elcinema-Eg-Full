@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LiveError } from "@/features/live/live-ui";
-import { staticPageOptions } from "@/features/live/live.options";
+import { staticPageOptions } from "@/features/content/static-page.options";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { ContactGlobe } from "@/components/shared/ContactGlobe";
 import { asLang, makeT } from "@/i18n";
@@ -26,7 +26,7 @@ function ContactPage() {
   const t = makeT(l);
   const result = useSuspenseQuery(staticPageOptions(l, `/${l}/contact/`)).data;
 
-  // Show form even if scraping fails
+  // The local page copy is optional; keep the form available either way.
   const sidebarForm = (
     <div className="space-y-4">
       <h2 className="text-lg font-bold">{t("contact.formTitle")}</h2>

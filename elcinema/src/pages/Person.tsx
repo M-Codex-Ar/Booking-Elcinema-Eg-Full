@@ -1,6 +1,6 @@
 /**
  * Person detail — bilingual profile with the person's filmography, following
- * the real elcinema.com /person/<id>/ page: name, role, and the works they
+ * a complete local profile: name, role, and the works they
  * are known for, each addressed by the elCinema-style numeric ID.
  */
 import { Film, UserRound } from "lucide-react";

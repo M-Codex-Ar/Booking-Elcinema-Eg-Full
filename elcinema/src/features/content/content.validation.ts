@@ -2,7 +2,16 @@ import { z } from "zod";
 
 const text = (max: number) => z.string().trim().max(max);
 const requiredText = (max: number) => text(max).min(1);
-const optionalUrl = z.string().url().max(2_048).nullable();
+const retiredHost = ["elcinema", "com"].join(".");
+const externalUrl = z
+  .string()
+  .url()
+  .max(2_048)
+  .refine((value) => {
+    const labels = new URL(value).hostname.toLowerCase().split(".");
+    return labels.slice(-2).join(".") !== retiredHost;
+  }, "URLs from the retired content source are not allowed");
+const optionalUrl = externalUrl.nullable();
 const itemSchema = z
   .object({
     ref: requiredText(128),
@@ -78,7 +87,7 @@ export const managedRowSchemas = {
     .object({
       title_en: requiredText(300),
       title_ar: text(300),
-      url: z.string().url().max(2_048),
+      url: externalUrl,
       thumb_url: optionalUrl,
       duration: text(80),
     })

@@ -1,57 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoDetailFn } from "@/features/live/live.functions";
-import { LiveError } from "@/features/live/live-ui";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { managedContentOptions } from "@/features/content/content.options";
+import { managedVideoById, managedVideos, managedRef } from "@/features/content/content";
+import type { ManagedContent } from "@/features/content/content.functions";
+import type { ContentVideoDetail, ContentVideoCard } from "@/types/content-view";
 import { VideoDetailPage } from "@/pages/Videos";
-import { asLang } from "@/i18n";
-import type { Lang } from "@/types/home";
+import { asLang, makeT } from "@/i18n";
 
-const videoOptions = (lang: Lang, id: string) =>
-  queryOptions({
-    queryKey: ["elcinema-video", lang, id],
-    queryFn: () => getVideoDetailFn({ data: { lang, id } }),
-    staleTime: 10 * 60 * 1000,
-  });
+function allowedEmbed(value: string): string | null {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase();
+    const videoId =
+      host === "youtu.be"
+        ? url.pathname.slice(1)
+        : ["youtube.com", "www.youtube.com", "m.youtube.com"].includes(host)
+          ? (url.searchParams.get("v") ?? url.pathname.match(/^\/embed\/([^/]+)/)?.[1])
+          : null;
+    return videoId && /^[\w-]{6,20}$/.test(videoId)
+      ? `https://www.youtube-nocookie.com/embed/${videoId}`
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 export const Route = createFileRoute("/$lang/video/$id")({
-  loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(videoOptions(asLang(params.lang), params.id)),
+  loader: ({ context }) => context.queryClient.ensureQueryData(managedContentOptions),
   component: VideoDetailRouteComponent,
-  errorComponent: ({ error }) => (
-    <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-      <p className="text-lg font-bold">This page didn't load.</p>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {error instanceof Error ? error.message : String(error)}
-      </p>
-    </div>
-  ),
-  notFoundComponent: () => (
-    <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-      <p className="text-lg font-bold">Video not found</p>
-    </div>
-  ),
-  head: ({ loaderData }) => {
-    const live = loaderData?.data ?? null;
-    const en = true;
-    const title = live
-      ? `${live.title} | elCinema TV`
-      : en
-        ? "Video | elCinema TV"
-        : "فيديو | إل سينما TV";
-    const description =
-      live?.title ??
-      (en
-        ? "Watch the latest trailers and clips on elCinema TV."
-        : "شاهد أحدث الإعلانات والمقاطع على إل سينما TV.");
+  head: ({ params, loaderData }) => {
+    const lang = asLang(params.lang);
+    const row = managedVideoById((loaderData ?? null) as ManagedContent | null).get(params.id);
+    const title = row
+      ? lang === "ar"
+        ? row.title_ar || row.title_en
+        : row.title_en
+      : lang === "ar"
+        ? "فيديو | إل سينما TV"
+        : "Video | elCinema TV";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "video.other" },
-        { name: "twitter:card", content: "summary_large_image" },
-      ],
+      meta: [{ title: `${title} | elCinema TV` }, { name: "description", content: title }],
     };
   },
 });
@@ -59,9 +47,26 @@ export const Route = createFileRoute("/$lang/video/$id")({
 function VideoDetailRouteComponent() {
   const { lang, id } = Route.useParams();
   const l = asLang(lang);
-  const result = useSuspenseQuery(videoOptions(l, id)).data;
-  if (result.error || !result.data) {
-    return <LiveError message={result.error ?? ""} lang={l} />;
-  }
-  return <VideoDetailPage data={result.data} lang={l} />;
+  const t = makeT(l);
+  const managed = useSuspenseQuery(managedContentOptions).data;
+  const row = managedVideoById(managed).get(id);
+  if (!row)
+    return <p className="mx-auto max-w-3xl px-4 py-20 text-center">{t("common.notFoundVideo")}</p>;
+  const related: ContentVideoCard[] = managedVideos(managed)
+    .filter((item) => item.id !== row.id)
+    .slice(0, 8)
+    .map((item) => ({
+      id: managedRef(item),
+      title: l === "ar" ? item.title_ar || item.title_en : item.title_en,
+      duration: item.duration || null,
+      img: item.thumb_url,
+    }));
+  const data: ContentVideoDetail = {
+    id,
+    title: l === "ar" ? row.title_ar || row.title_en : row.title_en,
+    embedUrl: allowedEmbed(row.url),
+    img: row.thumb_url,
+    related,
+  };
+  return <VideoDetailPage data={data} lang={l} />;
 }

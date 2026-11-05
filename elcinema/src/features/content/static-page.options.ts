@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getStaticPageFn } from "@/features/live/live.functions";
+import { getFallbackPage } from "@/lib/fallback-content";
 import type { Lang } from "@/types/home";
 
-/** Cached query for one scraped static content page (About, Contact, …). */
+/** Static legal and help content is bundled locally in both languages. */
 export const staticPageOptions = (lang: Lang, path: string) =>
   queryOptions({
     queryKey: ["elcinema-static", lang, path],
-    queryFn: () => getStaticPageFn({ data: { lang, path } }),
+    queryFn: async () => ({ data: getFallbackPage(path, lang), error: null }),
     staleTime: 10 * 60 * 1000,
   });
