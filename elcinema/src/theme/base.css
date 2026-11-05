@@ -45,15 +45,7 @@
    * `:where()` keeps specificity at 0, and an element that wants its own ring
    * (the shadcn primitives) still overrides it with `focus-visible:ring-*`.
    */
-  :where(
-    a,
-    button,
-    input,
-    select,
-    textarea,
-    summary,
-    [tabindex]
-  ):focus-visible {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
   }
