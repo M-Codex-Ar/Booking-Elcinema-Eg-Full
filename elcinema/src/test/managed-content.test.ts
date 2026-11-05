@@ -285,7 +285,9 @@ describe("duplicate rules", () => {
     expect(merged.videos[0]!.href).toBe("/en/video/m-v-1"); // managed videos navigate locally
     expect(merged.boxoffice[0]!.href).toContain("/work/m-"); // box-office row links to its managed movie page
     expect(merged.boxoffice[0]!.revenue).toBe("1.3M EGP");
-    expect(merged.lists[0]!.href).toContain("/lineup/m-");
+    expect(merged.lists.find((list) => list.title === "Editor picks this month")?.href).toContain(
+      "/lineup/m-",
+    );
     const managedLine = merged.tvGuide.lines.find((line) => line.channelName === "My Channel");
     expect(managedLine?.slots).toHaveLength(1);
     expect(managedLine?.slots[0]?.left).toBeGreaterThanOrEqual(0);

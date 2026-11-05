@@ -4,12 +4,13 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/services/clients/supabase/types";
 import { requireSupabaseAuth } from "@/services/clients/supabase/auth-middleware";
 import { requireAdminRole, requireContentEditorRole } from "@/features/auth/auth";
+import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase-env";
 import { z } from "zod";
 import { MANAGED_TABLES, type ManagedTable, validateManagedRowInput } from "./content.validation";
 
 export { MANAGED_TABLES };
 export type { ManagedTable };
-const MANAGED_READ_TIMEOUT_MS = 1_200;
+const MANAGED_READ_TIMEOUT_MS = 5_000;
 const MANAGED_CONTENT_CACHE_MS = 30_000;
 
 type ManagedRowFor<T extends ManagedTable> = Database["public"]["Tables"][T]["Row"];
@@ -159,8 +160,11 @@ function refreshManagedContent(url: string, key: string): Promise<ManagedContent
  * Public pages merge this with the built-in catalogue; safe under the
  * anon SELECT policies. */
 export const getManagedContent = createServerFn({ method: "GET" }).handler(async () => {
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  // Read through the same environment resolver as the generated Supabase
+  // client. Vercel/Lovable commonly expose the VITE_ variables at build time;
+  // relying on server-only aliases silently hid all managed homepage sections.
+  const url = supabaseUrl();
+  const key = supabasePublishableKey();
   if (!url || !key) return emptyManagedContent(["configuration"]);
   if (managedContentCache && managedContentCache.expiresAt > Date.now()) {
     return managedContentCache.value;
