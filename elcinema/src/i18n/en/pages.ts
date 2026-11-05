@@ -13,6 +13,7 @@ export const enPages = {
   "home.diedOn": "Died {date}",
   "home.seeAll": "See all",
   "home.moreInfo": "More info",
+  "home.explore": "Explore",
   "home.bookTickets": "Book tickets",
   "home.slide": "Slide {n}",
   "home.previous": "Previous",

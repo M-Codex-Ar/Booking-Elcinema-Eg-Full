@@ -57,7 +57,7 @@ export const CinemasRegionMarquee = memo(function CinemasRegionMarquee({
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noreferrer" : undefined}
-              className="group flex items-center gap-3.5 rounded-2xl border border-border/80 bg-card/60 px-4 py-3 text-start backdrop-blur-md transition-all duration-300 hover:border-primary/60 hover:bg-card hover:shadow-lg hover:shadow-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="group flex items-center gap-3.5 rounded-2xl border border-border/80 bg-card/90 px-4 py-3 text-start transition-all duration-300 hover:border-primary/60 hover:bg-card hover:shadow-lg hover:shadow-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className="relative shrink-0 overflow-hidden rounded-md border border-border/50 shadow-sm">
                 <img

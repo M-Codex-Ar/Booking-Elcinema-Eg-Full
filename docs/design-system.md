@@ -94,7 +94,8 @@ dropped from the build.
 
 `glass-card`, `glass-card-brand`, `cinema-gradient`, `page-background`, `hover-lift`, `poster-shade`,
 `poster-shade-deep`, `scrim-start`, `poster-fallback`, `poster-spot`, `animate-theme-icon`,
-`animate-pulse-neon`, `scrollbar-hide`, `page-flow`, `dialog-scroll`.
+`animate-pulse-neon`, `scrollbar-hide`, `page-flow`, `dialog-scroll`, plus the
+first-load-only brand mark reveal in `utilities.css`.
 
 `page-background` is the shared app canvas for public pages, account screens,
 error states, and the dashboard. Its brand and gold washes are derived from the
@@ -103,9 +104,19 @@ cinematic depth without hard-coded page colours. The body also uses the same
 background image as a fallback beneath route shells. The shared `Page` primitive
 stays transparent so it does not paint an opaque surface over this canvas; cards
 and other intentional panels opt into `bg-card`, `glass-card`, or another surface.
-The first-load overlay uses this same background image and the active `--primary`
-token for its animated highlights, keeping its canvas and accent colours aligned
-with the selected theme.
+The first-load brand reveal animates only the small logo mark and wordmark. It
+does not cover the page or hold the hero behind hydration.
+
+## Motion
+
+Motion values are centralised in `tokens.css`: fast (150ms), base (250ms), slow
+(450ms), a standard ease, an expo-like ease-out, a spring ease, a 12px small
+distance, and a 90ms stagger step. Prefer `transform` and `opacity`; keep
+`will-change` off persistent UI. Use `IntersectionObserver` to stop repeating
+motion when a carousel is outside the viewport, and respect
+`prefers-reduced-motion` for every automatic animation. The header wordmark may
+run one short CSS reveal per tab session; it is removed from the animated state
+after the animation ends.
 
 Three of them exist because of a measured breakage, not a preference:
 

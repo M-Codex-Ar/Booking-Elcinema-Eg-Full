@@ -8,8 +8,10 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   ArrowRight,
+  ArrowDown,
   ChevronLeft,
   ChevronRight,
+  Pause,
   Play,
   Ticket,
   Tv,
@@ -67,16 +69,44 @@ function CardA({
 function Hero({ promos, lang }: { promos: HomePromo[]; lang: Lang }) {
   const t = makeT(lang);
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
   useEffect(() => {
-    if (promos.length < 2) return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    const element = heroRef.current;
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry?.isIntersecting ?? false),
+      { threshold: 0.1 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (promos.length < 2 || paused || reducedMotion || !isVisible) return;
     const t = setInterval(() => setI((v) => (v + 1) % promos.length), 6000);
     return () => clearInterval(t);
-  }, [promos.length]);
+  }, [promos.length, paused, reducedMotion, isVisible]);
   if (!promos.length) return null;
   const p = promos[Math.min(i, promos.length - 1)];
   if (!p) return null;
   return (
-    <section className="relative h-[50vh] w-full overflow-hidden md:h-[65vh]">
+    <section
+      ref={heroRef}
+      className="relative min-h-[calc(100svh-var(--header-height))] w-full overflow-hidden"
+    >
       <SmartImg
         key={p.img ?? i}
         src={p.img}
@@ -96,7 +126,7 @@ function Hero({ promos, lang }: { promos: HomePromo[]; lang: Lang }) {
           href={p.href}
           title={p.title}
           lang={lang}
-          className="animate-pulse-neon mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground transition hover:bg-primary/90"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground transition-colors hover:bg-primary/90"
         >
           <Play className="h-4 w-4 fill-current" /> {p.button || t("home.moreInfo")}
         </CardA>
@@ -106,39 +136,72 @@ function Hero({ promos, lang }: { promos: HomePromo[]; lang: Lang }) {
           Wrapping keeps every slide one tap away; from `sm` the strip is wide
           enough to sit on one line again.
         */}
-        <div className="mt-6 -m-2 flex flex-wrap justify-center gap-1 p-2 sm:justify-start">
-          {promos.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              aria-label={t("home.slide", { n: idx + 1 })}
-              aria-current={idx === i}
-              onClick={() => setI(idx)}
-              className="flex h-9 min-w-10 items-center justify-center rounded-full"
-            >
-              {/* The pill is the picture; the button around it is the target, so
+        <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-6">
+          <div className="-m-2 flex flex-wrap justify-center gap-1 p-2 sm:justify-start">
+            {promos.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                aria-label={t("home.slide", { n: idx + 1 })}
+                aria-current={idx === i}
+                onClick={() => setI(idx)}
+                className="flex h-9 min-w-10 items-center justify-center rounded-full"
+              >
+                {/* The pill is the picture; the button around it is the target, so
                   a thumb has 32px to hit instead of a 6px-tall dash. */}
-              <span
-                aria-hidden
-                className={`h-1.5 rounded-full transition-all ${
-                  idx === i ? "w-6 bg-primary" : "w-3 bg-muted-foreground/40"
-                }`}
-              />
+                <span
+                  aria-hidden
+                  className={`h-1.5 rounded-full transition-all ${
+                    idx === i ? "w-6 bg-primary" : "w-3 bg-muted-foreground/40"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          {promos.length > 1 && !reducedMotion && (
+            <button
+              type="button"
+              aria-label={t(paused ? "home.play" : "home.replay")}
+              aria-pressed={paused}
+              onClick={() => setPaused((value) => !value)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-background/55 text-foreground shadow-lg backdrop-blur-md transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {paused ? (
+                <Play className="h-3.5 w-3.5 fill-current" />
+              ) : (
+                <Pause className="h-4 w-4" />
+              )}
             </button>
-          ))}
+          )}
         </div>
       </div>
+      <button
+        type="button"
+        aria-label={t("home.explore")}
+        onClick={() => {
+          const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth";
+          document.getElementById("home-content")?.scrollIntoView({ behavior, block: "start" });
+        }}
+        className="group absolute bottom-6 end-5 z-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-border/70 bg-background/60 px-3 text-xs font-semibold text-foreground shadow-lg backdrop-blur-md transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:bottom-8 sm:end-8 sm:px-4"
+      >
+        <span className="hidden sm:inline">{t("home.explore")}</span>
+        <ArrowDown className="h-4 w-4" />
+      </button>
     </section>
   );
 }
 
 function Row({
+  id,
   title,
   icon,
   more,
   lang,
   children,
 }: {
+  id?: string;
   title: string;
   icon: ReactNode;
   more?: string;
@@ -157,7 +220,7 @@ function Row({
     });
   };
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+    <section id={id} className="mx-auto max-w-7xl scroll-mt-16 px-4 py-8 md:px-8">
       <div className="mb-4 flex items-center justify-between gap-2 sm:gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <h2 className="flex min-w-0 items-center gap-2 text-xl font-bold md:text-2xl">
@@ -318,6 +381,7 @@ export function HomePage({ data, lang }: { data: HomeViewData; lang: Lang }) {
 
       {data.movies.length > 0 && (
         <Row
+          id="home-content"
           title={t("home.nowInCinemas")}
           icon={<Ticket className="h-5 w-5" />}
           more={`/${lang}/now/`}

@@ -40,7 +40,7 @@ src/
 ├── components/
 │   ├── ui/                shadcn primitives consumed by the app shell + dashboard
 │   ├── shared/            primitives.tsx (markup) + variants.ts (class recipes) + controls, ui facade, TvGuide
-│   ├── cinematic/         CinematicLoader + first-load subcomponents (background, film strip, animated logo, progress) + pacing math
+│   ├── cinematic/         Legacy first-load overlay components; not mounted by the public app
 │   └── layout/            SiteChrome, SiteMenu, ThemeToggle
 ├── features/
 │   ├── auth/              auth.ts helpers + AuthDialog
@@ -54,7 +54,7 @@ src/
 ├── lib/                   build.ts, data.ts, images.ts, links.ts, media.shared.ts, cn(), error capture/reporting, supabase-env
 ├── utils/                 slug.ts (and other small helpers)
 ├── services/clients/supabase/  client, auth-attacher, auth-middleware, generated types
-├── hooks/                 use-mobile.tsx, use-app-ready.ts (cinematic first-load gate)
+├── hooks/                 use-mobile.tsx; use-app-ready.ts remains for the legacy loader
 ├── test/                  Vitest suites + setup
 ├── assets/                bundled images
 └── router.tsx is now under app/; routeTree.gen.ts stays at src root
@@ -92,7 +92,7 @@ not a sign-out.
 
 Managed rows are optional additions to the built-in catalogue. On the homepage,
 they load after the initial SSR response. The seven public table reads run
-concurrently under one 1.2s total deadline; a timeout aborts outstanding reads
+concurrently under one 5s total deadline; a timeout aborts outstanding reads
 and returns empty additions. The server caches populated results for 30 seconds
 per runtime instance and serves stale data while refreshing; empty results are
 cached for 5 seconds. Managed-content writes invalidate the local cache. The
@@ -101,23 +101,12 @@ fallback, so a database slowdown cannot hold the page open for repeated attempts
 
 ## First load
 
-The cinematic first load (ported from the guided loading experience) mounts
-`<CinematicLoader />` once in `__root.tsx` above the routed outlet:
-
-- `components/cinematic/` holds the overlay (`cinematic-loader.tsx`), the
-  atmospheric stage (`cinematic-background.tsx`), the logo reveal
-  (`animated-logo.tsx`), the progress readout (`loading-progress.tsx`), the film
-  strip (`film-strip.tsx`) and the pure pacing math (`loader-logic.ts`).
-- `hooks/use-app-ready.ts` gates the reveal on hydration only. Remote hero artwork
-  must not hide already usable page content; image components reserve layout and
-  have their own placeholder behavior.
-- The overlay runs `intro` → `exiting` → `done`, reaches 100% when hydration is
-  complete, and exits in 240ms (reduced-motion uses a simple 240ms fade). It has
-  no minimum presentation floor, so it never adds a fixed wait to a fast load.
-- The overlay backdrop uses the same `--page-background-image` as the app canvas,
-  and its animated highlights use `--primary`, so both themes stay visually aligned.
-- Copy lives in `i18n/` (`loader.preparing`, `loader.tagline`); colours, fonts and
-  motion come from `theme/tokens.css` and `theme/utilities.css`.
+The public page renders immediately; no splash overlay waits for hydration. The
+header mark has a small CSS-only reveal on the first load in a tab session. An
+inline, storage-guarded script sets the initial state before styles are applied;
+the page content and hero image stay visible and are never animated behind the
+reveal. Reduced-motion users see the final brand state immediately. Repeating
+marquees pause outside the viewport and when reduced motion is requested.
 
 ## Styling and copy
 
