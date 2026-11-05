@@ -4,6 +4,20 @@ All notable changes to this repository are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/compare/unified-control-center-0.3.0...unified-control-center-0.4.0) (2026-11-05)
+
+
+### Features
+
+* **home:** add viewport hero and motion-aware page controls ([f9c9f06](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/f9c9f0651b194767372bef9255ba6c456cce71d8))
+
+
+### Bug Fixes
+
+* **content:** resolve managed data from shared Supabase config ([7bb37db](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/7bb37dbe730252daf0429a0261b54fd48412abe6))
+* **security:** harden dashboard authorization ([e48ead8](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/e48ead84873d84f29511ed4d57ccefb55b33a0ab))
+* **security:** harden dashboard authorization ([af14afb](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/af14afb3d822e4c1a77152c401d8a58480d7929d))
+
 ## [0.3.0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/compare/unified-control-center-0.2.0...unified-control-center-0.3.0) (2026-11-04)
 
 ### Features
