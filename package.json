@@ -1,6 +1,6 @@
 {
   "name": "unified-control-center",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Bilingual elCinema-style public site with an operator dashboard; ASP.NET Core API planned.",
   "scripts": {

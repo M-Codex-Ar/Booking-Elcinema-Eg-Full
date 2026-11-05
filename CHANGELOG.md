@@ -4,6 +4,14 @@ All notable changes to this repository are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/compare/unified-control-center-0.3.0...unified-control-center-0.3.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **security:** harden dashboard authorization ([e48ead8](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/e48ead84873d84f29511ed4d57ccefb55b33a0ab))
+* **security:** harden dashboard authorization ([af14afb](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/commit/af14afb3d822e4c1a77152c401d8a58480d7929d))
+
 ## [0.3.0](https://github.com/M-Codex-Ar/Booking-Elcinema-Eg-Full/compare/unified-control-center-0.2.0...unified-control-center-0.3.0) (2026-11-04)
 
 
