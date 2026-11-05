@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { isAdmin } from "@/features/auth/auth";
+import { canAccessDashboard } from "@/features/auth/auth";
 
 /**
  * Protected layout for the staff dashboard. Client-only (the session lives
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated")({
     if (!data.user) {
       throw redirect({ to: "/auth", search: { redirect: location.href } });
     }
-    if (!isAdmin(data.user)) {
+    if (!canAccessDashboard(data.user)) {
       const match = location.pathname.match(/^\/(en|ar)(\/|$)/);
       const lang = match ? match[1] : "en";
       throw redirect({ to: `/${lang}` as never });

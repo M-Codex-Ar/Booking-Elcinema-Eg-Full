@@ -3,18 +3,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/services/clients/supabase/types";
 import { requireSupabaseAuth } from "@/services/clients/supabase/auth-middleware";
-import { requireAdminRole } from "@/features/auth/auth";
+import { requireAdminRole, requireContentEditorRole } from "@/features/auth/auth";
+import { z } from "zod";
+import { MANAGED_TABLES, type ManagedTable, validateManagedRowInput } from "./content.validation";
 
-export const MANAGED_TABLES = [
-  "managed_movies",
-  "managed_people",
-  "managed_boxoffice",
-  "managed_channels",
-  "managed_programs",
-  "managed_videos",
-  "managed_lists",
-] as const;
-export type ManagedTable = (typeof MANAGED_TABLES)[number];
+export { MANAGED_TABLES };
+export type { ManagedTable };
 const MANAGED_READ_TIMEOUT_MS = 1_200;
 const MANAGED_CONTENT_CACHE_MS = 30_000;
 
@@ -27,6 +21,8 @@ type ManagedContentPayload = {
   programs: ManagedRowFor<"managed_programs">[];
   videos: ManagedRowFor<"managed_videos">[];
   lists: ManagedRowFor<"managed_lists">[];
+  /** Table names whose reads failed; public pages can still use catalogue fallbacks. */
+  errors?: string[];
 };
 
 let managedContentCache: { value: ManagedContentPayload; expiresAt: number } | undefined;
@@ -53,7 +49,7 @@ function createKeyFetch(supabaseKey: string, requestSignal: AbortSignal): typeof
   };
 }
 
-function emptyManagedContent(): ManagedContentPayload {
+function emptyManagedContent(errors: string[] = []): ManagedContentPayload {
   return {
     movies: [],
     people: [],
@@ -62,6 +58,7 @@ function emptyManagedContent(): ManagedContentPayload {
     programs: [],
     videos: [],
     lists: [],
+    errors,
   };
 }
 
@@ -77,14 +74,21 @@ async function readManagedContent(url: string, key: string): Promise<ManagedCont
     auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
     global: { fetch: createKeyFetch(key, controller.signal) },
   });
-  const q = async <T extends ManagedTable>(table: T): Promise<ManagedRowFor<T>[]> => {
+  const q = async <T extends ManagedTable>(table: T) => {
     try {
       const { data, error } = await supabase.from(table).select("*");
-      return error ? [] : ((data ?? []) as unknown as ManagedRowFor<T>[]);
-    } catch {
+      if (error) {
+        console.warn(`[managed-content] Failed to read ${table}: ${error.message}`);
+        return { rows: [] as ManagedRowFor<T>[], error: table };
+      }
+      return { rows: (data ?? []) as unknown as ManagedRowFor<T>[], error: null };
+    } catch (error) {
       // Managed additions are optional. A slow or unavailable table must not
       // hold up the built-in public catalogue or fail the entire route.
-      return [];
+      console.warn(
+        `[managed-content] Failed to read ${table}: ${error instanceof Error ? error.message : "unknown error"}`,
+      );
+      return { rows: [] as ManagedRowFor<T>[], error: table };
     }
   };
 
@@ -92,7 +96,7 @@ async function readManagedContent(url: string, key: string): Promise<ManagedCont
   const timeoutResult = new Promise<ManagedContentPayload>((resolve) => {
     timeout = setTimeout(() => {
       controller.abort();
-      resolve(emptyManagedContent());
+      resolve(emptyManagedContent(["timeout"]));
     }, MANAGED_READ_TIMEOUT_MS);
   });
   try {
@@ -105,13 +109,16 @@ async function readManagedContent(url: string, key: string): Promise<ManagedCont
       q("managed_videos"),
       q("managed_lists"),
     ]).then(([movies, people, boxoffice, channels, programs, videos, lists]) => ({
-      movies,
-      people,
-      boxoffice,
-      channels,
-      programs,
-      videos,
-      lists,
+      movies: movies.rows,
+      people: people.rows,
+      boxoffice: boxoffice.rows,
+      channels: channels.rows,
+      programs: programs.rows,
+      videos: videos.rows,
+      lists: lists.rows,
+      errors: [movies, people, boxoffice, channels, programs, videos, lists].flatMap((result) =>
+        result.error ? [result.error] : [],
+      ),
     }));
     return await Promise.race([reads, timeoutResult]);
   } finally {
@@ -127,12 +134,16 @@ function refreshManagedContent(url: string, key: string): Promise<ManagedContent
   const promise = readManagedContent(url, key)
     .then((value) => {
       if (generation === managedContentGeneration) {
-        const hasRows = Object.values(value).some((rows) => rows.length > 0);
+        const hasRows = Object.entries(value).some(
+          ([key, rows]) => key !== "errors" && Array.isArray(rows) && rows.length > 0,
+        );
         managedContentCache = {
           value,
-          // Empty results can mean Supabase was briefly unavailable. Retry
-          // those sooner while caching populated content for a short interval.
-          expiresAt: Date.now() + (hasRows ? MANAGED_CONTENT_CACHE_MS : 5_000),
+          // Errors and empty results retry quickly; a real outage must not be
+          // cached as a successful empty catalogue for the full cache window.
+          expiresAt:
+            Date.now() +
+            (value.errors?.length ? 5_000 : hasRows ? MANAGED_CONTENT_CACHE_MS : 5_000),
         };
       }
       return value;
@@ -150,7 +161,7 @@ function refreshManagedContent(url: string, key: string): Promise<ManagedContent
 export const getManagedContent = createServerFn({ method: "GET" }).handler(async () => {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) return emptyManagedContent();
+  if (!url || !key) return emptyManagedContent(["configuration"]);
   if (managedContentCache && managedContentCache.expiresAt > Date.now()) {
     return managedContentCache.value;
   }
@@ -160,30 +171,39 @@ export const getManagedContent = createServerFn({ method: "GET" }).handler(async
     void refreshManagedContent(url, key).catch(() => undefined);
     return managedContentCache.value;
   }
-  return refreshManagedContent(url, key).catch(() => emptyManagedContent());
+  return refreshManagedContent(url, key).catch((error: unknown) => {
+    console.warn(
+      `[managed-content] Read failed: ${error instanceof Error ? error.message : "unknown error"}`,
+    );
+    return emptyManagedContent(["unavailable"]);
+  });
 });
 
 export type ManagedContent = Awaited<ReturnType<typeof getManagedContent>>;
 
-export type ManagedRow = Record<string, unknown> & { id?: string };
-
-/** Staff-only write (RLS: authenticated admin). `row.id` present => update. */
+/** Staff-only write (RLS: authenticated admin/editor); admin-only delete. */
 export const saveManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((input: { table: ManagedTable; row: ManagedRow } | null) => input)
+  .validator(validateManagedRowInput)
   .handler(async ({ data, context }) => {
-    if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
-    requireAdminRole(context.claims as Record<string, unknown> | undefined);
-    const row: Record<string, unknown> = { ...data.row };
-    delete row["created_at"];
-    row["updated_at"] = new Date().toISOString();
-    const id = typeof row["id"] === "string" && row["id"] ? row["id"] : null;
-    delete row["id"];
+    requireContentEditorRole(context.claims as Record<string, unknown> | undefined);
+    const row = { ...data.row, updated_at: new Date().toISOString() };
     const table = context.supabase.from(data.table as never);
-    const { error } = id
-      ? await table.update(row as never).eq("id" as never, id)
-      : await table.insert(row as never);
-    if (error) throw new Error(error.message);
+    const result = data.id
+      ? await table
+          .update(row as never)
+          .eq("id" as never, data.id)
+          .select("id")
+          .maybeSingle()
+      : await table
+          .insert(row as never)
+          .select("id")
+          .single();
+    if (result.error) {
+      console.error(`[managed-content] Failed to save ${data.table}: ${result.error.message}`);
+      throw new Error("Managed content could not be saved.");
+    }
+    if (!result.data) throw new Error("Managed content entry was not found.");
     invalidateManagedContentCache();
     return { ok: true };
   });
@@ -191,15 +211,29 @@ export const saveManagedRow = createServerFn({ method: "POST" })
 /** Staff-only delete (RLS: authenticated admin). */
 export const deleteManagedRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((input: { table: ManagedTable; id: string } | null) => input)
+  .validator((input: unknown) =>
+    z
+      .object({
+        table: z.enum(MANAGED_TABLES as [ManagedTable, ...ManagedTable[]]),
+        id: z.string().uuid(),
+      })
+      .strict()
+      .parse(input),
+  )
   .handler(async ({ data, context }) => {
     if (!data || !MANAGED_TABLES.includes(data.table)) throw new Error("Unknown content table");
     requireAdminRole(context.claims as Record<string, unknown> | undefined);
-    const { error } = await context.supabase
+    const { data: deleted, error } = await context.supabase
       .from(data.table as never)
       .delete()
-      .eq("id", data.id);
-    if (error) throw new Error(error.message);
+      .eq("id", data.id)
+      .select("id")
+      .maybeSingle();
+    if (error) {
+      console.error(`[managed-content] Failed to delete ${data.table}: ${error.message}`);
+      throw new Error("Managed content could not be deleted.");
+    }
+    if (!deleted) throw new Error("Managed content entry was not found.");
     invalidateManagedContentCache();
     return { ok: true };
   });

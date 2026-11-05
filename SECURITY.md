@@ -17,32 +17,33 @@ days; fixes ship as a patch release with an entry in [CHANGELOG.md](CHANGELOG.md
 - The ASP.NET Core phase keeps secrets in user-secrets locally and in the host's secret store in
   production — never in `appsettings.*.json` ([docs/backend.md](docs/backend.md#secrets)).
 
-## Authorization model today
+## Authorization model
 
-| Surface | Guard | Notes |
-| --- | --- | --- |
-| Public read of `managed_*` | Postgres RLS, `select` granted to `anon` | Read-only, publishable rows |
-| Dashboard CRUD | `requireSupabaseAuth` on the server function + `_authenticated/` route gate | Session must exist; no self-serve sign-up |
-| Cron/scrape endpoints | `LOVABLE_CRON_SECRET` shared secret | Secret reserved for the backend phase; the frontend carries no cron module |
+| Surface                    | Guard                                                                                   | Notes                                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Public read of `managed_*` | Postgres RLS, `select` granted to `anon`                                                | Read-only, publishable rows                                                |
+| Dashboard entry            | Trusted Supabase `app_metadata.role` + `_authenticated/` route gate                     | Admin, Editor, Viewer; ordinary users are redirected                       |
+| Managed create/update      | `requireSupabaseAuth`, `requireContentEditorRole`, strict per-table Zod schema, and RLS | Admin and Editor only; the browser never writes managed tables             |
+| Managed delete             | `requireSupabaseAuth`, `requireAdminRole`, and RLS                                      | Admin only                                                                 |
+| Profile roles              | No client update policy; profile is a non-authoritative mirror                          | `user_metadata`, profile fields, and email are never authorization sources |
+| Cron/scrape endpoints      | `LOVABLE_CRON_SECRET` shared secret                                                     | Reserved for the backend phase; the frontend carries no cron module        |
 
-## Known hardening backlog
+The forward-only migration is
+[`0003_harden_staff_authorization.sql`](elcinema/supabase/migrations/0003_harden_staff_authorization.sql).
+Apply migrations before deploying the frontend changes. It removes self-service profile updates,
+replaces the vulnerable role checks, and keeps public content reads unchanged.
 
-Tracked findings from the architecture review, in priority order. Each needs an owner and a PR.
+## Remaining product and operations work
 
-1. **RLS treats every signed-in user as staff.** The `managed_*` policies authorize
-   `authenticated` wholesale, so any account provisioned in Supabase can write operator content.
-   Needs a role claim (e.g. a `staff` JWT metadata check or a `staff_members` table + policy).
-2. **Dashboard writes bypass the guarded server function.** `elcinema/src/elcinema/dashboard/*`
-   still calls the Supabase client directly instead of `saveManagedRow`/`deleteManagedRow`, so the
-   only barrier is RLS. Route mutations through the server function and delete the client path.
-3. **Unvalidated row payloads.** `saveManagedRow` accepts `Record<string, unknown>`; add a Zod
-   schema per managed table (Zod is already a dependency) and reject unknown columns.
-4. **Silent data loss.** `getManagedContent` maps per-table failures to `[]`; surface the error so
-   the dashboard can show it instead of rendering empty sections.
-5. **`.env` with Supabase keys is tracked.** Values are publishable-only today, but the file must
-   be untracked and the keys rotated once any secret lands there.
-6. **Unbounded scrape caches.** Server module caches are `Map`s with no eviction; add a size cap or
-   move caching into the backend phase where a real store exists.
+- **Request-time scraping.** Scraper caches now have a bounded size, but shared caching and
+  ingestion workers remain part of the separately approved backend phase.
+- **Ticket purchasing.** Booking pages show cinema and showtime information; real reservations
+  require a ticket-provider contract, credentials, and a server-side reservation lifecycle.
+- **ASP.NET Core API.** `server-api/` remains specification-only until the owner approves that
+  implementation phase, as stated in `AGENTS.md`.
+- **Live database integration.** RLS regression tests are in
+  `elcinema/supabase/tests/0003_staff_authorization.test.sql` and require local Supabase services.
+  Vitest separately covers role guards and payload validation.
 
 ## Dependencies
 

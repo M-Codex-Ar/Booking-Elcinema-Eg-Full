@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { getUserRole, isAdmin, getUserDisplayName, describeAuthError } from "@/features/auth/auth";
+import {
+  canAccessDashboard,
+  canEditManagedContent,
+  describeAuthError,
+  getRoleFromClaims,
+  getUserDisplayName,
+  getUserRole,
+  isAdmin,
+  requireAdminRole,
+  requireContentEditorRole,
+} from "@/features/auth/auth";
 import type { User } from "@supabase/supabase-js";
 
 function mockUser(overrides: Partial<User> = {}): User {
@@ -23,13 +33,14 @@ describe("Supabase Auth Roles & Helpers", () => {
     expect(isAdmin(adminUser)).toBe(true);
   });
 
-  it("detects admin from user_metadata", () => {
+  it("does not trust user-editable metadata for authorization", () => {
     const adminUser = mockUser({
       user_metadata: { role: "admin" },
       email: "staff@example.com",
     });
-    expect(getUserRole(adminUser)).toBe("admin");
-    expect(isAdmin(adminUser)).toBe(true);
+    expect(getUserRole(adminUser)).toBe("user");
+    expect(isAdmin(adminUser)).toBe(false);
+    expect(canAccessDashboard(adminUser)).toBe(false);
   });
 
   it("does not grant admin from email alone (role must come from metadata)", () => {
@@ -48,6 +59,26 @@ describe("Supabase Auth Roles & Helpers", () => {
     });
     expect(getUserRole(regularUser)).toBe("user");
     expect(isAdmin(regularUser)).toBe(false);
+  });
+
+  it("grants role capabilities only from trusted app_metadata", () => {
+    const editor = mockUser({ app_metadata: { role: "editor" } });
+    const viewer = mockUser({ app_metadata: { role: "viewer" } });
+    expect(canAccessDashboard(editor)).toBe(true);
+    expect(canEditManagedContent(editor)).toBe(true);
+    expect(isAdmin(editor)).toBe(false);
+    expect(canAccessDashboard(viewer)).toBe(true);
+    expect(canEditManagedContent(viewer)).toBe(false);
+    expect(getRoleFromClaims({ user_metadata: { role: "admin" } })).toBe("user");
+  });
+
+  it("enforces editor writes and admin-only deletes on the server", () => {
+    expect(() => requireContentEditorRole({ app_metadata: { role: "editor" } })).not.toThrow();
+    expect(() => requireContentEditorRole({ app_metadata: { role: "viewer" } })).toThrow(
+      "Forbidden",
+    );
+    expect(() => requireAdminRole({ app_metadata: { role: "editor" } })).toThrow("Forbidden");
+    expect(() => requireAdminRole({ user_metadata: { role: "admin" } })).toThrow("Forbidden");
   });
 
   it("handles null or undefined user safely", () => {
