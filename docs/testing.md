@@ -40,14 +40,16 @@ and never commit the key.
 
 ## What is covered
 
-| Suite | Protects |
-| --- | --- |
-| [`elcinema-data.test.ts`](../elcinema/src/test/elcinema-data.test.ts) | The shipped catalogue: a real now/soon slate, every movie bilingual and complete, unique numeric work/person ids, **every poster and photo resolves in the local asset manifest**, real ratings and showtimes, 12-hour showtime formatting, the TV guide snapshot, the weekly box-office label, search returning numeric ids, legacy slug maps staying in sync. |
-| [`managed-content.test.ts`](../elcinema/src/test/managed-content.test.ts) | The merge and duplicate rules in `content.ts` — precedence per collection, `m-` refs and field fallbacks, managed channels entering the grid, a managed box-office row overriding the scraped one, a duplicate channel name being skipped, search never listing a title twice, the homepage leading with managed content, and the built-in duplicate warnings the dashboard shows. |
-| [`live-parser.test.ts`](../elcinema/src/test/live-parser.test.ts) | The cheerio parsers against stored fixtures: work page title/edition/year, poster, rating, votes, hidden synopsis continuation, credits as person refs, both showtime days, cast cards, videos, filmography without duplicate credits; video page embed + related, gallery sections. |
-| [`home-parser.test.ts`](../elcinema/src/test/home-parser.test.ts) | Homepage parse: promo carousel, cinema movies with booking link, box-office table, lists table. |
-| [`live-links.test.ts`](../elcinema/src/test/live-links.test.ts) | `cardLink()` keeps every elcinema path inside the app — works, people, booking, videos, watch-online, lineups, unknown paths — and only other-host links go external, in a new tab. |
-| [`app-routing.test.tsx`](../elcinema/src/test/app-routing.test.tsx) | Route matching: `/` resolves, both language editions resolve for every public page, numeric-id detail routes match, legacy slug URLs still match. |
+| Suite                                                                                           | Protects                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`elcinema-data.test.ts`](../elcinema/src/test/elcinema-data.test.ts)                           | The shipped catalogue: a real now/soon slate, every movie bilingual and complete, unique numeric work/person ids, **every poster and photo resolves in the local asset manifest**, real ratings and showtimes, 12-hour showtime formatting, the TV guide snapshot, the weekly box-office label, search returning numeric ids, legacy slug maps staying in sync.                    |
+| [`managed-content.test.ts`](../elcinema/src/test/managed-content.test.ts)                       | The merge and duplicate rules in `content.ts` — precedence per collection, `m-` refs and field fallbacks, managed channels entering the grid, a managed box-office row overriding the scraped one, a duplicate channel name being skipped, search never listing a title twice, the homepage leading with managed content, and the built-in duplicate warnings the dashboard shows. |
+| [`managed-content-validation.test.ts`](../elcinema/src/test/managed-content-validation.test.ts) | Strict managed-row validation: unknown-column rejection, valid movie payloads, and invalid ranges, status values, URLs, schedule windows, IDs and table names.                                                                                                                                                                                                                     |
+| [`auth.test.ts`](../elcinema/src/test/auth.test.ts)                                             | Trusted-role checks: editable user metadata cannot grant dashboard or content access; admin/editor/viewer capabilities stay distinct.                                                                                                                                                                                                                                              |
+| [`live-parser.test.ts`](../elcinema/src/test/live-parser.test.ts)                               | The cheerio parsers against stored fixtures: work page title/edition/year, poster, rating, votes, hidden synopsis continuation, credits as person refs, both showtime days, cast cards, videos, filmography without duplicate credits; video page embed + related, gallery sections.                                                                                               |
+| [`home-parser.test.ts`](../elcinema/src/test/home-parser.test.ts)                               | Homepage parse: promo carousel, cinema movies with booking link, box-office table, lists table.                                                                                                                                                                                                                                                                                    |
+| [`live-links.test.ts`](../elcinema/src/test/live-links.test.ts)                                 | `cardLink()` keeps every elcinema path inside the app — works, people, booking, videos, watch-online, lineups, unknown paths — and only other-host links go external, in a new tab.                                                                                                                                                                                                |
+| [`app-routing.test.tsx`](../elcinema/src/test/app-routing.test.tsx)                             | Route matching: `/` resolves, both language editions resolve for every public page, numeric-id detail routes match, legacy slug URLs still match.                                                                                                                                                                                                                                  |
 
 Parser tests are the reason scraping survives: each one feeds stored HTML and
 asserts the typed result, so an elcinema.com markup change is a failing test rather
@@ -62,9 +64,9 @@ Stated plainly so nobody reads a green suite as full assurance.
   `scripts/responsive-audit.mjs` (below) measures real rendering in a real browser, but
   it is run out of band — it needs a Chrome with a debugging port and the dev server, so
   it is not wired into `Web CI`.
-- **Server functions and Supabase.** No test touches a real or mocked database;
-  `getManagedContent`'s error handling and `saveManagedRow`'s validation are
-  untested — exactly the areas in the security backlog.
+- **Server functions and Supabase.** `getManagedContent` network failures are not integration-tested.
+  RLS behavior has a pgTAP regression suite at
+  `elcinema/supabase/tests/0003_staff_authorization.test.sql` and requires local Supabase services.
 - **Interaction.** Rails, the carousel, the guide's scroll behaviour, the theme
   toggle and the booking flow have no tests.
 - **Styling contract.** Nothing asserts that a component avoided a literal colour
@@ -75,16 +77,16 @@ Stated plainly so nobody reads a green suite as full assurance.
 
 ## What to test when you change something
 
-| You changed | Add/adjust |
-| --- | --- |
-| A merge rule in `content.ts` | A case per precedence direction, and the duplicate case, in `managed-content.test.ts` |
-| A parser in `*.server.ts` | A fixture-based assertion in the matching `*-parser.test.ts` — assert the field, not that the call returned |
-| A scraped link's destination | `live-links.test.ts` |
-| A route | `app-routing.test.tsx`, including the *other* language edition |
-| A primitive or recipe | A render test with Testing Library; assert role/name/label, not class strings |
-| A page's sizing, a shared utility or a control's hit area | `elcinema/scripts/responsive-audit.mjs` at 360/768/1440, both editions and both themes (see below) |
-| An `i18n/` key | The type system catches a missing key; assert both languages are non-empty in a cheap table test |
-| A server function | Unit-test validation and error mapping with an injected client; do not hit Supabase from CI |
+| You changed                                               | Add/adjust                                                                                                  |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| A merge rule in `content.ts`                              | A case per precedence direction, and the duplicate case, in `managed-content.test.ts`                       |
+| A parser in `*.server.ts`                                 | A fixture-based assertion in the matching `*-parser.test.ts` — assert the field, not that the call returned |
+| A scraped link's destination                              | `live-links.test.ts`                                                                                        |
+| A route                                                   | `app-routing.test.tsx`, including the _other_ language edition                                              |
+| A primitive or recipe                                     | A render test with Testing Library; assert role/name/label, not class strings                               |
+| A page's sizing, a shared utility or a control's hit area | `elcinema/scripts/responsive-audit.mjs` at 360/768/1440, both editions and both themes (see below)          |
+| An `i18n/` key                                            | The type system catches a missing key; assert both languages are non-empty in a cheap table test            |
+| A server function                                         | Unit-test validation and error mapping with an injected client; do not hit Supabase from CI                 |
 
 ## How to verify honestly
 

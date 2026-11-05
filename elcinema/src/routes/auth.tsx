@@ -17,7 +17,7 @@ import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
 import type { Lang } from "@/types/home";
 import { makeT } from "@/i18n";
-import { isAdmin, describeAuthError } from "@/features/auth/auth";
+import { canAccessDashboard, describeAuthError } from "@/features/auth/auth";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -134,11 +134,11 @@ function AuthPage() {
       }
 
       toast.success(t("auth.welcome"));
-      const admin = isAdmin(data.user);
+      const staff = canAccessDashboard(data.user);
       let target = safePath(redirect);
-      if (admin && (!redirect || target === "/en" || target === "/ar")) {
+      if (staff && (!redirect || target === "/en" || target === "/ar")) {
         target = `/${lang}/dashboard`;
-      } else if (!admin && target.includes("/dashboard")) {
+      } else if (!staff && target.includes("/dashboard")) {
         target = `/${lang}`;
       }
       window.location.assign(target);

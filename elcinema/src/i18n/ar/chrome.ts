@@ -5,6 +5,8 @@ export const arChrome = {
   "chrome.signOut": "خروج",
   "chrome.search": "ابحث",
   "chrome.dashboard": "لوحة التحكم",
+  "dashboard.managedReadFailed":
+    "تعذر تحميل بعض المحتوى المُدار. لا يزال الكتالوج الأساسي متاحًا؛ حاول تحديث الصفحة.",
   "chrome.switchTo": "English",
   "chrome.menu": "القائمة",
   "chrome.close": "إغلاق",
@@ -59,6 +61,8 @@ export const arChrome = {
   "auth.backToSite": "العودة للموقع",
   "auth.unauthorized": "يتطلب الوصول إلى لوحة التحكم صلاحيات المشرف.",
   "auth.adminRole": "مشرف",
+  "auth.editorRole": "محرر",
+  "auth.viewerRole": "مشاهد",
   "auth.userRole": "مستخدم",
   "footer.siteDesc":
     "دليل السينما والتلفاز المصري — أفلام، مواعيد عرض، جداول القنوات، مراجعات والمزيد.",

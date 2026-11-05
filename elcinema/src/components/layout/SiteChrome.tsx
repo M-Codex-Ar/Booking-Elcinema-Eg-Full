@@ -14,7 +14,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { SiteMenu, NAV_GROUPS, type NavGroup } from "@/components/layout/SiteMenu";
 import { AuthDialog } from "@/features/auth/AuthDialog";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
-import { isAdmin, getUserDisplayName } from "@/features/auth/auth";
+import { canAccessDashboard, getUserDisplayName, getUserRole } from "@/features/auth/auth";
 import { makeT, otherLang } from "@/i18n";
 import {
   DropdownMenu,
@@ -246,9 +246,18 @@ export function SiteHeader({ lang }: { lang: Lang }) {
 function AccountMenu({ user, lang }: { user: SupabaseUser; lang: Lang }) {
   const t = makeT(lang);
   const navigate = useNavigate();
-  const admin = isAdmin(user);
+  const role = getUserRole(user);
+  const canAccessStaffDashboard = canAccessDashboard(user);
   const name = getUserDisplayName(user) || t("auth.userRole");
   const initial = (name[0] || "?").toUpperCase();
+  const roleLabel =
+    role === "admin"
+      ? t("auth.adminRole")
+      : role === "editor"
+        ? t("auth.editorRole")
+        : role === "viewer"
+          ? t("auth.viewerRole")
+          : t("auth.userRole");
 
   const signOut = async () => {
     if (isSupabaseConfigured()) {
@@ -274,9 +283,9 @@ function AccountMenu({ user, lang }: { user: SupabaseUser; lang: Lang }) {
         <span className="hidden min-w-0 leading-tight md:block">
           <span className="block max-w-[10rem] truncate text-xs font-bold">{name}</span>
           <span
-            className={`block text-[10px] font-bold ${admin ? "text-primary" : "text-muted-foreground"}`}
+            className={`block text-[10px] font-bold ${canAccessStaffDashboard ? "text-primary" : "text-muted-foreground"}`}
           >
-            {admin ? t("auth.adminRole") : t("auth.userRole")}
+            {roleLabel}
           </span>
         </span>
         <ChevronDown
@@ -297,7 +306,7 @@ function AccountMenu({ user, lang }: { user: SupabaseUser; lang: Lang }) {
             </span>
           ) : null}
         </DropdownMenuLabel>
-        {admin && (
+        {canAccessStaffDashboard && (
           <DropdownMenuItem
             onSelect={() => void navigate({ to: `/${lang}/dashboard` as never })}
             className="cursor-pointer gap-2 rounded-lg py-2 font-semibold"

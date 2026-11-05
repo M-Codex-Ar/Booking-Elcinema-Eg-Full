@@ -5,6 +5,8 @@ export const enChrome = {
   "chrome.signOut": "Sign out",
   "chrome.search": "Search",
   "chrome.dashboard": "Dashboard",
+  "dashboard.managedReadFailed":
+    "Some managed content could not be loaded. The built-in catalogue remains available; try refreshing this page.",
   "chrome.switchTo": "عربي",
   "chrome.menu": "Menu",
   "chrome.close": "Close",
@@ -61,6 +63,8 @@ export const enChrome = {
   "auth.backToSite": "Back to the site",
   "auth.unauthorized": "Admin privileges required to access the dashboard.",
   "auth.adminRole": "Admin",
+  "auth.editorRole": "Editor",
+  "auth.viewerRole": "Viewer",
   "auth.userRole": "User",
   "footer.siteDesc":
     "Egypt's premier cinema & TV guide — movies, showtimes, TV schedules, reviews and more.",

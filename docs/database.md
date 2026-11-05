@@ -3,11 +3,11 @@
 Three kinds of content with three different lifetimes. Confusing them is the main
 source of bugs in this codebase, so the distinction is stated first.
 
-| Kind | Where it lives | How it changes | Read by |
-| --- | --- | --- | --- |
-| **Catalogue** | `elcinema/src/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app |
-| **Operator content** | Supabase Postgres, `managed_*` tables | By an operator in the dashboard | `getManagedContent` server function, once per page tree |
-| **Live elCinema content** | Nowhere durable — parsed per request from elcinema.com | Whenever elcinema.com changes | `*.server.ts` behind `*.functions.ts` |
+| Kind                      | Where it lives                                         | How it changes                  | Read by                                                 |
+| ------------------------- | ------------------------------------------------------ | ------------------------------- | ------------------------------------------------------- |
+| **Catalogue**             | `elcinema/src/data/*.json`, committed                  | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app    |
+| **Operator content**      | Supabase Postgres, `managed_*` tables                  | By an operator in the dashboard | `getManagedContent` server function, once per page tree |
+| **Live elCinema content** | Nowhere durable — parsed per request from elcinema.com | Whenever elcinema.com changes   | `*.server.ts` behind `*.functions.ts`                   |
 
 The catalogue is the floor: the site renders fully with the database unreachable
 and the scraper broken. That property is worth protecting — do not make a public
@@ -30,18 +30,41 @@ Created by
 [`content.functions.ts`](../elcinema/src/features/content/content.functions.ts) is the
 authoritative list the read endpoint iterates.
 
-| Table | Columns that matter | Constraints |
-| --- | --- | --- |
-| `managed_movies` | `title_en`, `title_ar`, `genre`, `year`, `release_date`, `status`, `rating`, `runtime`, `cert`, `director_*`, `synopsis_*`, `poster_url` | `status IN ('now','soon')`; `id uuid` default `gen_random_uuid()` |
-| `managed_people` | `name_en/ar`, `role_en/ar`, `bio`, `photo_url` | |
-| `managed_boxoffice` | `title_en/ar`, `weekly_egp numeric(12,2)`, `total_egp`, `note` | |
-| `managed_channels` | `name_en/ar`, `category` (default `general`), `logo_url` | |
-| `managed_programs` | `channel_id → managed_channels(id)`, `title_en/ar`, `start_min`, `end_min`, `meta` | `start_min 0–1439`, `end_min 1–1440`, `end_min > start_min`, `ON DELETE CASCADE`, index `(channel_id, start_min)` |
-| `managed_videos` | `title_en/ar`, `url` (not null), `thumb_url`, `duration` | |
-| `managed_lists` | `title_en/ar`, `items jsonb` default `[]` | Free-form — the one table with no column-level shape |
+| Table               | Columns that matter                                                                                                                      | Constraints                                                                                                       |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `managed_movies`    | `title_en`, `title_ar`, `genre`, `year`, `release_date`, `status`, `rating`, `runtime`, `cert`, `director_*`, `synopsis_*`, `poster_url` | `status IN ('now','soon')`; `id uuid` default `gen_random_uuid()`                                                 |
+| `managed_people`    | `name_en/ar`, `role_en/ar`, `bio`, `photo_url`                                                                                           |                                                                                                                   |
+| `managed_boxoffice` | `title_en/ar`, `weekly_egp numeric(12,2)`, `total_egp`, `note`                                                                           |                                                                                                                   |
+| `managed_channels`  | `name_en/ar`, `category` (default `general`), `logo_url`                                                                                 |                                                                                                                   |
+| `managed_programs`  | `channel_id → managed_channels(id)`, `title_en/ar`, `start_min`, `end_min`, `meta`                                                       | `start_min 0–1439`, `end_min 1–1440`, `end_min > start_min`, `ON DELETE CASCADE`, index `(channel_id, start_min)` |
+| `managed_videos`    | `title_en/ar`, `url` (not null), `thumb_url`, `duration`                                                                                 |                                                                                                                   |
+| `managed_lists`     | `title_en/ar`, `items jsonb` default `[]`                                                                                                | Free-form — the one table with no column-level shape                                                              |
 
 Every table carries `created_at` / `updated_at timestamptz` defaults. `updated_at`
 is **not** auto-maintained; a write path must set it, or the value lies.
+
+## Managed-content authorization
+
+[`supabase/migrations/0003_harden_staff_authorization.sql`](../elcinema/supabase/migrations/0003_harden_staff_authorization.sql)
+is the forward-only security migration. Apply it after `0002_add_user_roles.sql` before deploying
+the corresponding frontend. Supabase Auth `app_metadata.role` is the only role source used by
+server guards and Postgres RLS; never trust `user_metadata.role`, profile values, or email addresses
+for authorization. `profiles.role` is a read-only mirror for the authenticated profile owner.
+
+| Role                           | Dashboard       | Managed rows           |
+| ------------------------------ | --------------- | ---------------------- |
+| Admin                          | Read and manage | Create, update, delete |
+| Editor                         | Read and manage | Create and update      |
+| Viewer                         | Read-only       | Read only              |
+| User / missing or invalid role | No dashboard    | Public read only       |
+
+The UI hides controls a role cannot use, but server guards and RLS remain the enforcement boundary.
+`saveManagedRow` validates each collection with a strict Zod schema before writing;
+`deleteManagedRow` is admin-only.
+
+Provision or change staff roles only through trusted Supabase Auth administration (`app_metadata`),
+then have the account refresh its session. Never set a role from the browser or copy it into
+`user_metadata` as an authorization source.
 
 ### Row → domain mapping
 
@@ -59,18 +82,18 @@ The single place operator and catalogue content combine is
 [`elcinema/src/features/content/content.ts`](../elcinema/src/features/content/content.ts). Pages
 must not query `managed_*` themselves.
 
-| Function | Precedence | Dedupe key |
-| --- | --- | --- |
-| `allMovies` | Managed (DB) first; a managed movie whose title matches a built-in one **wins**, keeping one detail page per film (catalogue is the offline floor) | normalised `title.en` |
-| `mergedNowPlaying` | **Managed `now` entries lead**, then built-in — an operator addition appears immediately | first wins |
-| `mergedComingSoon` | Managed `soon` lead for duplicate precedence, then re-sorted by release date | first wins, then `release` asc |
-| `mergedBoxoffice` | **Managed rows lead** so a corrected figure overrides the scraped one | `title.en` |
-| `mergedTvGuide` | Built-in lines first; managed channels appended only when the name is new and the channel has at least one program; grid window widens to cover managed slots | normalised channel name |
-| `mergedSearch` | Managed people, movies and channels (built-in matches are filtered by the caller) | — |
-| `mergedHomeData` | Managed content injected into the scraped home payload | — |
+| Function           | Precedence                                                                                                                                                    | Dedupe key                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `allMovies`        | Managed (DB) first; a managed movie whose title matches a built-in one **wins**, keeping one detail page per film (catalogue is the offline floor)            | normalised `title.en`          |
+| `mergedNowPlaying` | **Managed `now` entries lead**, then built-in — an operator addition appears immediately                                                                      | first wins                     |
+| `mergedComingSoon` | Managed `soon` lead for duplicate precedence, then re-sorted by release date                                                                                  | first wins, then `release` asc |
+| `mergedBoxoffice`  | **Managed rows lead** so a corrected figure overrides the scraped one                                                                                         | `title.en`                     |
+| `mergedTvGuide`    | Built-in lines first; managed channels appended only when the name is new and the channel has at least one program; grid window widens to cover managed slots | normalised channel name        |
+| `mergedSearch`     | Managed people, movies and channels (built-in matches are filtered by the caller)                                                                             | —                              |
+| `mergedHomeData`   | Managed content injected into the scraped home payload                                                                                                        | —                              |
 
 `dedupeByTitle` keeps the **first** occurrence, which is why the array order in
-each function *is* the precedence rule. Changing the order silently changes which
+each function _is_ the precedence rule. Changing the order silently changes which
 source wins — the comments above each function are load-bearing.
 
 `matchesBuiltinMovie()` / `matchesBuiltinPerson()` exist so the dashboard can warn

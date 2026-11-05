@@ -70,6 +70,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/services/clients/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase-env";
+import { canEditManagedContent, isAdmin } from "@/features/auth/auth";
+import { makeT } from "@/i18n";
 import { managedContentOptions } from "@/features/content/content.options";
 import {
   allMovies,
@@ -131,6 +133,14 @@ function CloseOnMobile({ children, onClick, ...rest }: React.ComponentProps<"but
 
 export function DashboardPage({ lang }: { lang: Lang }) {
   const { data: managed } = useQuery(managedContentOptions);
+  const { data: user } = useQuery({
+    queryKey: ["dashboard-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user,
+    staleTime: 60_000,
+  });
+  const canEdit = canEditManagedContent(user);
+  const canDelete = isAdmin(user);
+  const t = makeT(lang);
   const [section, setSection] = useState<string>("stats");
 
   const merged = managed ?? null;
@@ -297,6 +307,14 @@ export function DashboardPage({ lang }: { lang: Lang }) {
             <ThemeToggle lang={lang} />
           </header>
           <main className="min-w-0 flex-1 p-3 sm:p-6">
+            {managed?.errors?.length ? (
+              <div
+                role="status"
+                className="mb-5 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-foreground"
+              >
+                {t("dashboard.managedReadFailed")}
+              </div>
+            ) : null}
             {managed === undefined && (
               <p className="py-10 text-center text-sm text-muted-foreground">
                 {L(lang, "Loading your content…", "جارٍ تحميل المحتوى…")}
@@ -425,7 +443,7 @@ export function DashboardPage({ lang }: { lang: Lang }) {
             )}
 
             {managed !== undefined && section === "movies" && (
-              <MoviesManager lang={lang} data={managed} />
+              <MoviesManager lang={lang} data={managed} canEdit={canEdit} canDelete={canDelete} />
             )}
             {managed !== undefined && section === "catalogue" && (
               <div className="space-y-8">
@@ -434,25 +452,35 @@ export function DashboardPage({ lang }: { lang: Lang }) {
               </div>
             )}
             {managed !== undefined && section === "people" && (
-              <PeopleManager lang={lang} data={managed} />
+              <PeopleManager lang={lang} data={managed} canEdit={canEdit} canDelete={canDelete} />
             )}
             {managed !== undefined && section === "boxoffice" && (
               <div className="space-y-8">
-                <BoxOfficeManager lang={lang} data={managed} />
+                <BoxOfficeManager
+                  lang={lang}
+                  data={managed}
+                  canEdit={canEdit}
+                  canDelete={canDelete}
+                />
                 <BoxOfficeSection lang={lang} />
               </div>
             )}
             {managed !== undefined && section === "tv" && (
               <div className="space-y-8">
-                <ChannelsManager lang={lang} data={managed} />
+                <ChannelsManager
+                  lang={lang}
+                  data={managed}
+                  canEdit={canEdit}
+                  canDelete={canDelete}
+                />
                 <ChannelsSection lang={lang} />
               </div>
             )}
             {managed !== undefined && section === "videos" && (
-              <VideosManager lang={lang} data={managed} />
+              <VideosManager lang={lang} data={managed} canEdit={canEdit} canDelete={canDelete} />
             )}
             {managed !== undefined && section === "lists" && (
-              <ListsManager lang={lang} data={managed} />
+              <ListsManager lang={lang} data={managed} canEdit={canEdit} canDelete={canDelete} />
             )}
 
             {section === "live" && (

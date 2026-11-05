@@ -30,6 +30,7 @@ import { pickArtwork } from "@/types/media";
 import { BOXOFFICE, boxofficeDate, MOVIES, TV_GUIDE_DATA } from "@/lib/data";
 import { img } from "@/lib/images";
 import artworkJson from "@/data/artwork.json";
+import { setBounded } from "@/lib/bounded-map";
 
 /**
  * First-party artwork already mirrored into `public/images/`, keyed by kind and
@@ -47,6 +48,7 @@ const FETCH_TIMEOUT_MS = 4_000;
 const STALE_TTL_MS = 60 * 60 * 1000;
 const HOME_LIVE_BUDGET_MS = 1_200;
 const HOME_FALLBACK_TTL_MS = 15_000;
+const CACHE_MAX_ENTRIES = 64;
 
 const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
 const inFlight = new Map<string, Promise<string>>();
@@ -75,11 +77,16 @@ function refreshPage(key: string, path: string): Promise<string> {
     if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
     const html = await res.text();
     const now = Date.now();
-    cache.set(key, {
-      data: html,
-      expires: now + CACHE_TTL_MS,
-      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
-    });
+    setBounded(
+      cache,
+      key,
+      {
+        data: html,
+        expires: now + CACHE_TTL_MS,
+        staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+      },
+      CACHE_MAX_ENTRIES,
+    );
     return html;
   })().finally(() => inFlight.delete(key));
   inFlight.set(key, request);
@@ -533,22 +540,32 @@ async function refreshHomeData(key: string): Promise<EcHomeData> {
   // that same stale snapshot into a new ten-minute homepage cache.
   const data = parseHomePage(await refreshPage(`page:${HOME_PATH}`, HOME_PATH));
   const now = Date.now();
-  cache.set(key, {
-    data,
-    expires: now + CACHE_TTL_MS,
-    staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
-  });
+  setBounded(
+    cache,
+    key,
+    {
+      data,
+      expires: now + CACHE_TTL_MS,
+      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+    },
+    CACHE_MAX_ENTRIES,
+  );
 
   // Enrichment is useful metadata, but must not hold up the homepage.
   void enrichBornToday(data.bornToday)
     .then((bornToday) => {
       const enriched = { ...data, bornToday };
       const enrichedAt = Date.now();
-      cache.set(key, {
-        data: enriched,
-        expires: enrichedAt + CACHE_TTL_MS,
-        staleUntil: enrichedAt + CACHE_TTL_MS + STALE_TTL_MS,
-      });
+      setBounded(
+        cache,
+        key,
+        {
+          data: enriched,
+          expires: enrichedAt + CACHE_TTL_MS,
+          staleUntil: enrichedAt + CACHE_TTL_MS + STALE_TTL_MS,
+        },
+        CACHE_MAX_ENTRIES,
+      );
     })
     .catch(() => undefined);
   return data;
@@ -576,10 +593,15 @@ export async function getHomePage(): Promise<EcHomeData> {
 
   const fallback = fallbackHomeData();
   const fallbackAt = Date.now();
-  cache.set(key, {
-    data: fallback,
-    expires: fallbackAt + HOME_FALLBACK_TTL_MS,
-    staleUntil: fallbackAt + STALE_TTL_MS,
-  });
+  setBounded(
+    cache,
+    key,
+    {
+      data: fallback,
+      expires: fallbackAt + HOME_FALLBACK_TTL_MS,
+      staleUntil: fallbackAt + STALE_TTL_MS,
+    },
+    CACHE_MAX_ENTRIES,
+  );
   return fallback;
 }

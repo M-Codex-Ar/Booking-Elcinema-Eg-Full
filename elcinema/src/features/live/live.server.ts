@@ -27,6 +27,7 @@ import type {
 } from "@/types/live";
 import { pickArtwork, toArtworkUrl } from "@/types/media";
 import { getFallbackPage } from "@/lib/fallback-content";
+import { setBounded } from "@/lib/bounded-map";
 
 const BASE = "https://elcinema.com";
 const UA =
@@ -35,6 +36,7 @@ const CACHE_TTL_MS = 10 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 4_000;
 const STATIC_PAGE_LIVE_BUDGET_MS = 1_200;
 const STALE_TTL_MS = 60 * 60 * 1000;
+const CACHE_MAX_ENTRIES = 64;
 
 const cache = new Map<string, { data: unknown; expires: number; staleUntil: number }>();
 const inFlight = new Map<string, Promise<string>>();
@@ -61,11 +63,16 @@ function refreshPage(key: string, path: string): Promise<string> {
     if (!res.ok) throw new Error(`elcinema request failed [${res.status}] for ${path}`);
     const html = await res.text();
     const now = Date.now();
-    cache.set(key, {
-      data: html,
-      expires: now + CACHE_TTL_MS,
-      staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
-    });
+    setBounded(
+      cache,
+      key,
+      {
+        data: html,
+        expires: now + CACHE_TTL_MS,
+        staleUntil: now + CACHE_TTL_MS + STALE_TTL_MS,
+      },
+      CACHE_MAX_ENTRIES,
+    );
     return html;
   })().finally(() => inFlight.delete(key));
   inFlight.set(key, request);

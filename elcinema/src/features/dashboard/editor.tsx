@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/services/clients/supabase/client";
+import { deleteManagedRow, saveManagedRow } from "@/features/content/content.functions";
 import { DataTable, type Col } from "./DataTable";
 import { matchesBuiltinMovie, matchesBuiltinPerson } from "@/features/content/content";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -212,6 +212,8 @@ interface CrudSpec<T extends { id: string }> {
   editTitle: string;
   addTitle: string;
   extra?: React.ReactNode;
+  canEdit: boolean;
+  canDelete: boolean;
 }
 
 function useContentInvalidator() {
@@ -220,8 +222,21 @@ function useContentInvalidator() {
 }
 
 export function CrudSection<T extends { id: string }>(spec: CrudSpec<T>) {
-  const { lang, table, rows, cols, fields, blank, toForm, toRow, addLabel, addTitle, editTitle } =
-    spec;
+  const {
+    lang,
+    table,
+    rows,
+    cols,
+    fields,
+    blank,
+    toForm,
+    toRow,
+    addLabel,
+    addTitle,
+    editTitle,
+    canEdit,
+    canDelete,
+  } = spec;
   const invalidate = useContentInvalidator();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<T | null>(null);
@@ -230,13 +245,7 @@ export function CrudSection<T extends { id: string }>(spec: CrudSpec<T>) {
     mutationFn: async (values: Form) => {
       const payload = toRow(values, editing);
       const id = editing?.id;
-      const { error } = id
-        ? await supabase
-            .from(table)
-            .update(payload as never)
-            .eq("id" as never, id)
-        : await supabase.from(table).insert(payload as never);
-      if (error) throw new Error(error.message);
+      await saveManagedRow({ data: { table, row: payload, ...(id ? { id } : {}) } });
     },
     onSuccess: () => {
       toast.success(L(lang, "Saved", "تم الحفظ"));
@@ -248,8 +257,7 @@ export function CrudSection<T extends { id: string }>(spec: CrudSpec<T>) {
   });
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(table).delete().eq("id", id);
-      if (error) throw new Error(error.message);
+      await deleteManagedRow({ data: { table, id } });
     },
     onSuccess: () => {
       toast.success(L(lang, "Deleted", "تم الحذف"));
@@ -264,31 +272,35 @@ export function CrudSection<T extends { id: string }>(spec: CrudSpec<T>) {
     value: () => "",
     render: (row) => (
       <div className="flex items-center justify-end gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          aria-label={L(lang, "Edit", "تعديل")}
-          onClick={() => {
-            setEditing(row);
-            setForm(toForm(row));
-            setOpen(true);
-          }}
-        >
-          <Pencil className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-destructive"
-          aria-label={L(lang, "Delete", "حذف")}
-          onClick={() => {
-            if (window.confirm(L(lang, "Delete this entry?", "حذف هذا العنصر؟")))
-              remove.mutate(row.id);
-          }}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        {canEdit && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            aria-label={L(lang, "Edit", "تعديل")}
+            onClick={() => {
+              setEditing(row);
+              setForm(toForm(row));
+              setOpen(true);
+            }}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        )}
+        {canDelete && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-destructive"
+            aria-label={L(lang, "Delete", "حذف")}
+            onClick={() => {
+              if (window.confirm(L(lang, "Delete this entry?", "حذف هذا العنصر؟")))
+                remove.mutate(row.id);
+            }}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     ),
   };
@@ -298,33 +310,41 @@ export function CrudSection<T extends { id: string }>(spec: CrudSpec<T>) {
         <span className="text-sm text-muted-foreground">
           {rows.length} {L(lang, "entries", "عنصر")}
         </span>
-        <Button
-          className="ms-auto"
-          onClick={() => {
-            setEditing(null);
-            setForm(blank);
-            setOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4" /> {addLabel}
-        </Button>
+        {canEdit && (
+          <Button
+            className="ms-auto"
+            onClick={() => {
+              setEditing(null);
+              setForm(blank);
+              setOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" /> {addLabel}
+          </Button>
+        )}
       </div>
       {spec.extra}
-      <DataTable lang={lang} rows={rows} cols={[...cols, actionCol]} />
-      <RowDialog
-        key={editing?.id ?? "new"}
+      <DataTable
         lang={lang}
-        title={editing ? editTitle : addTitle}
-        fields={fields}
-        initial={form}
-        open={open}
-        busy={save.isPending}
-        onClose={() => {
-          setOpen(false);
-          setEditing(null);
-        }}
-        onSubmit={(f) => save.mutate(f)}
+        rows={rows}
+        cols={canEdit || canDelete ? [...cols, actionCol] : cols}
       />
+      {canEdit && (
+        <RowDialog
+          key={editing?.id ?? "new"}
+          lang={lang}
+          title={editing ? editTitle : addTitle}
+          fields={fields}
+          initial={form}
+          open={open}
+          busy={save.isPending}
+          onClose={() => {
+            setOpen(false);
+            setEditing(null);
+          }}
+          onSubmit={(f) => save.mutate(f)}
+        />
+      )}
     </div>
   );
 }
@@ -343,12 +363,21 @@ function Thumb({ src, wide }: { src: string | null; wide?: boolean }) {
   return <ImgWithFallback src={src} alt="" className={box} fallback={<div className={box} />} />;
 }
 
-export function MoviesManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+type ManagedPermissions = { canEdit: boolean; canDelete: boolean };
+
+export function MoviesManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const rows = managedMovies(data);
   return (
     <CrudSection<ManagedMovieRow>
       lang={lang}
       table="managed_movies"
+      canEdit={canEdit}
+      canDelete={canDelete}
       rows={rows}
       addLabel={L(lang, "Add movie", "إضافة فيلم")}
       addTitle={L(lang, "Add movie", "إضافة فيلم")}
@@ -464,12 +493,19 @@ export function MoviesManager({ lang, data }: { lang: Lang; data: ManagedContent
   );
 }
 
-export function PeopleManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+export function PeopleManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const rows = managedPeople(data);
   return (
     <CrudSection<ManagedPersonRow>
       lang={lang}
       table="managed_people"
+      canEdit={canEdit}
+      canDelete={canDelete}
       rows={rows}
       addLabel={L(lang, "Add person", "إضافة شخص")}
       addTitle={L(lang, "Add person", "إضافة شخص")}
@@ -533,12 +569,19 @@ export function PeopleManager({ lang, data }: { lang: Lang; data: ManagedContent
   );
 }
 
-export function BoxOfficeManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+export function BoxOfficeManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const rows = managedBoxofficeRows(data);
   return (
     <CrudSection<ManagedBoxofficeRow>
       lang={lang}
       table="managed_boxoffice"
+      canEdit={canEdit}
+      canDelete={canDelete}
       rows={rows}
       addLabel={L(lang, "Add row", "إضافة صف")}
       addTitle={L(lang, "Add box office row", "إضافة صف بالبوكس أوفيس")}
@@ -596,7 +639,12 @@ const CHANNEL_CATS = (lang: Lang) => [
   { value: "religion", label: L(lang, "Religion", "ديني") },
 ];
 
-export function ChannelsManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+export function ChannelsManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const channels = managedChannels(data);
   const [channelId, setChannelId] = useState<string>("");
   const active = channels.find((c) => c.id === channelId) ?? null;
@@ -605,6 +653,8 @@ export function ChannelsManager({ lang, data }: { lang: Lang; data: ManagedConte
       <CrudSection<ManagedChannelRow>
         lang={lang}
         table="managed_channels"
+        canEdit={canEdit}
+        canDelete={canDelete}
         rows={channels}
         addLabel={L(lang, "Add channel", "إضافة قناة")}
         addTitle={L(lang, "Add channel", "إضافة قناة")}
@@ -675,7 +725,13 @@ export function ChannelsManager({ lang, data }: { lang: Lang; data: ManagedConte
             </Select>
           </div>
           {active && (
-            <ProgramsManager lang={lang} channel={active} programs={managedPrograms(data)} />
+            <ProgramsManager
+              lang={lang}
+              channel={active}
+              programs={managedPrograms(data)}
+              canEdit={canEdit}
+              canDelete={canDelete}
+            />
           )}
         </div>
       )}
@@ -687,11 +743,13 @@ function ProgramsManager({
   lang,
   channel,
   programs,
+  canEdit,
+  canDelete,
 }: {
   lang: Lang;
   channel: ManagedChannelRow;
   programs: ManagedProgramRow[];
-}) {
+} & ManagedPermissions) {
   const rows = programs
     .filter((p) => p.channel_id === channel.id)
     .sort((a, b) => a.start_min - b.start_min);
@@ -699,6 +757,8 @@ function ProgramsManager({
     <CrudSection<ManagedProgramRow>
       lang={lang}
       table="managed_programs"
+      canEdit={canEdit}
+      canDelete={canDelete}
       rows={rows}
       addLabel={L(lang, "Add program", "إضافة برنامج")}
       addTitle={L(lang, "Add program", "إضافة برنامج")}
@@ -762,12 +822,19 @@ function ProgramsManager({
   );
 }
 
-export function VideosManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+export function VideosManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const rows = managedVideos(data);
   return (
     <CrudSection<ManagedVideoRow>
       lang={lang}
       table="managed_videos"
+      canEdit={canEdit}
+      canDelete={canDelete}
       rows={rows}
       addLabel={L(lang, "Add video", "إضافة فيديو")}
       addTitle={L(lang, "Add video", "إضافة فيديو")}
@@ -823,7 +890,12 @@ export function VideosManager({ lang, data }: { lang: Lang; data: ManagedContent
 
 // ------------------------------------------------------- featured lists editor
 
-export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent }) {
+export function ListsManager({
+  lang,
+  data,
+  canEdit,
+  canDelete,
+}: { lang: Lang; data: ManagedContent } & ManagedPermissions) {
   const rows = managedLists(data);
   const invalidate = useContentInvalidator();
   const [open, setOpen] = useState(false);
@@ -845,13 +917,9 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
           title_ar: it.title_ar,
         })),
       };
-      const { error } = editing
-        ? await supabase
-            .from("managed_lists")
-            .update(payload as never)
-            .eq("id", editing.id)
-        : await supabase.from("managed_lists").insert(payload as never);
-      if (error) throw new Error(error.message);
+      await saveManagedRow({
+        data: { table: "managed_lists", row: payload, ...(editing ? { id: editing.id } : {}) },
+      });
     },
     onSuccess: () => {
       toast.success(L(lang, "Saved", "تم الحفظ"));
@@ -863,8 +931,7 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
   });
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("managed_lists").delete().eq("id", id);
-      if (error) throw new Error(error.message);
+      await deleteManagedRow({ data: { table: "managed_lists", id } });
     },
     onSuccess: () => {
       toast.success(L(lang, "Deleted", "تم الحذف"));
@@ -895,16 +962,18 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
         <span className="text-sm text-muted-foreground">
           {rows.length} {L(lang, "lists", "قائمة")}
         </span>
-        <Button
-          className="ms-auto"
-          onClick={() => {
-            setEditing(null);
-            setForm({ title_en: "", title_ar: "", items: [] });
-            setOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4" /> {L(lang, "Add list", "إضافة قائمة")}
-        </Button>
+        {canEdit && (
+          <Button
+            className="ms-auto"
+            onClick={() => {
+              setEditing(null);
+              setForm({ title_en: "", title_ar: "", items: [] });
+              setOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" /> {L(lang, "Add list", "إضافة قائمة")}
+          </Button>
+        )}
       </div>
 
       <DataTable
@@ -928,27 +997,31 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
             value: () => "",
             render: (r) => (
               <div className="flex items-center justify-end gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => startEdit(r)}
-                  aria-label={L(lang, "Edit", "تعديل")}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-destructive"
-                  onClick={() => {
-                    if (window.confirm(L(lang, "Delete this list?", "حذف هذه القائمة؟")))
-                      remove.mutate(r.id);
-                  }}
-                  aria-label={L(lang, "Delete", "حذف")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                {canEdit && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => startEdit(r)}
+                    aria-label={L(lang, "Edit", "تعديل")}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
+                {canDelete && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive"
+                    onClick={() => {
+                      if (window.confirm(L(lang, "Delete this list?", "حذف هذه القائمة؟")))
+                        remove.mutate(r.id);
+                    }}
+                    aria-label={L(lang, "Delete", "حذف")}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             ),
           },
@@ -1085,9 +1158,11 @@ export function ListsManager({ lang, data }: { lang: Lang; data: ManagedContent 
               >
                 {L(lang, "Cancel", "إلغاء")}
               </Button>
-              <Button type="button" disabled={save.isPending} onClick={() => save.mutate()}>
-                {L(lang, "Save", "حفظ")}
-              </Button>
+              {canEdit && (
+                <Button type="button" disabled={save.isPending} onClick={() => save.mutate()}>
+                  {L(lang, "Save", "حفظ")}
+                </Button>
+              )}
             </div>
           </div>
         </DialogContent>
