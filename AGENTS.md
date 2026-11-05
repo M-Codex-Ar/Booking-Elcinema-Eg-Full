@@ -43,7 +43,7 @@ Verify with the real tools before claiming work is done: `tsc --noEmit`, `vitest
    `Bi` data value. No `lang === "ar" ? … : …` inline in JSX.
 5. **RTL is the default assumption.** Use logical properties (`ms-`, `me-`, `start-`, `end-`,
    `text-start`) and `rtl:` variants. Never `ml-`/`mr-`/`left-`/`right-` for layout.
-6. **Scraped hrefs go through `cardLink`.** Nothing else may navigate the app to elcinema.com.
+6. **Public content is local-only at runtime.** Use committed catalogue JSON and the managed-content merge helpers; never fetch or parse the retired content host. Internal cards must resolve to local app routes.
 7. **Operator writes stay server-side.** Dashboard mutations must call the auth-guarded server
    function, never the Supabase client directly.
 

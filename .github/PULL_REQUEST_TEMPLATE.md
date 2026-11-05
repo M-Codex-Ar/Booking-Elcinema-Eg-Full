@@ -44,7 +44,7 @@ npm run check:web
 - [ ] No literal colour, shadow, radius or font-size outside `src/theme/` and `components/variants.ts`
 - [ ] No inline `lang === "ar" ? …` copy — strings come from `i18n/`
 - [ ] Logical properties only (`ms-/me-/start-/end-/rtl:`), no physical axis classes
-- [ ] Scraped hrefs resolved through `cardLink`; internal navigation through the router
+- [ ] Public content uses the catalogue and managed rows; internal links resolve locally
 - [ ] Operator writes go through the auth-guarded server function
 - [ ] `elcinema/` published history untouched (no force-push, rebase, amend or squash)
 

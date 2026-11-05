@@ -1,17 +1,15 @@
 # Data and storage
 
-Three kinds of content with three different lifetimes. Confusing them is the main
-source of bugs in this codebase, so the distinction is stated first.
+Two kinds of content with different lifetimes. The public app reads only these
+sources; it does not fetch or parse third-party HTML at request time.
 
 | Kind                      | Where it lives                                         | How it changes                  | Read by                                                 |
 | ------------------------- | ------------------------------------------------------ | ------------------------------- | ------------------------------------------------------- |
-| **Catalogue**             | `elcinema/src/data/*.json`, committed                  | By pull request, with a release | `data.ts` → `build.ts` indexes; bundled with the app    |
-| **Operator content**      | Supabase Postgres, `managed_*` tables                  | By an operator in the dashboard | `getManagedContent` server function, once per page tree |
-| **Live elCinema content** | Nowhere durable — parsed per request from elcinema.com | Whenever elcinema.com changes   | `*.server.ts` behind `*.functions.ts`                   |
+| **Catalogue** | `elcinema/src/data/*.json`, committed | By pull request, with a release | `data.ts` → `build.ts`; bundled with the app |
+| **Operator content** | Supabase Postgres, `managed_*` tables | By an operator in the dashboard | `getManagedContent`, merged through `content.ts` |
 
-The catalogue is the floor: the site renders fully with the database unreachable
-and the scraper broken. That property is worth protecting — do not make a public
-page depend on a live fetch to show something it already owns.
+The catalogue is the offline floor: public catalogue pages render with Supabase
+unavailable. Managed rows enhance or override it when present.
 
 ## Catalogue JSON
 
@@ -87,10 +85,10 @@ must not query `managed_*` themselves.
 | `allMovies`        | Managed (DB) first; a managed movie whose title matches a built-in one **wins**, keeping one detail page per film (catalogue is the offline floor)            | normalised `title.en`          |
 | `mergedNowPlaying` | **Managed `now` entries lead**, then built-in — an operator addition appears immediately                                                                      | first wins                     |
 | `mergedComingSoon` | Managed `soon` lead for duplicate precedence, then re-sorted by release date                                                                                  | first wins, then `release` asc |
-| `mergedBoxoffice`  | **Managed rows lead** so a corrected figure overrides the scraped one                                                                                         | `title.en`                     |
+| `mergedBoxoffice`  | **Managed rows lead** so a corrected figure overrides the bundled catalogue                                                                                   | `title.en`                     |
 | `mergedTvGuide`    | Built-in lines first; managed channels appended only when the name is new and the channel has at least one program; grid window widens to cover managed slots | normalised channel name        |
 | `mergedSearch`     | Managed people, movies and channels (built-in matches are filtered by the caller)                                                                             | —                              |
-| `mergedHomeData`   | Managed content injected into the scraped home payload                                                                                                        | —                              |
+| `mergedHomeData`   | Home view model composed from local catalogue and managed content                                                                                             | —                              |
 
 `dedupeByTitle` keeps the **first** occurrence, which is why the array order in
 each function _is_ the precedence rule. Changing the order silently changes which
@@ -149,5 +147,5 @@ documentation.
 1. `updated_at` trigger, or explicit set on every write.
 2. Role/permission column or a separate `staff` table, so RLS can express "is staff".
 3. Replace `managed_lists.items jsonb` with a typed child table, or validate the JSON shape at the boundary.
-4. Move ingestion output into real tables (`works`, `showtimes`, `videos`) so live content stops being re-scraped per request — see [backend.md](backend.md#what-it-takes-over-and-in-what-order).
-5. Artwork in object storage with a recorded key, instead of arbitrary external URLs.
+4. Consider typed tables for showtimes and list items if operator workflows grow.
+5. Mirror approved artwork into first-party storage and record stable asset keys.

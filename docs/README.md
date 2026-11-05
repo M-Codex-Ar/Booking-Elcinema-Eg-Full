@@ -16,6 +16,9 @@ document should be fixed.
 | [operations.md](operations.md) | You are deploying, monitoring, rotating keys, or handling an incident. |
 | [adr/](adr/) | You are asking "why is it this way" — one short decision per file. |
 
+Current content-source decision: [ADR 0006](adr/0006-local-catalogue-only-no-runtime-scraping.md)
+supersedes the historical scraper decision in ADR 0003.
+
 ## How to use these documents
 
 Start with [architecture.md](architecture.md) for orientation, then the document

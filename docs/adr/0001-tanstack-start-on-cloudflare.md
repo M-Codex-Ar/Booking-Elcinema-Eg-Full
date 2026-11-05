@@ -5,8 +5,8 @@ Status: accepted (inherited; recorded 2026-11-02)
 ## Context
 
 The app arrived from a Lovable-generated TanStack Start template and is already
-deployed. It needs server-side work — HTML scraping with cheerio, a service-role
-read, SSR for both language editions — and it needs the SEO that only server
+deployed. It needs server-side managed-content reads, SSR for both language
+editions — and it needs the SEO that server
 rendering gives a public content site. The realistic alternatives were Next.js,
 Remix/React Router 7, or a client-only SPA with a separate API.
 

@@ -57,7 +57,7 @@ data — a read endpoint serves the last good cached value instead of failing.
 
 | Method & path | Returns | Notes |
 | --- | --- | --- |
-| `GET /api/v1/home` | `HomePayload` | Hero rail, now playing, coming soon, TV summary, box office, trailers. Mirrors `getElcinemaHomeFn`. |
+| `GET /api/v1/home` | `HomePayload` | Home view composed from the committed catalogue and managed content. |
 | `GET /api/v1/movies` | `Paged<Movie>` | `status=now\|soon`, `genre`, `q`, `sort=title\|year\|rating\|release` |
 | `GET /api/v1/movies/{id}` | `MovieDetail` | Catalogue id (slug) or operator UUID |
 | `GET /api/v1/people/{id}` | `PersonDetail` | Filmography merged from works |
@@ -100,7 +100,7 @@ change and needs an entry in [../CHANGELOG.md](../CHANGELOG.md).
 }
 ```
 
-`source` is `catalogue`, `managed`, or `scraped` — the merge layer
+`source` is `catalogue` or `managed` — the merge layer
 ([database.md](database.md#merge-rules)) uses it to decide precedence instead of
 inferring it from an id prefix.
 
@@ -147,14 +147,10 @@ Writes accept a **field DTO, never a raw row** — the API maps to columns, so a
 typo in a client cannot become a silent no-op or an unexpected column write. Every
 mutation records `actor`, `table`, `rowId`, `before`/`after` in the audit log.
 
-## Ingestion (internal)
+## Internal operations
 
-Not part of the public contract; listed so it is not accidentally exposed.
-
-`POST /api/v1/internal/ingest/{source}` with `X-Ingest-Key`, plus background
-`IHostedService` workers per source. Sources are the current scrape targets: home,
-work, person, video, vod, lineup. A failed run keeps the last good rows and sets
-`degraded=true` on the affected read endpoints rather than returning empty.
+No content ingestion endpoint is part of this contract. Public content is served
+from the committed catalogue and operator-managed records.
 
 ## Compatibility rules
 

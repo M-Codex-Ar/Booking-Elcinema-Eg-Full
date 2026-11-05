@@ -45,8 +45,8 @@ src/
 ├── features/
 │   ├── auth/              auth.ts helpers + AuthDialog
 │   ├── content/           content.ts merge rules + content.functions.ts
-│   ├── home/              home.server.ts (parsers), home.functions.ts, home.shared.ts
-│   ├── live/              live.server.ts, live.functions.ts, live.shared.ts, live-ui.tsx
+│   ├── home/              local catalogue view-model function
+│   ├── live/              shared media/UI helpers for catalogue-backed pages
 │   └── dashboard/         DataTable, Sections, editor
 ├── pages/                 one file per screen
 ├── i18n/                  every UI string, both languages (index.ts + en/ + ar/)
@@ -143,12 +143,8 @@ is tracked as a task, not a rumour.
 
 - `content.ts` (460 lines) mixes row types, mappings, merge rules and query
   options. Split along the port/adapter lines in [architecture.md](architecture.md#layers).
-- `live.server.ts` (602 lines) holds seven parsers plus the fetch/cache layer in
-  one module.
-- Live scrapes still sit on some route loader paths. They now time out after 4s;
-  the homepage and known static pages return local data after a 1.2s live-data
-  budget and refresh the scrape in the background. Detail pages without a local
-  fallback can still wait for the 4s timeout on a cold cache.
+- Public pages now use committed catalogue JSON and managed rows only. Unknown
+  detail IDs render a local not-found state; no page loader fetches upstream HTML.
 - `dashboard/editor.tsx` (713 lines) is one component doing form state, validation
   and writes; writes currently bypass the guarded server function.
 - `ui.tsx` remains the page-facing shorthand layer (`Na` delegates to

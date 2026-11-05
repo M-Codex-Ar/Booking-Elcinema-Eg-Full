@@ -172,9 +172,9 @@ Rules that live here and nowhere else:
 - TanStack route typing is strict about `to`/`params`; the casts are centralised
   in `asRoute()` / `asSearch()`. **`as never` may not appear anywhere else in the
   app.**
-- Scraped hrefs are resolved only by `cardLink()` in `links.ts`; the components
-  that wrapped it were never adopted and were removed — render link data through
-  `AppLink` / `Na` after calling `cardLink()`.
+- Catalogue hrefs resolve through `cardLink()` in `links.ts`; public navigation
+  stays within local application routes. External destinations are only for
+  approved providers and social profiles.
 - Optional props are declared `?: T | undefined` because `tsconfig.json` turns on
   `exactOptionalPropertyTypes`.
 - Every primitive composes as `cn(recipe({ variant }), className)` so a caller can

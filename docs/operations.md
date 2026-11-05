@@ -7,7 +7,7 @@
 | `elcinema/` (SSR + server functions) | Cloudflare via Nitro                                                                     | `pnpm run build` → `.output/`; `.wrangler/` holds local deploy state                         |
 | Postgres + auth                      | Supabase, project `twuzevyzjvmvufoutbny`                                                 | `managed_*` tables plus `auth.users`; RLS per [database.md](database.md#authorization-today) |
 | Static assets                        | Same origin, `public/`                                                                   | `favicon.ico`, `robots.txt` (all crawlers allowed)                                           |
-| Artwork                              | First-party copies under `public/images/{posters,people,channels,brand}` via the `images.ts` manifest, plus external elcinema URLs | Catalogue posters, dataset people photos and TV-guide channel logos are mirrored locally by `elcinema/scripts/mirror-artwork.mjs` (kinds `posters,people,logos,born,channels`); records the source site itself has no image for fall back to designed placeholder artwork |
+| Artwork                              | First-party copies under `public/images/{posters,people,channels,brand}` via the `images.ts` manifest | Catalogue artwork resolves locally; missing assets use designed placeholders |
 | `server-api/`                        | —                                                                                        | Not deployed: no code yet ([backend.md](backend.md))                                         |
 
 The app is built and synced through its connected [Lovable](https://lovable.dev)
@@ -106,27 +106,25 @@ There is no metrics pipeline yet, so "monitoring" today means these signals:
   500 JSON body (`{"unhandled":true,"message":"HTTPError"}`) into a real HTML error
   page and logs the underlying error — **a 500 that renders JSON means that wrapper
   regressed.**
-- **Parser drift** is the most likely incident: a live page goes empty or missing
-  while the build stays green. The fixture tests in
-  [testing.md](testing.md#what-is-covered) catch it only after the fixture is
-  refreshed, so treat "the now-playing rail is suddenly short" as a scraping signal.
+- **Catalogue gaps** are the most likely content incident: a page can lack a
+  detail because it is absent from the committed catalogue and managed tables.
+  Check the data asset and merge result before changing rendering code.
 - Supabase dashboard: auth attempts, connection count, and slow queries on
   `managed_*`.
 
 Worth adding, in order: request logging with a correlation id, an uptime check on
-`/en` and `/ar`, a scrape-failure counter per source, and a health endpoint once
-`server-api/` exists.
+`/en` and `/ar`, and a Supabase managed-content health metric.
 
 ## Common incidents
 
 | Symptom                                                              | First look                                                                                                                   | Likely fix                                                                                                     |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| A rail is empty but the page renders                                 | Server logs for a parser warning; compare a stored fixture with the live page                                                | Fix the selector in `*.server.ts`, refresh the fixture, keep the test                                          |
+| A rail is empty but the page renders                                 | Check the bundled catalogue, managed-content response, and merge rules                                                       | Restore/curate local data or fix the merge rule                                                               |
 | 404 on a route that exists in dev                                    | `src/routeTree.gen.ts` vs `src/routes/`                                                                                      | `pnpm run build`, commit the regenerated tree                                                                  |
 | Arabic page laid out like English                                    | `dir` on the wrapper and `<html>`; grep for `ml-`/`left-` in the changed component                                           | Logical properties, then `rtl:` where logic cannot reach ([design-system.md](design-system.md#direction))      |
 | Sign-in works, dashboard is blank                                    | Token/RLS mismatch; `requireSupabaseAuth` in the server function                                                             | Check the session claim, not the query                                                                         |
 | Site renders unstyled after deploy                                   | Tailwind `@source` scan; `styles.css` import order                                                                           | Restore the explicit `@source "../src"`                                                                        |
-| Image 404                                                            | `images.ts` key vs `public/images/` (regenerate with `elcinema/scripts/mirror-artwork.mjs`)                                  | The fallback poster must still show                                             |
+| Image 404                                                            | `images.ts` key vs `public/images/`                                                                                           | Restore the reviewed local asset or keep the designed placeholder               |
 | Missing/broken key in a deploy                                       | Which environment, which variable                                                                                            | Rotate, redeploy, record in [../SECURITY.md](../SECURITY.md)                                                   |
 | Console says "Missing Supabase environment variable(s)", pages blank | Was the bundle built where `elcinema/.env` exists? Compare the asset hash in the deployed HTML with a local `pnpm run build` | Rebuild with the values present and redeploy; [The build gate](#the-build-gate) now blocks the env-free bundle |
 

@@ -37,7 +37,7 @@ src/
     components/          variants.ts (cva recipes) · primitives.tsx  ← shared UI
     i18n/                every UI string, typed keys
     content.ts           merge rules: operator rows + built-in catalogue
-    links.ts             the only sanctioned resolver for scraped hrefs
+    links.ts             resolves catalogue links to local routes
     pages/ dashboard/    composed from the primitives, no local style recipes
   routes/                thin wiring: params → data → page component
 drizzle/                 schema + SQL migrations for the managed_* tables
@@ -56,5 +56,9 @@ the Lovable editor.
 Public pages never query `managed_*` directly; they consume the merge helpers in `content.ts`.
 Operator writes go through the auth-guarded server function. Sign-up is disabled by design —
 staff accounts are provisioned.
+
+Public runtime content comes only from the committed JSON catalogue and Supabase-managed
+rows. The former on-demand HTML scraper is retired; add reviewed catalogue content or use
+the dashboard-managed tables for new public entries.
 
 The task log for this app is [roadmap.md](roadmap.md).

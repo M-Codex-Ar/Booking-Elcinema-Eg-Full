@@ -18,3 +18,4 @@
 - Managed rows get public refs prefixed `m-` (`managedRef`) so `/work/:id` and `/person/:id` resolve both built-in and managed entries with one route.
 - The dashboard lives under `src/routes/_authenticated/` and sign-up is disabled: staff accounts are provisioned by the site administrator, never by public registration.
 - On the Now Playing page, managed "now" entries render before the built-in list so operators immediately see their additions.
+- Public content has no runtime scraper or upstream HTML dependency. Use the bundled catalogue and `managed_*` rows only; reject retired-source media URLs and keep public navigation inside local routes.

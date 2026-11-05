@@ -6,15 +6,19 @@
 > reading one document. The executable checklist lives in
 > [`server-api/README.md`](../server-api/README.md).
 
+> **Current-source note:** ADR 0006 retired all public on-demand scraping. Older
+> migration notes below that describe scrape ingestion are historical and are
+> not an approved implementation target. Preserve the local catalogue and
+> managed-content source boundary in any future API design.
+
 ## Why an API at all
 
-Today the frontend *is* the backend: TanStack server functions reach Supabase and
-scrape elcinema.com on demand. That works, and it is the reason the app shipped.
-It has four ceilings:
+Today the frontend uses TanStack server functions for Supabase access and serves
+public pages from the local catalogue plus managed rows. Potential API work should
+focus on backend concerns that the frontend should not own:
 
-1. **Scraping is on the request path.** A markup change makes a live page slow or
-   empty while a user waits. There is no ingestion job, no retry budget, no
-   backfill.
+1. **The public catalogue is checked in.** Catalogue changes use reviewed
+   repository updates; operator changes use managed tables.
 2. **Authorization is coarse.** The `managed_*` row-level policies grant insert,
    update and delete to *any* authenticated user. There is no role, no per-table
    permission, no audit of who changed what.
@@ -23,13 +27,6 @@ It has four ceilings:
    nothing stable to build against.
 4. **Validation lives in the UI.** Dashboard writes currently post row payloads
    straight through; malformed data can reach the table.
-
-The frontend currently limits the impact of slow scrapes: remote requests have a
-4-second timeout, while the homepage and known static pages return local fallback
-content after 1.2 seconds and let the live scrape refresh its cache in the
-background. This cache is process-local, so cold serverless instances can still
-need to fetch upstream data. Scheduled ingestion remains the durable way to take
-scraping out of a user request.
 
 Public reads of the seven optional managed-content tables run concurrently with
 a 1.2-second abort budget. A failed table is treated as an empty additive
@@ -51,11 +48,10 @@ container behind the same domain the frontend calls.
 | AuthN | JWT bearer access tokens, short-lived, with refresh | The frontend already has a session concept; keep it, move the decision server-side. |
 | AuthZ | Policy-based, role + permission claims | Replaces the "any authenticated user is staff" policy honestly. |
 | Docs | `Swashbuckle.AspNetCore` for OpenAPI 3 in Development/Staging | The contract in [api-contract.md](api-contract.md) becomes inspectable and testable. |
-| Caching | Response caching + `ETag`/`Cache-Control`, plus an ingestion cache for scraped sources | Takes the fetch out of the request path. |
+| Caching | Response caching + `ETag`/`Cache-Control` for managed content | Keeps managed reads bounded and efficient. |
 | Health | `AddHealthChecks()` with `/health` (liveness) and `/health/ready` (DB) | Required by any container orchestrator. |
 | Logging | Built-in `ILogger`, JSON to the platform collector | No bespoke logging layer. |
-| Resilience | `Microsoft.Extensions.Http.Resilience` on the ingestion clients | Timeouts, retries with jitter, circuit breaking on elcinema.com. |
-| Scheduling | `IHostedService` workers for ingestion (or an external cron hitting an endpoint) | Scraping becomes a job, not a request. |
+| Resilience | Bounded Supabase/database reads | Managed-content failures do not blank the local catalogue. |
 | Rate limiting | `Microsoft.AspNetCore.RateLimiting` per client/IP | Public content endpoints. |
 | Tests | xUnit + `WebApplicationFactory` integration tests | Contract tests run against the real pipeline. |
 | Container | Multi-stage Dockerfile, non-root, `aspnet:9.0` | Fits the existing deploy story. |
@@ -65,13 +61,13 @@ container behind the same domain the frontend calls.
 | Frontend today | After the API |
 | --- | --- |
 | `content.functions.ts` → `getManagedContent` reads all seven tables at once | `GET /api/v1/content` returns the same aggregate, or per-collection endpoints when a page needs one |
-| `home.server.ts`, `live.server.ts` scrape per request | Ingestion workers write parsed rows; endpoints serve them |
+| Local JSON catalogue plus `managed_*` rows | Versioned API may serve those same approved sources |
 | `dashboard/editor.tsx` → direct Supabase writes | `PUT/POST/DELETE /api/v1/admin/*` with validation + role checks + audit |
 | Supabase RLS decides "authenticated ⇒ staff" | API policies decide per permission; RLS stays as defence in depth |
 | Supabase auth for the dashboard | Unchanged in Phase 1–2; token issuance moves in Phase 4 if it earns its cost |
 
 Phases: **0** scaffold · **1** read-only content endpoints mirroring today's reads ·
-**2** ingestion workers replacing on-demand scraping · **3** admin writes with
+**2** managed-content endpoints · **3** admin writes with
 validation, roles and audit · **4** auth consolidation, artwork storage, rate limits.
 Milestones and acceptance criteria are in
 [`server-api/README.md`](../server-api/README.md#milestones).
@@ -88,7 +84,7 @@ server-api/
 │   ├── Endpoints/                 # one file per vertical slice, Minimal API groups
 │   ├── Domain/                    # entities, value objects (BilingualText, SlotRange)
 │   ├── Application/               # services, ports (interfaces)
-│   ├── Infrastructure/            # EF Core DbContext, migrations, scrape adapters, cache
+│   ├── Infrastructure/            # EF Core DbContext, migrations, cache
 │   ├── Contracts/                 # request/response DTOs + validators
 │   ├── Auth/                      # token issuance, policies, claim mapping
 │   └── appsettings[.Development|.Production].json

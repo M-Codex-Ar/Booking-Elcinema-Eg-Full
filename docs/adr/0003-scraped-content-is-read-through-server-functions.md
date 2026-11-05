@@ -1,6 +1,6 @@
 # ADR 0003 — Live elCinema content is read server-side through parsers behind typed ports
 
-Status: accepted (2026-11-02)
+Status: superseded by [ADR 0006](0006-local-catalogue-only-no-runtime-scraping.md) (2026-11-05)
 
 ## Context
 
